@@ -489,8 +489,6 @@ NODE_ENV=production
 4. ✅ `GET /api/products` + product list UI (search, status filter, pagination)
 5. ✅ Individual product editor: multi-style checkboxes, auto-preview, WCT slots + Swap modal + Re-assign, Product Summary textarea, Perfect For slots + Swap + reorder + seasonal overrides
 6. ✅ `POST /api/products/[id]/assign` — validates type/style, writes all 15 metafields
-7. ⬜ Update `product-why-people-love-this.liquid` for innerHTML rendering + new icons
-8. ⬜ Update `product-perfect-for.liquid` to read icon metafields
 
 **Verify:** Set type/style → preview bullets → save → visit `?view=pdp-redesign` → all 3 sections render correctly.
 
@@ -504,7 +502,7 @@ NODE_ENV=production
 6. ✅ Settings page: date range pickers for Mother's/Father's/Valentine's Day (no toggles — blank = off)
 7. ✅ Perfect For Icons page (`/icons`) — icon library + phrase assignments grouped by icon; click phrase to reassign
 8. ✅ `lib/pf-icon-overrides-store.ts` + `PATCH /api/library` — icon overrides stored in Shopify Metaobject (`pdp_pf_icon_overrides`); merged into library responses at read time
-9. ✅ Seasonal phrase logic fixed — seasonal entries never stored in metafields; assignment engine always returns 4 non-seasonal bullets; seasonal injection deferred to theme (Task #1)
+9. ✅ Seasonal phrase logic fixed — seasonal entries never stored in metafields; assignment engine always returns 4 non-seasonal bullets; seasonal injection deferred to theme (Phase 4)
 10. ✅ Bestseller filter on products list (tag-based Shopify query)
 11. ✅ "Regenerate Why People Love" button hidden when no alternatives exist (not just greyed out)
 
@@ -517,7 +515,15 @@ NODE_ENV=production
 3. ⬜ Interest-filter keyword map for ~17 filtered Perfect For entries
 4. ⬜ Wire live date config from settings store into `assignPerfectFor`
 
-**Verify:** Bulk assign 10 products → SSE shows progress → all have metafields. Upload icon → appears in picker. Mother's Day date range active → phrase included in preview.
+**Verify:** Bulk assign 10 products → SSE shows progress → all have metafields. Mother's Day date range active → phrase included in preview.
+
+### Phase 4 — Theme integration
+
+1. ⬜ Update `product-why-people-love-this.liquid` — update 4 SVG icon definitions (sparkle/heart/shield/gift-with-heart per slot); switch bullet rendering to `innerHTML` via JavaScript for HTML metafield values
+2. ⬜ Update `product-perfect-for.liquid` — remove keyword-matching icon logic; read `icon_1`–`icon_4` metafields; render as `<img>` if CDN URL, else inline SVG string
+3. ⬜ Seasonal injection — at page load, read per-product seasonal override metafields and settings date window; if active, replace one random bullet with the seasonal phrase and icon (display only, no metafield writes)
+
+**Verify:** Visit `?view=pdp-redesign` → all 3 content sections render; icons appear on Perfect For bullets; within a seasonal date window with override ticked, seasonal phrase replaces one bullet.
 
 ---
 
