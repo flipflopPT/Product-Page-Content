@@ -451,6 +451,11 @@ Repeat for b2, b3, b4 with unique IDs.
 1. Remove keyword-matching icon logic
 2. Read icon metafields: `assign ic1 = product.metafields["perfect-for"].icon_1`
 3. Render icon: `{% if ic1 contains 'https://' %}<img src="{{ ic1 }}" class="pdp-r-icon" aria-hidden="true">{% else %}{{ ic1 }}{% endif %}`
+4. **Seasonal injection (Task #1):** Metafields always store the 4 regular bullets. At page load, the theme must:
+   - Read per-product seasonal override metafields (mothersDay / fathersDay / valentinesDay booleans)
+   - Read settings date window metafields for each season (stored in `pdp_app_settings` Shopify Metaobject)
+   - If today falls within an active season's window AND the product's override is true, replace one of the 4 stored bullets at random with the seasonal phrase and its icon
+   - This is display-only — no metafield writes
 
 ---
 
