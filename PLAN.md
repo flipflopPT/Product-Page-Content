@@ -508,14 +508,18 @@ NODE_ENV=production
 
 **Verify:** Swap Perfect For bullet → icon picker shows → new icon saved to metafield → renders in theme. Date range set → seasonal phrase included in preview.
 
-### Phase 3 — Bulk assign + library browser + interest filters ← NEXT
+### Phase 3 — Bulk assign + library browser + interest filters
 
-1. ⬜ `POST /api/bulk-assign` with SSE streaming + bulk assign UI (`/bulk`)
-2. ⬜ Library browser (`/library`) with filters, tables, icon previews
-3. ⬜ Interest-filter keyword map for ~17 filtered Perfect For entries
-4. ⬜ Wire live date config from settings store into `assignPerfectFor`
+1. ✅ `POST /api/bulk-assign` — SSE streaming; assigns WCT + PF + auto-generates Product Summary via Claude (option 1); skips products without type/style
+2. ✅ `POST /api/bulk-classify` — SSE streaming; Claude infers PT Type + PT Style per product (~$0.002/product); streams results into review table
+3. ✅ `POST /api/bulk-classify/save` — batch writes approved type+style metafields to Shopify after staff review
+4. ✅ Bulk page (`/bulk`) — product table with checkboxes, select all, page size selector (10/25/50/100), type filter; "Classify Type & Style" opens review panel with product thumbnails (click to enlarge modal), type dropdowns, style checkboxes, skip toggles; "Populate Content" button gated to only process products that already have type+style set
+5. ✅ `GET /api/products` extended with `limit` param for configurable page size
+6. ✅ Live date config from settings store wired into `assignPerfectFor` (both preview and bulk-assign routes call `getSettings()`)
+7. ⬜ Library browser (`/library`) with filters, tables, icon previews ← NEXT
+8. ⬜ Interest-filter keyword map for ~17 filtered Perfect For entries
 
-**Verify:** Bulk assign 10 products → SSE shows progress → all have metafields. Mother's Day date range active → phrase included in preview.
+**Verify:** Select products without type/style → Classify → review table shows AI suggestions with thumbnails → approve → type/style saved. Then select those products → Populate Content → SSE shows progress → all have WCT + PF + Summary metafields.
 
 ### Phase 4 — Theme integration
 

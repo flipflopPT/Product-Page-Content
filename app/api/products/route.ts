@@ -34,8 +34,6 @@ function contentStatus(node: { productSummary: { value: string } | null; wctBull
   return "missing";
 }
 
-const PAGE_SIZE = 10;
-
 export async function GET(req: NextRequest) {
   const authError = await requireAuth(req);
   if (authError) return authError;
@@ -44,6 +42,8 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor") ?? undefined;
   const search = searchParams.get("search") ?? "";
   const status = searchParams.get("status") ?? "";
+  const limitParam = parseInt(searchParams.get("limit") ?? "10", 10);
+  const PAGE_SIZE = Math.min(Math.max(limitParam, 1), 100);
 
   const bestseller = status === "bestseller";
   const statusFilter = bestseller ? "" : status;
