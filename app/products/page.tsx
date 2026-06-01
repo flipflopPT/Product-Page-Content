@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import Nav from "@/components/Nav";
 import ProductList from "@/components/ProductList";
 import ProductEditor from "@/components/ProductEditor";
@@ -12,13 +13,18 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [bestseller, setBestseller] = useState(false);
+  const searchParams = useSearchParams();
+  const [selectedId, setSelectedId] = useState<string | null>(
+    searchParams.get("id") ? `gid://shopify/Product/${searchParams.get("id")}` : null
+  );
 
   const fetchProducts = useCallback(async (reset = true) => {
     setLoading(true);
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     if (statusFilter) params.set("status", statusFilter);
+    if (bestseller) params.set("bestseller", "true");
     if (!reset && nextCursor) params.set("cursor", nextCursor);
 
     const res = await fetch(`/api/products?${params}`);
@@ -31,12 +37,12 @@ export default function ProductsPage() {
     setProducts((prev) => reset ? data.products : [...prev, ...data.products]);
     setNextCursor(data.nextCursor);
     setLoading(false);
-  }, [search, statusFilter, nextCursor]);
+  }, [search, statusFilter, bestseller, nextCursor]);
 
   useEffect(() => {
     fetchProducts(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, statusFilter]);
+  }, [search, statusFilter, bestseller]);
 
   const selectedProduct = products.find((p) => p.id === selectedId) ?? null;
 
@@ -58,15 +64,23 @@ export default function ProductsPage() {
               onChange={(e) => setSearch(e.target.value)}
               className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+            <label className="flex items-center gap-1.5 text-sm text-gray-600 cursor-pointer select-none px-0.5">
+              <input
+                type="checkbox"
+                checked={bestseller}
+                onChange={(e) => setBestseller(e.target.checked)}
+                className="rounded border-gray-300"
+              />
+              Bestseller Tag
+            </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">All products</option>
-              <option value="bestseller">Bestsellers</option>
-              <option value="missing">Missing content</option>
-              <option value="partial">Partial content</option>
+              <option value="missing">No Content</option>
+              <option value="partial">Partial Content</option>
               <option value="complete">Complete</option>
             </select>
           </div>

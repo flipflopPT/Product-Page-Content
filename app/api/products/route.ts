@@ -18,6 +18,9 @@ const LIST_PRODUCTS = `
           productSummary: metafield(namespace: "product", key: "product_summary") { value }
           wctBullet1: metafield(namespace: "why-choose-this", key: "bullet_1") { value }
           pfBullet1: metafield(namespace: "perfect-for", key: "perfect_bullet_1") { value }
+          seasonalMD: metafield(namespace: "seasonal-override", key: "mothers_day") { value }
+          seasonalFD: metafield(namespace: "seasonal-override", key: "fathers_day") { value }
+          seasonalVD: metafield(namespace: "seasonal-override", key: "valentines_day") { value }
         }
         cursor
       }
@@ -36,12 +39,13 @@ function classifyStatus(node: { productTypePt: { value: string } | null; product
   return "missing";
 }
 
-function contentStatus(node: { productSummary: { value: string } | null; wctBullet1: { value: string } | null; pfBullet1: { value: string } | null }): StatusValue {
+function contentStatus(node: { productSummary: MF; wctBullet1: MF; pfBullet1: MF; seasonalMD: MF; seasonalFD: MF; seasonalVD: MF }): StatusValue {
   const summary = node.productSummary?.value ?? "";
   const wct = node.wctBullet1?.value ?? "";
   const pf = node.pfBullet1?.value ?? "";
+  const seasonal = node.seasonalMD?.value === "true" || node.seasonalFD?.value === "true" || node.seasonalVD?.value === "true";
   if (summary && wct && pf) return "complete";
-  if (summary || wct || pf) return "partial";
+  if (summary || wct || pf || seasonal) return "partial";
   return "missing";
 }
 
@@ -51,8 +55,11 @@ function matchesFilter(filter: string, cs: StatusValue, contentSt: StatusValue):
   if (filter === "ready-to-populate") return cs === "complete" && contentSt !== "complete";
   if (filter === "complete")          return cs === "complete" && contentSt === "complete";
   // Legacy values used by the products page
-  if (filter === "missing")  return contentSt === "missing";
-  if (filter === "partial")  return contentSt === "partial";
+  if (filter === "missing")     return cs === "missing" && contentSt === "missing";
+  if (filter === "partial")     return (cs !== "missing" || contentSt !== "missing") && !(cs === "complete" && contentSt === "complete");
+  if (filter === "has-content")      return contentSt !== "missing";
+  if (filter === "content-partial")  return contentSt === "partial";
+  if (filter === "content-complete") return contentSt === "complete";
   return true;
 }
 
@@ -67,8 +74,8 @@ export async function GET(req: NextRequest) {
   const limitParam = parseInt(searchParams.get("limit") ?? "10", 10);
   const PAGE_SIZE = Math.min(Math.max(limitParam, 1), 100);
 
-  const bestseller = status === "bestseller";
-  const statusFilter = bestseller ? "" : status;
+  const bestseller = searchParams.get("bestseller") === "true";
+  const statusFilter = status;
 
   const queryParts: string[] = [];
   queryParts.push(`-tag:hidden`);
@@ -83,6 +90,7 @@ export async function GET(req: NextRequest) {
       featuredImage: { url: string } | null;
       productTypePt: MF; productStylePt: MF;
       productSummary: MF; wctBullet1: MF; pfBullet1: MF;
+      seasonalMD: MF; seasonalFD: MF; seasonalVD: MF;
     };
     cursor: string;
   };
@@ -97,7 +105,7 @@ export async function GET(req: NextRequest) {
   // When filtering, fetch 250 (Shopify's max) per call so we usually only need one round-trip.
   // Cap at 3 iterations to avoid serverless timeout (covers up to 750 products).
   const SHOPIFY_BATCH = statusFilter ? 250 : PAGE_SIZE;
-  const MAX_ITERATIONS = statusFilter ? 3 : 1;
+  const MAX_ITERATIONS = statusFilter ? 10 : 1;
   let iterations = 0;
 
   while (matched.length < PAGE_SIZE && hasMore && iterations < MAX_ITERATIONS) {

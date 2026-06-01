@@ -67,13 +67,13 @@ export default function BulkPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("needs-classify");
+  const [bestseller, setBestseller] = useState(false);
   const [typeFilter, setTypeFilter] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [pageSize, setPageSize] = useState(25);
   const cursorRef = useRef<string | null>(null);
 
   // Content review workflow state
-  const [skipComplete, setSkipComplete] = useState(true);
   const [contentRows, setContentRows] = useState<ContentRow[]>([]);
   const [contentPhase, setContentPhase] = useState<ContentPhase>("idle");
   const [contentSaveResult, setContentSaveResult] = useState<{ saved: number; failed: number } | null>(null);
@@ -84,16 +84,33 @@ export default function BulkPage() {
   const [classifySaveResult, setClassifySaveResult] = useState<{ saved: number; failed: number } | null>(null);
   const classifyPanelRef = useRef<HTMLDivElement>(null);
 
+  // Total count
+  const [totalCount, setTotalCount] = useState<number | null>(null);
+
   // Image modal
   const [modalImage, setModalImage] = useState<string | null>(null);
 
   // ── Product fetching ─────────────────────────────────────────────────────
+
+  const fetchTotalCount = useCallback(async () => {
+    setTotalCount(null);
+    const params = new URLSearchParams();
+    if (search) params.set("search", search);
+    if (statusFilter) params.set("status", statusFilter);
+    if (bestseller) params.set("bestseller", "true");
+    const res = await fetch(`/api/products/count?${params}`);
+    if (res.ok) {
+      const data = await res.json();
+      setTotalCount(data.count);
+    }
+  }, [search, statusFilter, bestseller]);
 
   const fetchProducts = useCallback(async (reset: boolean) => {
     setLoading(true);
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     if (statusFilter) params.set("status", statusFilter);
+    if (bestseller) params.set("bestseller", "true");
     params.set("limit", String(pageSize));
     if (!reset && cursorRef.current) params.set("cursor", cursorRef.current);
 
@@ -105,14 +122,15 @@ export default function BulkPage() {
     setNextCursor(data.nextCursor);
     cursorRef.current = data.nextCursor;
     setLoading(false);
-  }, [search, statusFilter, pageSize]);
+  }, [search, statusFilter, bestseller, pageSize]);
 
   useEffect(() => {
     cursorRef.current = null;
     fetchProducts(true);
+    fetchTotalCount();
     setSelectedIds(new Set());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, statusFilter, pageSize]);
+  }, [search, statusFilter, bestseller, pageSize]);
 
   // ── Selection helpers ────────────────────────────────────────────────────
 
@@ -293,7 +311,7 @@ export default function BulkPage() {
     const data = await res.json();
     const rows: ContentRow[] = (data.rows as ContentRow[]).map((r) => ({
       ...r,
-      skip: skipComplete && !!(r.summary && r.wctBullets[0] && r.pfBullets[0]),
+      skip: false,
     }));
     setContentRows(rows);
     setContentPhase("review");
@@ -384,14 +402,23 @@ export default function BulkPage() {
           onChange={(e) => setSearch(e.target.value)}
           className="px-3 py-1.5 border border-gray-300 rounded text-sm w-48 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
+        <label className="flex items-center gap-1.5 text-sm text-gray-600 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={bestseller}
+            onChange={(e) => setBestseller(e.target.checked)}
+            className="rounded border-gray-300"
+          />
+          Bestseller Tag
+        </label>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
           className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="">All products</option>
-          <option value="needs-classify">Needs classification</option>
-          <option value="ready-to-populate">Ready to populate</option>
+          <option value="needs-classify">No Type and Style Set</option>
+          <option value="ready-to-populate">No Content Set</option>
           <option value="complete">Complete</option>
         </select>
         <select
@@ -404,6 +431,20 @@ export default function BulkPage() {
             <option key={t} value={t}>{t}</option>
           ))}
         </select>
+        <span className="text-sm text-gray-400">
+          {loading && products.length === 0
+            ? "Loading..."
+            : totalCount === null
+              ? `${products.length}${nextCursor ? "+" : ""} product${products.length !== 1 ? "s" : ""}`
+              : `${products.length} of ${totalCount} product${totalCount !== 1 ? "s" : ""}`}
+        </span>
+        <button
+          onClick={toggleAll}
+          disabled={filteredProducts.length === 0}
+          className="text-sm text-blue-600 hover:underline disabled:opacity-40"
+        >
+          {allSelected ? "Deselect all" : "Select all"}
+        </button>
         <select
           value={pageSize}
           onChange={(e) => setPageSize(Number(e.target.value))}
@@ -498,22 +539,6 @@ export default function BulkPage() {
 
           {/* Bottom action bar */}
           <div className="border-t border-gray-200 px-4 py-3 flex items-center gap-3 bg-white shrink-0 flex-wrap">
-            <button
-              onClick={toggleAll}
-              disabled={filteredProducts.length === 0}
-              className="text-sm text-blue-600 hover:underline disabled:opacity-40"
-            >
-              {allSelected ? "Deselect all" : "Select all"}
-            </button>
-            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={skipComplete}
-                onChange={(e) => setSkipComplete(e.target.checked)}
-                className="rounded border-gray-300"
-              />
-              Skip already complete
-            </label>
             <div className="flex-1" />
             <span className="text-sm text-gray-500">
               {selectedCount === 0 ? "None selected" : `${selectedCount} selected`}

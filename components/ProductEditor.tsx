@@ -65,6 +65,7 @@ interface ProductData {
     productStylePt: string;
     whyChooseThis: WCTBullets;
     perfectFor: { bullet1: string; bullet2: string; bullet3: string; bullet4: string; icon1: string; icon2: string; icon3: string; icon4: string };
+    seasonalOverrides: { mothersDay: boolean; fathersDay: boolean; valentinesDay: boolean };
   };
   preview: {
     whyChooseThis: WCTBullets;
@@ -135,6 +136,7 @@ export default function ProductEditor({ productId, productTitle, onSaved, onClos
   const [typeStyleError, setTypeStyleError] = useState("");
 
   useEffect(() => {
+    setSummaryOptions([]);
     setLoading(true);
     fetch(`/api/products/${productId}`)
       .then((r) => r.json())
@@ -143,6 +145,7 @@ export default function ProductEditor({ productId, productTitle, onSaved, onClos
         setProductType(d.metafields.productTypePt);
         setProductStyles(d.metafields.productStylePt ? d.metafields.productStylePt.split(",").map(s => s.trim()).filter(Boolean) : []);
         setProductSummary(d.metafields.productSummary);
+        setSeasonalOverrides(d.metafields.seasonalOverrides ?? { mothersDay: false, fathersDay: false, valentinesDay: false });
 
         // Use saved metafields, fall back to preview
         const wct = d.metafields.whyChooseThis.bullet1
@@ -304,6 +307,7 @@ export default function ProductEditor({ productId, productTitle, onSaved, onClos
         productSummary,
         productTypePt: productType,
         productStylesPt: productStyles,
+        seasonalOverrides,
         whyChooseThis: wctBullets,
         perfectFor: {
           bullet1: pfSlots[0]?.phrase ?? "",
@@ -361,6 +365,20 @@ export default function ProductEditor({ productId, productTitle, onSaved, onClos
                 >
                   Preview on site →
                 </a>
+                {data?.product.id && (() => {
+                  const numericId = data.product.id.split("/").pop();
+                  const storeName = (process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ?? "penelopetom-office.myshopify.com").replace(".myshopify.com", "");
+                  return (
+                    <a
+                      href={`https://admin.shopify.com/store/${storeName}/apps/256-metafields-editor/products/${numericId}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm text-gray-400 hover:text-gray-600 hover:underline mt-0.5 block transition-colors"
+                    >
+                      Preview metafields on Shopify →
+                    </a>
+                  );
+                })()}
               </div>
             </div>
             <button

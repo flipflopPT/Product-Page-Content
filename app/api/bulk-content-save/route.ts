@@ -8,6 +8,9 @@ interface ContentRowSave {
   wctBullets: [string, string, string, string];
   pfBullets: [string, string, string, string];
   pfIcons: [string, string, string, string];
+  productTypePt?: string;
+  productStylePt?: string;
+  seasonalOverrides?: { mothersDay: boolean; fathersDay: boolean; valentinesDay: boolean };
 }
 
 export async function POST(req: NextRequest) {
@@ -22,6 +25,9 @@ export async function POST(req: NextRequest) {
   for (const row of rows) {
     try {
       await setProductMetafields(row.productId, {
+        ...(row.productTypePt !== undefined && { productTypePt: row.productTypePt }),
+        ...(row.productStylePt !== undefined && { productStylePt: row.productStylePt }),
+        ...(row.seasonalOverrides !== undefined && { seasonalOverrides: row.seasonalOverrides }),
         productSummary: row.summary,
         whyChooseThis: {
           bullet1: row.wctBullets[0],

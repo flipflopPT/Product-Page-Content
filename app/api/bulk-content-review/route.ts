@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
             metafields.perfectFor.icon3,
             metafields.perfectFor.icon4,
           ] as [string, string, string, string],
+          seasonalOverrides: metafields.seasonalOverrides,
           skip: false,
           regenerating: false,
         };

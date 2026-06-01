@@ -3,15 +3,16 @@ import Link from "next/link";
 const links = [
   { href: "/products", label: "Products", key: "products" },
   { href: "/bulk", label: "Bulk Assign", key: "bulk" },
-  { href: "/library", label: "Library", key: "library" },
+  { href: "/bulk-review", label: "Bulk Review", key: "bulk-review" },
+  { href: "/library", label: "Phrase Library", key: "library" },
   { href: "/icons", label: "Perfect For Icons", key: "icons" },
-  { href: "/settings", label: "Settings", key: "settings" },
+  { href: "/settings", label: "Seasonal Settings", key: "settings" },
 ];
 
 export default function Nav({ active }: { active: string }) {
   return (
     <nav className="bg-white border-b border-gray-200 px-6 flex items-end gap-1 shrink-0">
-      <span className="font-semibold text-gray-900 mr-6 pb-3 text-sm">PT PDP Content</span>
+      <span className="font-semibold text-gray-900 mr-6 pb-3 text-sm">Product Page Content</span>
       {links.map(({ href, label, key }) => (
         <Link
           key={key}

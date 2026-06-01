@@ -9,6 +9,7 @@ export interface ProductMetafieldData {
     bullet1: string; bullet2: string; bullet3: string; bullet4: string;
     icon1?: string; icon2?: string; icon3?: string; icon4?: string;
   };
+  seasonalOverrides: { mothersDay: boolean; fathersDay: boolean; valentinesDay: boolean };
 }
 
 const GET_PRODUCT_METAFIELDS = `
@@ -34,6 +35,9 @@ const GET_PRODUCT_METAFIELDS = `
       pfIcon2:         metafield(namespace: "perfect-for",      key: "icon_2")             { value }
       pfIcon3:         metafield(namespace: "perfect-for",      key: "icon_3")             { value }
       pfIcon4:         metafield(namespace: "perfect-for",      key: "icon_4")             { value }
+      seasonalMD:      metafield(namespace: "seasonal-override", key: "mothers_day")        { value }
+      seasonalFD:      metafield(namespace: "seasonal-override", key: "fathers_day")        { value }
+      seasonalVD:      metafield(namespace: "seasonal-override", key: "valentines_day")     { value }
     }
   }
 `;
@@ -50,6 +54,7 @@ interface GetProductResponse {
     wctBullet1: MF; wctBullet2: MF; wctBullet3: MF; wctBullet4: MF;
     pfBullet1: MF; pfBullet2: MF; pfBullet3: MF; pfBullet4: MF;
     pfIcon1: MF; pfIcon2: MF; pfIcon3: MF; pfIcon4: MF;
+    seasonalMD: MF; seasonalFD: MF; seasonalVD: MF;
   } | null;
 }
 
@@ -77,6 +82,11 @@ export async function getProductWithMetafields(productGid: string) {
       icon2:   p.pfIcon2?.value   ?? "",
       icon3:   p.pfIcon3?.value   ?? "",
       icon4:   p.pfIcon4?.value   ?? "",
+    },
+    seasonalOverrides: {
+      mothersDay:    p.seasonalMD?.value === "true",
+      fathersDay:    p.seasonalFD?.value === "true",
+      valentinesDay: p.seasonalVD?.value === "true",
     },
   };
 
@@ -140,6 +150,13 @@ export async function setProductMetafields(
     if (pf.icon2 !== undefined) add("perfect-for", "icon_2", pf.icon2, "single_line_text_field");
     if (pf.icon3 !== undefined) add("perfect-for", "icon_3", pf.icon3, "single_line_text_field");
     if (pf.icon4 !== undefined) add("perfect-for", "icon_4", pf.icon4, "single_line_text_field");
+  }
+
+  if (data.seasonalOverrides) {
+    const s = data.seasonalOverrides;
+    add("seasonal-override", "mothers_day",    String(s.mothersDay),    "boolean");
+    add("seasonal-override", "fathers_day",    String(s.fathersDay),    "boolean");
+    add("seasonal-override", "valentines_day", String(s.valentinesDay), "boolean");
   }
 
   if (inputs.length === 0) return;
