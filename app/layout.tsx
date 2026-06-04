@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { TooltipProvider } from "@/components/Tooltip";
+import AppBridgeAuth from "@/components/AppBridgeAuth";
 
 export const metadata: Metadata = {
   title: "PT Product Page Content",
@@ -18,7 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
       </head>
       <body className="bg-gray-50 min-h-screen antialiased text-sm">
-        {children}
+        <AppBridgeAuth />
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
       </body>
     </html>
   );
