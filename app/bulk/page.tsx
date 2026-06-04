@@ -827,7 +827,7 @@ export default function BulkPage() {
                 )}
               </tbody>
             </table>
-            {nextCursor && !loading && !(typeFilter && filteredProducts.length === 0) && (
+            {nextCursor && !loading && !typeFilter && (
               <div className="p-4 text-center border-t border-gray-100">
                 <button
                   onClick={() => fetchProducts(false, controllerRef.current?.signal)}

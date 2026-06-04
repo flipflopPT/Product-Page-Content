@@ -279,7 +279,7 @@ export default function BulkReviewPage() {
           </div>
         )}
 
-        {nextCursor && !loading && !(typeFilter && filteredRows.length === 0) && (
+        {nextCursor && !loading && !typeFilter && (
           <div className="p-4 text-center">
             <button
               onClick={() => fetchPage(false, controllerRef.current?.signal)}
