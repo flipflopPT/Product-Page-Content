@@ -733,9 +733,11 @@ export default function BulkPage() {
         <span className="text-sm text-gray-400">
           {loading && products.length === 0
             ? "Loading..."
-            : totalCount === null
-              ? `${products.length}${nextCursor ? "+" : ""} product${products.length !== 1 ? "s" : ""}`
-              : `${products.length} of ${totalCount} product${totalCount !== 1 ? "s" : ""}`}
+            : typeFilter
+              ? `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""}`
+              : totalCount === null
+                ? `${products.length}${nextCursor ? "+" : ""} product${products.length !== 1 ? "s" : ""}`
+                : `${products.length} of ${totalCount} product${totalCount !== 1 ? "s" : ""}`}
         </span>
         <button
           onClick={toggleAll}
@@ -825,7 +827,7 @@ export default function BulkPage() {
                 )}
               </tbody>
             </table>
-            {nextCursor && !loading && (
+            {nextCursor && !loading && !(typeFilter && filteredProducts.length === 0) && (
               <div className="p-4 text-center border-t border-gray-100">
                 <button
                   onClick={() => fetchProducts(false, controllerRef.current?.signal)}

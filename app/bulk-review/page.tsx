@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Nav from "@/components/Nav";
+import { Tooltip } from "@/components/Tooltip";
 import type { ProductSummary } from "@/lib/types";
 import { PRODUCT_TAXONOMY } from "@/data/taxonomy";
 
@@ -172,7 +173,7 @@ export default function BulkReviewPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      <Nav active="bulk-review" />
+      <Nav active="bulk-review" helpText={"Review and fine-tune product content across all your products in one table.\nEdit text directly in each row, revert changes you don't like, then save everything with one button."} />
 
       <div className="border-b border-gray-200 px-4 py-3 flex gap-3 items-center bg-white shrink-0 sticky top-0 z-10 flex-wrap">
         <input
@@ -223,9 +224,11 @@ export default function BulkReviewPage() {
         <span className="text-sm text-gray-400">
           {loading && rows.length === 0
             ? "Loading..."
-            : totalCount === null
-              ? `${filteredRows.length}${nextCursor ? "+" : ""} product${filteredRows.length !== 1 ? "s" : ""}`
-              : `${filteredRows.length} of ${totalCount} product${totalCount !== 1 ? "s" : ""}`}
+            : typeFilter
+              ? `${filteredRows.length} product${filteredRows.length !== 1 ? "s" : ""}`
+              : totalCount === null
+                ? `${filteredRows.length}${nextCursor ? "+" : ""} product${filteredRows.length !== 1 ? "s" : ""}`
+                : `${filteredRows.length} of ${totalCount} product${totalCount !== 1 ? "s" : ""}`}
         </span>
         <div className="ml-auto flex items-center gap-3">
           {saveResult && (
@@ -234,13 +237,15 @@ export default function BulkReviewPage() {
             </span>
           )}
           {dirty.size > 0 && (
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="px-4 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-gray-700 disabled:opacity-70"
-            >
-              {saving ? "Saving..." : `Save ${dirty.size} change${dirty.size !== 1 ? "s" : ""}`}
-            </button>
+            <Tooltip content="Save all your edited products to Shopify. Only amber (edited) rows will be saved." side="bottom">
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="px-4 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-gray-700 disabled:opacity-70"
+              >
+                {saving ? "Saving..." : `Save ${dirty.size} change${dirty.size !== 1 ? "s" : ""}`}
+              </button>
+            </Tooltip>
           )}
         </div>
       </div>
@@ -274,7 +279,7 @@ export default function BulkReviewPage() {
           </div>
         )}
 
-        {nextCursor && !loading && (
+        {nextCursor && !loading && !(typeFilter && filteredRows.length === 0) && (
           <div className="p-4 text-center">
             <button
               onClick={() => fetchPage(false, controllerRef.current?.signal)}
@@ -316,11 +321,19 @@ function RowEditor({
           <div className="w-20 aspect-square bg-gray-100 rounded mb-2" />
         )}
         <p className="text-xs font-medium text-gray-800 leading-snug">{row.title}</p>
-        {hasNoContent && <span className="text-xs text-gray-400 mt-1 block">No content</span>}
+        {hasNoContent && (
+          <Tooltip content="This product has no marketing content. Go to Bulk Assign to generate some.">
+            <span className="text-xs text-gray-400 mt-1 block cursor-default">No content</span>
+          </Tooltip>
+        )}
         {!hasNoContent && isDirty && (
           <>
-            <span className="text-xs text-amber-600 mt-1 block">Unsaved</span>
-            <button onClick={onRevert} className="text-xs text-gray-400 hover:text-gray-600 underline mt-0.5 block">Revert changes</button>
+            <Tooltip content="You've made edits to this product that haven't been saved yet.">
+              <span className="text-xs text-amber-600 mt-1 block cursor-default">Unsaved</span>
+            </Tooltip>
+            <Tooltip content="Undo your edits and go back to the last saved version of this product.">
+              <button onClick={onRevert} className="text-xs text-gray-400 hover:text-gray-600 underline mt-0.5 block">Revert changes</button>
+            </Tooltip>
           </>
         )}
       </div>
