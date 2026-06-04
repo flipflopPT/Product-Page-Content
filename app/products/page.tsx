@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Nav from "@/components/Nav";
 import ProductList from "@/components/ProductList";
@@ -8,6 +8,14 @@ import ProductEditor from "@/components/ProductEditor";
 import type { ProductSummary } from "@/lib/types";
 
 export default function ProductsPage() {
+  return (
+    <Suspense>
+      <ProductsPageInner />
+    </Suspense>
+  );
+}
+
+function ProductsPageInner() {
   const [products, setProducts] = useState<ProductSummary[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
