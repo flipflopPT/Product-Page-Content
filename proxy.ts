@@ -20,24 +20,21 @@ export function proxy(req: NextRequest) {
     }
   }
 
-  // CSRF protection for mutating API requests
+  // CSRF protection for mutating API requests — Origin only, no Referer fallback
   if (pathname.startsWith("/api/") && ["POST", "PUT", "DELETE", "PATCH"].includes(req.method)) {
     const origin = req.headers.get("origin");
-    const referer = req.headers.get("referer");
     const host = req.headers.get("host");
 
-    if (host) {
-      const allowed = host.replace(/:\d+$/, "");
-      const originHost = origin
-        ? new URL(origin).hostname
-        : referer
-          ? new URL(referer).hostname
-          : null;
+    if (!host) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
 
-      const isTrusted = originHost === allowed || originHost === "admin.shopify.com";
-      if (!originHost || !isTrusted) {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-      }
+    const allowed = host.replace(/:\d+$/, "");
+    const originHost = origin ? new URL(origin).hostname : null;
+    const isTrusted = originHost === allowed || originHost === "admin.shopify.com";
+
+    if (!originHost || !isTrusted) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
   }
 

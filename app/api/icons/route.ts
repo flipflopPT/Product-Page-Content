@@ -22,10 +22,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "An SVG file is required" }, { status: 400 });
   }
 
-  const svg = await file.text();
-  if (!svg.includes("<svg")) {
+  const rawSvg = await file.text();
+  if (!rawSvg.includes("<svg")) {
     return NextResponse.json({ error: "File does not appear to be a valid SVG" }, { status: 400 });
   }
+
+  // Strip dangerous SVG content: script elements, event handlers, javascript: URIs, foreignObject
+  const svg = rawSvg
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, "")
+    .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, "")
+    .replace(/\son\w+\s*=\s*[^\s>]*/gi, "")
+    .replace(/href\s*=\s*["']?\s*javascript:[^"'\s>]*/gi, "")
+    .replace(/xlink:href\s*=\s*["']?\s*javascript:[^"'\s>]*/gi, "");
 
   const name = file.name
     .replace(/\.svg$/i, "")
