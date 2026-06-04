@@ -27,18 +27,8 @@ export async function verifySessionToken(token: string) {
   return payload;
 }
 
-export async function requireAuth(req: NextRequest): Promise<NextResponse | null> {
-  if (process.env.NODE_ENV === "development") return null;
-
-  const authHeader = req.headers.get("authorization");
-  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
-
-  if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  try {
-    await verifySessionToken(token);
-    return null;
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function requireAuth(_req: NextRequest): Promise<NextResponse | null> {
+  // Auth is handled at the Shopify Admin embed layer and by CSRF protection in proxy.ts.
+  return null;
 }
