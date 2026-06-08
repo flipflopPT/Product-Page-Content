@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 
-const SCOPES = "read_products,write_products,read_files,write_files,read_metaobjects,write_metaobjects";
+const SCOPES = "read_products,write_products,read_files,write_files,read_metaobjects,write_metaobjects,write_metaobject_definitions";
 const ALLOWED_SHOP = "penelopetom-office.myshopify.com";
 
 export async function GET(req: NextRequest) {
