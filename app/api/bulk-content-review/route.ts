@@ -15,29 +15,18 @@ export async function POST(req: NextRequest) {
   const authError = await requireAuth(req);
   if (authError) return authError;
 
-  const { productIds } = await req.json() as { productIds: string[] };
+  const { productIds, readOnly } = await req.json() as { productIds: string[]; readOnly?: boolean };
 
   if (!Array.isArray(productIds) || productIds.length === 0) {
     return NextResponse.json({ error: "No products" }, { status: 400 });
   }
 
-  const [settings, libraryEdits, pfLibrary, products] = await Promise.all([
-    getSettings(),
-    getLibraryEdits(),
+  const [pfLibrary, products, settings, libraryEdits] = await Promise.all([
     getPfLibrary(),
     getProductsBatchWithMetafields(productIds),
+    readOnly ? Promise.resolve(null) : getSettings(),
+    readOnly ? Promise.resolve(null) : getLibraryEdits(),
   ]);
-
-  const wctEditsMap = libraryEdits.wct;
-  const wctLibrary: WhyChooseThisEntry[] = [
-    ...wctBase.map((e) => wctEditsMap[e.id] ? { ...e, text: wctEditsMap[e.id].text, subtext: wctEditsMap[e.id].subtext } : e),
-    ...Object.values(wctEditsMap).filter((e) => e.isNew).map((e) => ({
-      id: e.id, productType: e.productType, productStyle: e.productStyle,
-      category: e.category as WhyChooseThisEntry["category"], text: e.text, subtext: e.subtext,
-    })),
-  ];
-
-  const today = new Date();
 
   // Map phrase text → current icon so stale stored icons are corrected on display
   const pfIconByPhrase = new Map(pfLibrary.map((e) => [e.phrase, e.icon]));
@@ -45,6 +34,49 @@ export async function POST(req: NextRequest) {
   function syncedPfIcons(bullets: [string, string, string, string], storedIcons: [string | undefined, string | undefined, string | undefined, string | undefined]): [string, string, string, string] {
     return bullets.map((phrase, i) => pfIconByPhrase.get(phrase) ?? storedIcons[i] ?? "") as [string, string, string, string];
   }
+
+  function storedRow(product: { id: string; title: string; featuredImage?: { url: string } | null }, metafields: Awaited<ReturnType<typeof getProductsBatchWithMetafields>>[number]["metafields"], source: "existing" | "needs-classify") {
+    return {
+      productId: product.id,
+      title: product.title,
+      imageUrl: product.featuredImage?.url ?? null,
+      productTypePt: metafields.productTypePt,
+      productStylePt: metafields.productStylePt,
+      summary: metafields.productSummary,
+      wctBullets: [
+        metafields.whyChooseThis.bullet1,
+        metafields.whyChooseThis.bullet2,
+        metafields.whyChooseThis.bullet3,
+        metafields.whyChooseThis.bullet4,
+      ] as [string, string, string, string],
+      pfBullets: [
+        metafields.perfectFor.bullet1,
+        metafields.perfectFor.bullet2,
+        metafields.perfectFor.bullet3,
+        metafields.perfectFor.bullet4,
+      ] as [string, string, string, string],
+      pfIcons: syncedPfIcons(
+        [metafields.perfectFor.bullet1, metafields.perfectFor.bullet2, metafields.perfectFor.bullet3, metafields.perfectFor.bullet4],
+        [metafields.perfectFor.icon1, metafields.perfectFor.icon2, metafields.perfectFor.icon3, metafields.perfectFor.icon4]
+      ),
+      source,
+      skip: source === "needs-classify",
+      regenerating: false,
+    };
+  }
+
+  const wctLibrary: WhyChooseThisEntry[] = readOnly ? [] : (() => {
+    const wctEditsMap = libraryEdits!.wct;
+    return [
+      ...wctBase.map((e) => wctEditsMap[e.id] ? { ...e, text: wctEditsMap[e.id].text, subtext: wctEditsMap[e.id].subtext } : e),
+      ...Object.values(wctEditsMap).filter((e) => e.isNew).map((e) => ({
+        id: e.id, productType: e.productType, productStyle: e.productStyle,
+        category: e.category as WhyChooseThisEntry["category"], text: e.text, subtext: e.subtext,
+      })),
+    ];
+  })();
+
+  const today = new Date();
 
   const rows = [];
   for (const { product, metafields } of products) {
@@ -56,33 +88,13 @@ export async function POST(req: NextRequest) {
 
     // Everything already populated — return as-is
     if (hasSummary && hasWct && hasPf) {
-      rows.push({
-        productId,
-        title: product.title,
-        imageUrl: product.featuredImage?.url ?? null,
-        productTypePt: metafields.productTypePt,
-        productStylePt: metafields.productStylePt,
-        summary: metafields.productSummary,
-        wctBullets: [
-          metafields.whyChooseThis.bullet1,
-          metafields.whyChooseThis.bullet2,
-          metafields.whyChooseThis.bullet3,
-          metafields.whyChooseThis.bullet4,
-        ] as [string, string, string, string],
-        pfBullets: [
-          metafields.perfectFor.bullet1,
-          metafields.perfectFor.bullet2,
-          metafields.perfectFor.bullet3,
-          metafields.perfectFor.bullet4,
-        ] as [string, string, string, string],
-        pfIcons: syncedPfIcons(
-          [metafields.perfectFor.bullet1, metafields.perfectFor.bullet2, metafields.perfectFor.bullet3, metafields.perfectFor.bullet4],
-          [metafields.perfectFor.icon1, metafields.perfectFor.icon2, metafields.perfectFor.icon3, metafields.perfectFor.icon4]
-        ),
-        source: "existing" as const,
-        skip: false,
-        regenerating: false,
-      });
+      rows.push(storedRow(product, metafields, "existing"));
+      continue;
+    }
+
+    // In read-only mode just return whatever is stored, no generation
+    if (readOnly) {
+      rows.push(storedRow(product, metafields, "existing"));
       continue;
     }
 
@@ -93,33 +105,7 @@ export async function POST(req: NextRequest) {
       : [];
 
     if (!type || styles.length === 0) {
-      rows.push({
-        productId,
-        title: product.title,
-        imageUrl: product.featuredImage?.url ?? null,
-        productTypePt: type,
-        productStylePt: metafields.productStylePt,
-        summary: metafields.productSummary,
-        wctBullets: [
-          metafields.whyChooseThis.bullet1,
-          metafields.whyChooseThis.bullet2,
-          metafields.whyChooseThis.bullet3,
-          metafields.whyChooseThis.bullet4,
-        ] as [string, string, string, string],
-        pfBullets: [
-          metafields.perfectFor.bullet1,
-          metafields.perfectFor.bullet2,
-          metafields.perfectFor.bullet3,
-          metafields.perfectFor.bullet4,
-        ] as [string, string, string, string],
-        pfIcons: syncedPfIcons(
-          [metafields.perfectFor.bullet1, metafields.perfectFor.bullet2, metafields.perfectFor.bullet3, metafields.perfectFor.bullet4],
-          [metafields.perfectFor.icon1, metafields.perfectFor.icon2, metafields.perfectFor.icon3, metafields.perfectFor.icon4]
-        ),
-        source: "needs-classify" as const,
-        skip: true,
-        regenerating: false,
-      });
+      rows.push(storedRow(product, metafields, "needs-classify"));
       continue;
     }
 
@@ -131,7 +117,7 @@ export async function POST(req: NextRequest) {
     };
 
     const wct = hasWct ? null : assignWhyChooseThis(ctx, wctLibrary);
-    const pf  = hasPf  ? null : assignPerfectFor(ctx, pfLibrary, settings.dateRanges, today, undefined, undefined, settings.interestKeywords);
+    const pf  = hasPf  ? null : assignPerfectFor(ctx, pfLibrary, settings!.dateRanges, today, undefined, undefined, settings!.interestKeywords);
 
     let summary = metafields.productSummary;
     let summaryError: { message: string; billingUrl?: string } | undefined;

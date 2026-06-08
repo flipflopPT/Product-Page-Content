@@ -83,7 +83,7 @@ export default function BulkReviewPage() {
         const contentRes = await fetch("/api/bulk-content-review", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ productIds: data.products.map((p) => p.id) }),
+          body: JSON.stringify({ productIds: data.products.map((p) => p.id), readOnly: true }),
           signal,
         });
         if (!contentRes.ok) {
