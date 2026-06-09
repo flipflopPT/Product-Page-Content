@@ -43,6 +43,7 @@ export default function BulkReviewPage() {
   const [pageSize, setPageSize] = useState(25);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [totalCount, setTotalCount] = useState<number | null>(null);
+  const [taxonomy, setTaxonomy] = useState<Record<string, string[]>>(PRODUCT_TAXONOMY);
   const cursorRef = useRef<string | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
 
@@ -117,6 +118,13 @@ export default function BulkReviewPage() {
       }
     }
   }, [search, bestseller, contentFilter, pageSize]);
+
+  useEffect(() => {
+    fetch("/api/taxonomy")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d?.taxonomy) setTaxonomy(d.taxonomy); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -212,16 +220,16 @@ export default function BulkReviewPage() {
           className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="">All types</option>
-          {Object.keys(PRODUCT_TAXONOMY).map((t) => <option key={t} value={t}>{t}</option>)}
+          {Object.keys(taxonomy).map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
         <select
           value={styleFilter}
           onChange={(e) => setStyleFilter(e.target.value)}
-          disabled={!typeFilter || (PRODUCT_TAXONOMY[typeFilter] ?? []).length === 0}
+          disabled={!typeFilter || (taxonomy[typeFilter] ?? []).length === 0}
           className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-40"
         >
           <option value="">All styles</option>
-          {(PRODUCT_TAXONOMY[typeFilter] ?? []).map((s) => <option key={s} value={s}>{s}</option>)}
+          {(taxonomy[typeFilter] ?? []).map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
         <span className="text-sm text-gray-400">
           {loading && rows.length === 0
@@ -332,7 +340,7 @@ function RowEditor({
         ) : (
           <div className="w-20 aspect-square bg-gray-100 rounded mb-2" />
         )}
-        <p className="text-xs font-medium text-gray-800 leading-snug">{row.title}</p>
+        <p className="text-sm font-medium text-gray-800 leading-snug">{row.title}</p>
         {hasNoContent && (
           <Tooltip content="This product has no marketing content. Go to Bulk Assign to generate some.">
             <span className="text-xs text-gray-400 mt-1 block cursor-default">No content</span>
@@ -361,13 +369,13 @@ function RowEditor({
             Edit →
           </a>
         </div>
-        <p className="text-xs text-gray-700">{row.productTypePt || <span className="text-gray-300">— none —</span>}</p>
+        <p className="text-sm text-gray-700">{row.productTypePt || <span className="text-gray-300">— none —</span>}</p>
       </div>
 
       {/* Col 3: Style */}
       <div>
         <label className="block text-xs font-medium text-gray-500 mb-1">Style</label>
-        <p className="text-xs text-gray-700 leading-snug">
+        <p className="text-sm text-gray-700 leading-snug">
           {row.productStylePt
             ? row.productStylePt.split(",").map((s) => s.trim()).filter(Boolean).join(", ")
             : <span className="text-gray-300">—</span>}

@@ -28,6 +28,7 @@ function ProductsPageInner() {
   const [christmas, setChristmas] = useState(false);
   const [pageSize, setPageSize] = useState(25);
   const [totalCount, setTotalCount] = useState<number | null>(null);
+  const [taxonomy, setTaxonomy] = useState<Record<string, string[]>>(PRODUCT_TAXONOMY);
   const searchParams = useSearchParams();
   const [selectedId, setSelectedId] = useState<string | null>(
     searchParams.get("id") ? `gid://shopify/Product/${searchParams.get("id")}` : null
@@ -74,6 +75,13 @@ function ProductsPageInner() {
     setNextCursor(data.nextCursor);
     setLoading(false);
   }, [search, statusFilter, typeFilter, styleFilter, bestseller, christmas, pageSize, nextCursor]);
+
+  useEffect(() => {
+    fetch("/api/taxonomy")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d?.taxonomy) setTaxonomy(d.taxonomy); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     fetchProducts(true);
@@ -147,16 +155,16 @@ function ProductsPageInner() {
               className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">All types</option>
-              {Object.keys(PRODUCT_TAXONOMY).map((t) => <option key={t} value={t}>{t}</option>)}
+              {Object.keys(taxonomy).map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
             <select
               value={styleFilter}
               onChange={(e) => setStyleFilter(e.target.value)}
-              disabled={!typeFilter || (PRODUCT_TAXONOMY[typeFilter] ?? []).length === 0}
+              disabled={!typeFilter || (taxonomy[typeFilter] ?? []).length === 0}
               className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-40"
             >
               <option value="">All styles</option>
-              {(PRODUCT_TAXONOMY[typeFilter] ?? []).map((s) => <option key={s} value={s}>{s}</option>)}
+              {(taxonomy[typeFilter] ?? []).map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </>
         )}

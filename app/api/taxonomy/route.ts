@@ -13,6 +13,10 @@ export async function POST(req: NextRequest) {
   const authError = await requireAuth(req);
   if (authError) return authError;
   const { taxonomy } = await req.json() as { taxonomy: Record<string, string[]> };
-  await saveTaxonomy(taxonomy);
-  return NextResponse.json({ ok: true });
+  try {
+    await saveTaxonomy(taxonomy);
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    return NextResponse.json({ error: (err as Error).message ?? "Failed to save" }, { status: 500 });
+  }
 }

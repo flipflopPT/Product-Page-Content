@@ -21,6 +21,7 @@ export default function ProductTypesPage() {
   const [taxonomy, setTaxonomy] = useState<Taxonomy>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Add type form
   const [addingType, setAddingType] = useState(false);
@@ -54,12 +55,18 @@ export default function ProductTypesPage() {
 
   async function persist(next: Taxonomy) {
     setSaving(true);
-    await fetch("/api/taxonomy", {
+    setSaveError(null);
+    const res = await fetch("/api/taxonomy", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ taxonomy: next }),
     });
     setSaving(false);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setSaveError(data.error ?? "Failed to save — please try again.");
+      return;
+    }
     setTaxonomy(next);
   }
 
@@ -156,6 +163,7 @@ export default function ProductTypesPage() {
             <h1 className="text-xl font-semibold text-gray-900">Product Types</h1>
             <div className="flex items-center gap-2">
               {saving && <span className="text-xs text-gray-400">Saving…</span>}
+              {saveError && <span className="text-xs text-red-500">{saveError}</span>}
               {!addingType && (
                 <button
                   onClick={() => { setAddingType(true); setNewTypeName(""); }}

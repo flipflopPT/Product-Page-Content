@@ -933,10 +933,10 @@ export default function BulkPage() {
                 </div>
 
                 <div ref={classifyPanelRef} className="flex-1 overflow-y-auto">
-                  <table className="w-full text-xs">
+                  <table className="w-full text-sm">
                     <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
                       <tr>
-                        <th className="w-12 px-3 py-2"></th>
+                        <th className="w-20 px-3 py-2"></th>
                         <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wide">Product</th>
                         <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wide">Type</th>
                         <th className="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wide">Style</th>
@@ -951,20 +951,20 @@ export default function BulkPage() {
                             {row.imageUrl ? (
                               <button
                                 onClick={() => setModalImage(row.imageUrl)}
-                                className="block w-10 h-10 rounded overflow-hidden hover:ring-2 hover:ring-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                                className="block w-16 h-16 rounded overflow-hidden hover:ring-2 hover:ring-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
                                 title="Click to enlarge"
                               >
                                 <Image
                                   src={row.imageUrl}
                                   alt={row.title}
-                                  width={40}
-                                  height={40}
-                                  className="w-10 h-10 object-cover"
+                                  width={64}
+                                  height={64}
+                                  className="w-16 h-16 object-cover"
                                   unoptimized
                                 />
                               </button>
                             ) : (
-                              <div className="w-10 h-10 rounded bg-gray-200" />
+                              <div className="w-16 h-16 rounded bg-gray-200" />
                             )}
                           </td>
                           {/* Title */}
@@ -990,7 +990,7 @@ export default function BulkPage() {
                                 value={row.selectedType}
                                 onChange={(e) => handleTypeChange(row.productId, e.target.value)}
                                 disabled={row.skip || classifyPhase === "saving" || classifyPhase === "saved"}
-                                className="w-full border border-gray-300 rounded px-1.5 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
+                                className="w-full border border-gray-300 rounded px-1.5 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
                               >
                                 <option value="">— choose —</option>
                                 {Object.keys(taxonomy).map((t) => (
