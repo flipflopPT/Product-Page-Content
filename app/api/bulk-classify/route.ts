@@ -33,6 +33,24 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 800);
 }
 
+function extractJsonObject(text: string): string | null {
+  const start = text.indexOf("{");
+  if (start === -1) return null;
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (escape) { escape = false; continue; }
+    if (ch === "\\" && inString) { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === "{") depth++;
+    else if (ch === "}") { depth--; if (depth === 0) return text.slice(start, i + 1); }
+  }
+  return null;
+}
+
 async function classifyProduct(
   client: Anthropic,
   gid: string
@@ -63,8 +81,7 @@ Classify this product.`;
     });
 
     const text = response.content[0].type === "text" ? response.content[0].text.trim() : "";
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : text) as { type?: string; styles?: string[] };
+    const parsed = JSON.parse(extractJsonObject(text) ?? text) as { type?: string; styles?: string[] };
 
     const rawType = typeof parsed.type === "string" ? parsed.type : "";
     const rawStyles = Array.isArray(parsed.styles) ? parsed.styles.filter((s) => typeof s === "string") : [];
