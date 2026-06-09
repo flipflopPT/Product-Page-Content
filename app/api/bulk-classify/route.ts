@@ -63,7 +63,8 @@ Classify this product.`;
     });
 
     const text = response.content[0].type === "text" ? response.content[0].text.trim() : "";
-    const parsed = JSON.parse(text) as { type?: string; styles?: string[] };
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : text) as { type?: string; styles?: string[] };
 
     const rawType = typeof parsed.type === "string" ? parsed.type : "";
     const rawStyles = Array.isArray(parsed.styles) ? parsed.styles.filter((s) => typeof s === "string") : [];
