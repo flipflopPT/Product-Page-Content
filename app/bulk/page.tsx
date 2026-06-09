@@ -1208,7 +1208,7 @@ export default function BulkPage() {
                                     disabled={disabled || isLoading}
                                     className="mt-1.5 px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded transition-colors disabled:opacity-40"
                                   >
-                                    {isLoading ? "Generating…" : "Generate Product Summary Options"}
+                                    {isLoading ? "Generating…" : "Regenerate Alternative Product Summaries"}
                                   </button>
                                   {Array.isArray(opts) && opts.length > 0 && (
                                     <div className="mt-1.5 space-y-1">
@@ -1299,7 +1299,7 @@ export default function BulkPage() {
                                 const icon = row.pfIcons[i];
                                 const disabled = row.skip || row.regenerating || contentPhase === "saving" || contentPhase === "saved";
                                 return (
-                                  <div key={i} className="bg-white border border-gray-200 rounded-md px-1.5 py-1.5 flex items-center gap-1.5">
+                                  <div key={i} className="bg-white border border-gray-200 rounded-md px-1.5 py-1 flex items-center gap-1.5">
                                     {!disabled && (
                                       <div className="flex flex-col gap-0.5 shrink-0">
                                         <button onClick={() => handlePfReorder(row.productId, i, -1)} disabled={i === 0}
