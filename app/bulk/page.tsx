@@ -105,6 +105,7 @@ export default function BulkPage() {
   const [bulkSwapModal, setBulkSwapModal] = useState<{ productId: string; type: "why" | "perfect"; slotIndex: number } | null>(null);
   const [pfAvailability, setPfAvailability] = useState<Record<string, boolean>>({});
   const [wctAvailability, setWctAvailability] = useState<Record<string, boolean>>({});
+  const [summaryOptions, setSummaryOptions] = useState<Record<string, string[] | "loading">>({});
 
   // Classify workflow state
   const [classifyRows, setClassifyRows] = useState<ClassifyRow[]>([]);
@@ -552,6 +553,19 @@ export default function BulkPage() {
       return { ...r, wctBullets: next, dirty: true };
     }));
     setWctEditing(null);
+  }
+
+  function handlePfReorder(productId: string, index: number, direction: -1 | 1) {
+    setContentRows((rows) => rows.map((r) => {
+      if (r.productId !== productId) return r;
+      const next = index + direction;
+      if (next < 0 || next >= 4) return r;
+      const phrases = [...r.pfBullets] as [string, string, string, string];
+      const icons   = [...r.pfIcons]   as [string, string, string, string];
+      [phrases[index], phrases[next]] = [phrases[next], phrases[index]];
+      [icons[index],   icons[next]]   = [icons[next],   icons[index]];
+      return { ...r, pfBullets: phrases, pfIcons: icons, dirty: true };
+    }));
   }
 
   function handleBulkSwapSelect(phrase: string, icon: string, text?: string, subtext?: string) {
@@ -1085,7 +1099,7 @@ export default function BulkPage() {
 
                   <div className="flex-1 overflow-y-auto p-4 space-y-4">
                     {contentPhase === "loading" && (
-                      <div className="text-center text-gray-400 text-sm py-8">Loading content — generating for products without existing content…</div>
+                      <div className="text-center text-gray-400 text-sm py-8">Loading content — this may take several minutes when generating for a large number of products…</div>
                     )}
                     {contentRows.map((row) => (
                       <div key={row.productId} className={`bg-white rounded-lg border border-gray-200 ${row.skip ? "opacity-40" : ""}`}>
@@ -1166,6 +1180,55 @@ export default function BulkPage() {
                                 )}
                               </p>
                             )}
+                            {(() => {
+                              const opts = summaryOptions[row.productId];
+                              const isLoading = opts === "loading";
+                              const disabled = row.skip || row.regenerating || contentPhase === "saving" || contentPhase === "saved";
+                              return (
+                                <>
+                                  <button
+                                    onClick={async () => {
+                                      setSummaryOptions((s) => ({ ...s, [row.productId]: "loading" }));
+                                      try {
+                                        const res = await fetch("/api/generate-summary", {
+                                          method: "POST",
+                                          headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify({ productId: row.productId }),
+                                        });
+                                        const data = await res.json();
+                                        if (res.ok && data.options) {
+                                          setSummaryOptions((s) => ({ ...s, [row.productId]: data.options }));
+                                        } else {
+                                          setSummaryOptions((s) => { const n = { ...s }; delete n[row.productId]; return n; });
+                                        }
+                                      } catch {
+                                        setSummaryOptions((s) => { const n = { ...s }; delete n[row.productId]; return n; });
+                                      }
+                                    }}
+                                    disabled={disabled || isLoading}
+                                    className="mt-1.5 text-xs text-gray-400 hover:text-gray-700 border border-gray-200 hover:border-gray-300 px-2 py-0.5 rounded transition-colors disabled:opacity-40"
+                                  >
+                                    {isLoading ? "Generating…" : "Generate options"}
+                                  </button>
+                                  {Array.isArray(opts) && opts.length > 0 && (
+                                    <div className="mt-1.5 space-y-1">
+                                      {opts.map((opt, oi) => (
+                                        <button
+                                          key={oi}
+                                          onClick={() => {
+                                            setContentRows((rows) => rows.map((r) => r.productId === row.productId ? { ...r, summary: opt, dirty: true } : r));
+                                            setSummaryOptions((s) => { const n = { ...s }; delete n[row.productId]; return n; });
+                                          }}
+                                          className="w-full text-left text-xs text-gray-700 border border-gray-200 hover:border-blue-400 hover:bg-blue-50 rounded px-2 py-1.5 transition-colors"
+                                        >
+                                          <span className="font-medium text-gray-400 mr-1">{oi + 1}.</span>{opt}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  )}
+                                </>
+                              );
+                            })()}
                           </div>
 
                           <div>
@@ -1237,6 +1300,18 @@ export default function BulkPage() {
                                 const disabled = row.skip || row.regenerating || contentPhase === "saving" || contentPhase === "saved";
                                 return (
                                   <div key={i} className="bg-white border border-gray-200 rounded-md px-2.5 py-2 flex items-center gap-2">
+                                    {!disabled && (
+                                      <div className="flex flex-col gap-0.5 shrink-0">
+                                        <button onClick={() => handlePfReorder(row.productId, i, -1)} disabled={i === 0}
+                                          className="w-4 h-4 flex items-center justify-center text-gray-300 hover:text-gray-600 disabled:invisible rounded transition-colors">
+                                          <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+                                        </button>
+                                        <button onClick={() => handlePfReorder(row.productId, i, 1)} disabled={i === 3}
+                                          className="w-4 h-4 flex items-center justify-center text-gray-300 hover:text-gray-600 disabled:invisible rounded transition-colors">
+                                          <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                                        </button>
+                                      </div>
+                                    )}
                                     <span className="shrink-0 w-6 h-6 flex items-center justify-center">
                                       {!icon ? (
                                         <span className="text-gray-300 text-xs">—</span>
@@ -1249,7 +1324,7 @@ export default function BulkPage() {
                                     <span className="flex-1 text-sm text-gray-700 truncate">
                                       {phrase || <em className="text-gray-400 not-italic">Empty</em>}
                                     </span>
-                                    {!disabled && pfAvailability[row.productId] && (
+                                    {!disabled && (
                                       <button
                                         onClick={() => setBulkSwapModal({ productId: row.productId, type: "perfect", slotIndex: i })}
                                         className="shrink-0 text-[10px] text-gray-400 hover:text-gray-700 border border-gray-200 hover:border-gray-300 px-2 py-0.5 rounded transition-colors"

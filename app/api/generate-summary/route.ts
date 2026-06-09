@@ -1,23 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
-import { generateProductSummary } from "@/lib/generate-summary";
 import { getProductWithMetafields } from "@/lib/metafields";
+import { generateProductSummary } from "@/lib/generate-summary";
 
 export async function POST(req: NextRequest) {
   const authError = await requireAuth(req);
   if (authError) return authError;
 
-  const { productId } = await req.json();
-  if (!productId) return NextResponse.json({ error: "productId required" }, { status: 400 });
+  const { productId } = await req.json() as { productId: string };
 
-  const { product, metafields } = await getProductWithMetafields(`gid://shopify/Product/${productId}`);
+  const { product, metafields } = await getProductWithMetafields(productId);
+
+  const type = metafields.productTypePt;
+  const styles = metafields.productStylePt
+    ? metafields.productStylePt.split(",").map((s) => s.trim()).filter(Boolean)
+    : [];
+
+  if (!type || styles.length === 0) {
+    return NextResponse.json({ error: "No type/style set for this product" }, { status: 400 });
+  }
 
   const result = await generateProductSummary({
     title: product.title,
     descriptionHtml: product.descriptionHtml,
-    productType: metafields.productTypePt,
-    productStyle: metafields.productStylePt,
+    productType: type,
+    productStyle: styles.join(", "),
   });
 
-  return NextResponse.json(result);
+  if ("error" in result) {
+    return NextResponse.json({ error: result.error }, { status: 422 });
+  }
+
+  return NextResponse.json({ options: result.options });
 }
