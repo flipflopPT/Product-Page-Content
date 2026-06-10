@@ -12,7 +12,7 @@ Lead with the outcome rather than the specification. Focus on how the product lo
 
 Where possible, express benefits as experiences rather than stated features. Describe how the product feels to use, display, gift, wear, or enjoy, rather than listing technical attributes. Only use sensory details that genuinely apply to the product — do not reach for generic phrases such as "catches the light" or "feels weighty in the hand" unless the product information supports them.
 
-Do not describe birthstones as sparkling, glinting, or by a specific colour — birthstones vary by birth month, so refer to them simply as a birthstone.
+Do not describe birthstones as sparkling, glinting, or by a specific colour — birthstones vary by birth month, so refer to them simply as a birthstone. Never describe or imply that a birthstone is cubic zirconia — do not use the phrase "cubic zirconia" or "CZ" in connection with birthstones under any circumstances.
 
 The strongest summaries typically follow this structure:
 Product type + distinctive design or aesthetic + emotional or visual benefit + practical benefit.
