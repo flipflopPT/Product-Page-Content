@@ -31,8 +31,8 @@ export async function POST(req: NextRequest) {
       category?: string;
       timeSensitive?: string | null;
       filterByInterest?: boolean;
-      minPrice?: number;
-      maxPrice?: number;
+      minPrice?: number | null;
+      maxPrice?: number | null;
       searchPhrase?: string;
       // New phrase creation: list of type/style pairs
       typeStylePairs?: { type: string; style: string }[];
@@ -76,8 +76,8 @@ export async function POST(req: NextRequest) {
           (timeSensitive ?? null) as PFPhrase["timeSensitive"],
           filterByInterest ?? false,
           typeStylePairs,
-          minPrice,
-          maxPrice
+          minPrice ?? undefined,
+          maxPrice ?? undefined
         );
         return NextResponse.json({ ok: true, phraseId: newPhraseId });
       }

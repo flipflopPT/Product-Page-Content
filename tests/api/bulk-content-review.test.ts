@@ -2,14 +2,18 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 
 vi.mock("@/lib/auth", () => ({ requireAuth: vi.fn().mockResolvedValue(null) }));
-vi.mock("@/lib/metafields", () => ({ getProductWithMetafields: vi.fn() }));
+vi.mock("@/lib/metafields", () => ({ getProductsBatchWithMetafields: vi.fn() }));
+vi.mock("@/lib/pf-store", () => ({ getPfLibrary: vi.fn().mockResolvedValue([]) }));
+vi.mock("@/lib/settings-store", () => ({ getSettings: vi.fn().mockResolvedValue({ dateRanges: { mothersDay: null, fathersDay: null, valentinesDay: null }, interestKeywords: {} }) }));
+vi.mock("@/lib/library-edits-store", () => ({ getLibraryEdits: vi.fn().mockResolvedValue({ wct: {}, pfPhrases: {}, pfApplicability: {}, uploadedIcons: [] }) }));
+vi.mock("@/data/why-choose-this.json", () => ({ default: [] }));
 
 import { POST } from "@/app/api/bulk-content-review/route";
-import { getProductWithMetafields } from "@/lib/metafields";
+import { getProductsBatchWithMetafields } from "@/lib/metafields";
 import { requireAuth } from "@/lib/auth";
 
-function mockProduct(gid: string) {
-  return {
+function makeProductBatch(gids: string[]) {
+  return gids.map((gid) => ({
     product: { id: gid, title: `Product ${gid}`, handle: "p", descriptionHtml: "", featuredImage: { url: "https://cdn.shopify.com/img.jpg", altText: "" }, price: 0 },
     metafields: {
       productTypePt: "Home", productStylePt: "Minimal", productSummary: "A nice product",
@@ -17,7 +21,7 @@ function mockProduct(gid: string) {
       perfectFor: { bullet1: "pf1", bullet2: "pf2", bullet3: "pf3", bullet4: "pf4", icon1: "home", icon2: "heart", icon3: "star", icon4: "baby" },
       seasonalOverrides: { mothersDay: false, fathersDay: false, valentinesDay: false },
     },
-  };
+  }));
 }
 
 beforeEach(() => {
@@ -26,7 +30,9 @@ beforeEach(() => {
 
 describe("POST /api/bulk-content-review", () => {
   it("returns rows with product data and metafields", async () => {
-    vi.mocked(getProductWithMetafields).mockResolvedValueOnce(mockProduct("gid://shopify/Product/1"));
+    vi.mocked(getProductsBatchWithMetafields).mockResolvedValueOnce(
+      makeProductBatch(["gid://shopify/Product/1"]) as never
+    );
     const req = new NextRequest("http://localhost/api/bulk-content-review", {
       method: "POST",
       body: JSON.stringify({ productIds: ["gid://shopify/Product/1"] }),
@@ -41,10 +47,11 @@ describe("POST /api/bulk-content-review", () => {
     expect(body.rows[0].pfIcons).toHaveLength(4);
   });
 
-  it("silently excludes products that throw", async () => {
-    vi.mocked(getProductWithMetafields)
-      .mockResolvedValueOnce(mockProduct("gid://shopify/Product/1"))
-      .mockRejectedValueOnce(new Error("Not found"));
+  it("silently excludes products that were not returned by the batch call", async () => {
+    // getProductsBatchWithMetafields silently drops products it can't fetch
+    vi.mocked(getProductsBatchWithMetafields).mockResolvedValueOnce(
+      makeProductBatch(["gid://shopify/Product/1"]) as never
+    );
     const req = new NextRequest("http://localhost/api/bulk-content-review", {
       method: "POST",
       body: JSON.stringify({ productIds: ["gid://shopify/Product/1", "gid://shopify/Product/999"] }),

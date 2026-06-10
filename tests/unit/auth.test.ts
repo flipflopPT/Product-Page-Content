@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { SignJWT } from "jose";
-import type { verifySessionToken as VerifyFn, requireAuth as RequireAuthFn } from "@/lib/auth";
+import type { requireAuth as RequireAuthFn } from "@/lib/auth";
 import { NextRequest } from "next/server";
 
 const SECRET = "test-secret-at-least-32-chars-long!!";
@@ -10,13 +10,12 @@ const CLIENT_ID = "test-client-id";
 async function makeToken(overrides: {
   iss?: string;
   aud?: string;
-  dest?: string;
   exp?: number;
 } = {}) {
   const iss = overrides.iss ?? `https://${STORE}/admin`;
   const aud = overrides.aud ?? CLIENT_ID;
 
-  const jwt = new SignJWT({ dest: overrides.dest ?? `https://${STORE}` })
+  const jwt = new SignJWT({})
     .setProtectedHeader({ alg: "HS256" })
     .setIssuer(iss)
     .setAudience(aud)
@@ -33,7 +32,6 @@ async function makeToken(overrides: {
 
 // The auth module reads env vars at module-load time, so we must
 // vi.resetModules() + dynamically import for each test.
-let verifySessionToken: typeof VerifyFn;
 let requireAuth: typeof RequireAuthFn;
 
 beforeEach(async () => {
@@ -43,7 +41,6 @@ beforeEach(async () => {
   process.env.NODE_ENV = "test";
   vi.resetModules();
   const mod = await import("@/lib/auth");
-  verifySessionToken = mod.verifySessionToken;
   requireAuth = mod.requireAuth;
 });
 
@@ -53,39 +50,48 @@ afterEach(() => {
   delete process.env.SHOPIFY_CLIENT_ID;
 });
 
-describe("verifySessionToken", () => {
-  it("resolves with payload for a valid token", async () => {
+describe("requireAuth — JWT validation", () => {
+  it("returns null for a valid shopify token", async () => {
     const token = await makeToken();
-    const payload = await verifySessionToken(token);
-    expect(payload.iss).toBe(`https://${STORE}/admin`);
+    const req = new NextRequest("http://localhost/api/test", {
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(await requireAuth(req)).toBeNull();
   });
 
-  it("throws for wrong issuer", async () => {
+  it("returns 401 for token with wrong issuer", async () => {
     const token = await makeToken({ iss: "https://evil.myshopify.com/admin" });
-    await expect(verifySessionToken(token)).rejects.toThrow();
+    const req = new NextRequest("http://localhost/api/test", {
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect((await requireAuth(req))?.status).toBe(401);
   });
 
-  it("throws for wrong audience", async () => {
+  it("returns 401 for token with wrong audience", async () => {
     const token = await makeToken({ aud: "wrong-client" });
-    await expect(verifySessionToken(token)).rejects.toThrow();
+    const req = new NextRequest("http://localhost/api/test", {
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect((await requireAuth(req))?.status).toBe(401);
   });
 
-  it("throws for invalid destination", async () => {
-    const token = await makeToken({ dest: "https://evil.myshopify.com" });
-    await expect(verifySessionToken(token)).rejects.toThrow("Invalid destination");
-  });
-
-  it("throws for expired token", async () => {
+  it("returns 401 for an expired token", async () => {
     const token = await makeToken({ exp: Math.floor(Date.now() / 1000) - 60 });
-    await expect(verifySessionToken(token)).rejects.toThrow();
+    const req = new NextRequest("http://localhost/api/test", {
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect((await requireAuth(req))?.status).toBe(401);
   });
 
-  it("throws when SHOPIFY_CLIENT_SECRET is not set", async () => {
+  it("returns 401 when SHOPIFY_CLIENT_SECRET is not set", async () => {
     delete process.env.SHOPIFY_CLIENT_SECRET;
     vi.resetModules();
-    const { verifySessionToken: freshFn } = await import("@/lib/auth");
+    const { requireAuth: freshRequireAuth } = await import("@/lib/auth");
     const token = await makeToken();
-    await expect(freshFn(token)).rejects.toThrow();
+    const req = new NextRequest("http://localhost/api/test", {
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect((await freshRequireAuth(req))?.status).toBe(401);
   });
 });
 

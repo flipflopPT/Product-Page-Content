@@ -3,25 +3,32 @@ import { NextRequest } from "next/server";
 
 vi.mock("@/lib/auth", () => ({ requireAuth: vi.fn().mockResolvedValue(null) }));
 vi.mock("@/lib/library-edits-store", () => ({ getLibraryEdits: vi.fn() }));
-vi.mock("@/lib/pf-icon-overrides-store", () => ({
-  getPfIconOverrides: vi.fn(),
-  setPfIconOverride: vi.fn(),
-  deletePfIconOverride: vi.fn(),
+vi.mock("@/lib/pf-store", () => ({
+  getPfLibrary: vi.fn(),
+  getPfPhraseRows: vi.fn(),
+  savePhraseIcon: vi.fn().mockResolvedValue(undefined),
+  findPhraseIdByText: vi.fn().mockResolvedValue(undefined),
 }));
 
 import { GET, PATCH } from "@/app/api/library/route";
 import { getLibraryEdits } from "@/lib/library-edits-store";
-import { getPfIconOverrides, setPfIconOverride, deletePfIconOverride } from "@/lib/pf-icon-overrides-store";
+import { getPfLibrary, savePhraseIcon, findPhraseIdByText } from "@/lib/pf-store";
 import { requireAuth } from "@/lib/auth";
 
-const emptyEdits = { wct: {}, pf: {} };
+const emptyEdits = { wct: {}, pfPhrases: {}, pfApplicability: {}, uploadedIcons: [] };
+
+const samplePfLibrary = [
+  { id: "pf-1", phraseId: "phrase-1", productType: "Home", productStyle: "Minimal", category: "Occasion", phrase: "A housewarming gift", filterByInterest: false, timeSensitive: null, applicabilityCount: 10, icon: "home" },
+  { id: "pf-2", phraseId: "phrase-2", productType: "Home", productStyle: "Minimal", category: "Person", phrase: "For the homebody", filterByInterest: false, timeSensitive: null, applicabilityCount: 8, icon: "heart" },
+];
 
 beforeEach(() => {
+  vi.clearAllMocks();
   vi.mocked(requireAuth).mockResolvedValue(null);
   vi.mocked(getLibraryEdits).mockResolvedValue(emptyEdits);
-  vi.mocked(getPfIconOverrides).mockResolvedValue({});
-  vi.mocked(setPfIconOverride).mockResolvedValue(undefined);
-  vi.mocked(deletePfIconOverride).mockResolvedValue(undefined);
+  vi.mocked(getPfLibrary).mockResolvedValue(samplePfLibrary as never);
+  vi.mocked(savePhraseIcon).mockResolvedValue(undefined);
+  vi.mocked(findPhraseIdByText).mockResolvedValue(undefined);
 });
 
 describe("GET /api/library (type=why)", () => {
@@ -60,15 +67,13 @@ describe("GET /api/library (type=why)", () => {
 
   it("includes edits — overrides existing entry text", async () => {
     // Find the first WCT entry from the base library to edit
-    const baseReq = new NextRequest("http://localhost/api/library?type=why");
-    const baseRes = await GET(baseReq);
-    const { entries } = await baseRes.json() as { entries: Array<{ id: string }> };
-    const firstId = entries[0]?.id;
-    if (!firstId) return; // no base library entries to test
+    const baseWCT = await import("@/data/why-choose-this.json");
+    const firstId = (baseWCT.default as Array<{ id: string; text: string; subtext: string }>)[0]?.id;
+    if (!firstId) return;
 
     vi.mocked(getLibraryEdits).mockResolvedValueOnce({
+      ...emptyEdits,
       wct: { [firstId]: { id: firstId, productType: "Home", productStyle: "Minimal", category: "Stands Out", text: "Edited text", subtext: "edited subtext", searchFormatted: "", isNew: false } },
-      pf: {},
     });
 
     const req = new NextRequest(`http://localhost/api/library?type=why&productType=Home&productStyle=Minimal&category=Stands+Out`);
@@ -87,23 +92,19 @@ describe("GET /api/library (type=perfect)", () => {
     const res = await GET(req);
     const body = await res.json();
     expect(Array.isArray(body.entries)).toBe(true);
+    expect(body.entries.length).toBeGreaterThan(0);
   });
 
-  it("icon override takes precedence over base icon", async () => {
-    const baseReq = new NextRequest("http://localhost/api/library?type=perfect");
-    const baseRes = await GET(baseReq);
-    const { entries } = await baseRes.json() as { entries: Array<{ id: string }> };
-    const firstId = entries[0]?.id;
-    if (!firstId) return;
-
-    vi.mocked(getPfIconOverrides).mockResolvedValueOnce({ [firstId]: "override-icon" });
+  it("entries include _edit metadata from pfPhrases edits", async () => {
+    vi.mocked(getLibraryEdits).mockResolvedValueOnce({
+      ...emptyEdits,
+      pfPhrases: { "phrase-1": { id: "phrase-1", phrase: "Updated gift", icon: "star", searchPhrase: "A housewarming gift", isNew: false } },
+    });
     const req = new NextRequest("http://localhost/api/library?type=perfect");
     const res = await GET(req);
-    const body = await res.json() as { entries: Array<{ id: string; icon: string }> };
-    const overridden = body.entries.find((e) => e.id === firstId);
-    if (overridden) {
-      expect(overridden.icon).toBe("override-icon");
-    }
+    const body = await res.json() as { entries: Array<{ phraseId: string; _edit: unknown }> };
+    const entry = body.entries.find((e) => e.phraseId === "phrase-1");
+    expect(entry?._edit).not.toBeNull();
   });
 
   it("filters by category", async () => {
@@ -117,29 +118,32 @@ describe("GET /api/library (type=perfect)", () => {
 });
 
 describe("PATCH /api/library (icon override)", () => {
-  it("sets icon override when icon is provided", async () => {
+  it("saves icon when phraseId and icon provided", async () => {
+    vi.mocked(findPhraseIdByText).mockResolvedValue(undefined);
     const req = new NextRequest("http://localhost/api/library", {
       method: "PATCH",
-      body: JSON.stringify({ id: "pf-1", icon: "heart" }),
+      body: JSON.stringify({ phraseId: "phrase-1", icon: "heart" }),
       headers: { "content-type": "application/json" },
     });
     const res = await PATCH(req);
     expect(res.status).toBe(200);
-    expect(setPfIconOverride).toHaveBeenCalledWith("pf-1", "heart");
+    expect(savePhraseIcon).toHaveBeenCalledWith("phrase-1", "heart");
   });
 
-  it("deletes icon override when icon is null", async () => {
+  it("looks up phraseId by phrase text when phraseId not provided", async () => {
+    vi.mocked(findPhraseIdByText).mockResolvedValueOnce("phrase-1");
     const req = new NextRequest("http://localhost/api/library", {
       method: "PATCH",
-      body: JSON.stringify({ id: "pf-1", icon: null }),
+      body: JSON.stringify({ phrase: "A housewarming gift", icon: "star" }),
       headers: { "content-type": "application/json" },
     });
     const res = await PATCH(req);
     expect(res.status).toBe(200);
-    expect(deletePfIconOverride).toHaveBeenCalledWith("pf-1");
+    expect(findPhraseIdByText).toHaveBeenCalledWith("A housewarming gift");
+    expect(savePhraseIcon).toHaveBeenCalledWith("phrase-1", "star");
   });
 
-  it("returns 400 when id is missing", async () => {
+  it("returns 400 when neither phraseId nor phrase provided", async () => {
     const req = new NextRequest("http://localhost/api/library", {
       method: "PATCH",
       body: JSON.stringify({ icon: "heart" }),
@@ -147,5 +151,16 @@ describe("PATCH /api/library (icon override)", () => {
     });
     const res = await PATCH(req);
     expect(res.status).toBe(400);
+  });
+
+  it("returns 200 without saving when icon is null", async () => {
+    const req = new NextRequest("http://localhost/api/library", {
+      method: "PATCH",
+      body: JSON.stringify({ phraseId: "phrase-1", icon: null }),
+      headers: { "content-type": "application/json" },
+    });
+    const res = await PATCH(req);
+    expect(res.status).toBe(200);
+    expect(savePhraseIcon).not.toHaveBeenCalled();
   });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { assignWhyChooseThis, assignPerfectFor } from "@/lib/assignment-engine";
+import { assignWhyChooseThis, assignPerfectFor, assignSeasonalPhrases } from "@/lib/assignment-engine";
 import type { ProductContext } from "@/lib/assignment-engine";
 import { makeWCT, makePF, wctLibraryOnePerCategory, pfLibraryAllCategories } from "@/tests/fixtures/library";
 
@@ -173,9 +173,9 @@ describe("assignPerfectFor", () => {
       makePF({ id: "specific", productStyle: "Minimal", phrase: "Specific phrase", applicabilityCount: 100 }),
       makePF({ id: "all", productStyle: "ALL", phrase: "Generic phrase", applicabilityCount: 1 }),
     ];
-    const result = assignPerfectFor(homeMinimalCtx, lib, noDateConfig, today, undefined, undefined, {});
-    // Specific should appear first (lower specificity index after sort)
-    expect(result.bullets[0]).toBe("Specific phrase");
+    const result = assignPerfectFor(homeMinimalCtx, lib, noDateConfig, today, 42, undefined, {});
+    // Both are always returned (2 candidates < 4 slots); specific entry must be included
+    expect(result.bullets).toContain("Specific phrase");
   });
 
   it("returns fewer than 4 bullets when library has fewer than 4 candidates", () => {
@@ -197,5 +197,91 @@ describe("assignPerfectFor", () => {
     const lib = [makePF({ productType: "Bags & Purses", phrase: "For bag lovers" })];
     const result = assignPerfectFor(homeMinimalCtx, lib, noDateConfig, today);
     expect(result.bullets).not.toContain("For bag lovers");
+  });
+});
+
+// ── assignSeasonalPhrases ──────────────────────────────────────────────────
+
+describe("assignSeasonalPhrases", () => {
+  it("returns null for all seasons when library has no seasonal entries", () => {
+    const lib = [makePF({ timeSensitive: null, phrase: "Normal phrase" })];
+    const result = assignSeasonalPhrases(homeMinimalCtx, lib);
+    expect(result.mothersDay).toBeNull();
+    expect(result.fathersDay).toBeNull();
+    expect(result.valentinesDay).toBeNull();
+  });
+
+  it("returns { phrase, icon } for mothersDay when a matching mothers-day entry exists", () => {
+    const lib = [makePF({ timeSensitive: "mothers-day", phrase: "For mum", icon: "flower" })];
+    const result = assignSeasonalPhrases(homeMinimalCtx, lib);
+    expect(result.mothersDay).toEqual({ phrase: "For mum", icon: "flower" });
+  });
+
+  it("returns { phrase, icon } for fathersDay when a matching fathers-day entry exists", () => {
+    const lib = [makePF({ timeSensitive: "fathers-day", phrase: "For dad", icon: "tie" })];
+    const result = assignSeasonalPhrases(homeMinimalCtx, lib);
+    expect(result.fathersDay).toEqual({ phrase: "For dad", icon: "tie" });
+  });
+
+  it("returns { phrase, icon } for valentinesDay when a matching valentines-day entry exists", () => {
+    const lib = [makePF({ timeSensitive: "valentines-day", phrase: "With love", icon: "heart" })];
+    const result = assignSeasonalPhrases(homeMinimalCtx, lib);
+    expect(result.valentinesDay).toEqual({ phrase: "With love", icon: "heart" });
+  });
+
+  it("returns null when product type does not match a non-ALL entry", () => {
+    const lib = [makePF({ timeSensitive: "mothers-day", phrase: "For mum", productType: "Bags & Purses" })];
+    const result = assignSeasonalPhrases(homeMinimalCtx, lib);
+    expect(result.mothersDay).toBeNull();
+  });
+
+  it("returns null when product style does not match a non-ALL entry", () => {
+    const lib = [makePF({ timeSensitive: "mothers-day", phrase: "For mum", productStyle: "Bold/Colourful" })];
+    const result = assignSeasonalPhrases(homeMinimalCtx, lib);
+    expect(result.mothersDay).toBeNull();
+  });
+
+  it("productType ALL matches any product type", () => {
+    const lib = [makePF({ timeSensitive: "mothers-day", phrase: "For mum", productType: "ALL" })];
+    const result = assignSeasonalPhrases(homeMinimalCtx, lib);
+    expect(result.mothersDay).not.toBeNull();
+    expect(result.mothersDay?.phrase).toBe("For mum");
+  });
+
+  it("productStyle ALL matches any product style", () => {
+    const lib = [makePF({ timeSensitive: "mothers-day", phrase: "For mum", productStyle: "ALL" })];
+    const result = assignSeasonalPhrases(homeMinimalCtx, lib);
+    expect(result.mothersDay).not.toBeNull();
+  });
+
+  it("picks the highest applicabilityCount entry when multiple candidates exist", () => {
+    const lib = [
+      makePF({ id: "low", timeSensitive: "mothers-day", phrase: "Generic mum phrase", applicabilityCount: 1 }),
+      makePF({ id: "high", timeSensitive: "mothers-day", phrase: "Best mum phrase", applicabilityCount: 99 }),
+    ];
+    const result = assignSeasonalPhrases(homeMinimalCtx, lib, 0);
+    expect(result.mothersDay?.phrase).toBe("Best mum phrase");
+  });
+
+  it("is deterministic: same seed produces the same result across equal-count candidates", () => {
+    const lib = [
+      makePF({ id: "a", timeSensitive: "mothers-day", phrase: "Phrase A", applicabilityCount: 10 }),
+      makePF({ id: "b", timeSensitive: "mothers-day", phrase: "Phrase B", applicabilityCount: 10 }),
+      makePF({ id: "c", timeSensitive: "mothers-day", phrase: "Phrase C", applicabilityCount: 10 }),
+    ];
+    const r1 = assignSeasonalPhrases(homeMinimalCtx, lib, 42);
+    const r2 = assignSeasonalPhrases(homeMinimalCtx, lib, 42);
+    expect(r1.mothersDay?.phrase).toBe(r2.mothersDay?.phrase);
+  });
+
+  it("each seasonal key is computed independently", () => {
+    const lib = [
+      makePF({ timeSensitive: "mothers-day", phrase: "For mum", icon: "flower" }),
+      makePF({ timeSensitive: "fathers-day", phrase: "For dad", icon: "tie" }),
+    ];
+    const result = assignSeasonalPhrases(homeMinimalCtx, lib);
+    expect(result.mothersDay?.phrase).toBe("For mum");
+    expect(result.fathersDay?.phrase).toBe("For dad");
+    expect(result.valentinesDay).toBeNull();
   });
 });

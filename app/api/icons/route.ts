@@ -8,6 +8,11 @@ import {
   deleteUploadedIcon,
 } from "@/lib/uploaded-icons-store";
 import { findIconUsage } from "@/lib/icon-usage";
+import createDOMPurify from "dompurify";
+import { JSDOM } from "jsdom";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const DOMPurify = createDOMPurify(new JSDOM("").window as any);
 
 export const dynamic = "force-dynamic";
 
@@ -45,14 +50,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "File does not appear to be a valid SVG" }, { status: 400 });
   }
 
-  // Strip dangerous SVG content: script elements, event handlers, javascript: URIs, foreignObject
-  const svg = rawSvg
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, "")
-    .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, "")
-    .replace(/\son\w+\s*=\s*[^\s>]*/gi, "")
-    .replace(/href\s*=\s*["']?\s*javascript:[^"'\s>]*/gi, "")
-    .replace(/xlink:href\s*=\s*["']?\s*javascript:[^"'\s>]*/gi, "");
+  const svg = DOMPurify.sanitize(rawSvg, {
+    USE_PROFILES: { svg: true, svgFilters: true },
+  });
+
+  if (!svg) {
+    return NextResponse.json({ error: "SVG file contains unsafe content and could not be sanitised" }, { status: 400 });
+  }
 
   const name = file.name
     .replace(/\.svg$/i, "")

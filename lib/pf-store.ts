@@ -31,8 +31,8 @@ async function buildPhraseMap(): Promise<Map<string, PFPhrase>> {
       ...(edit?.category !== undefined && { category: edit.category as PFPhrase["category"] }),
       ...(edit?.timeSensitive !== undefined && { timeSensitive: edit.timeSensitive as PFPhrase["timeSensitive"] }),
       ...(edit?.filterByInterest !== undefined && { filterByInterest: edit.filterByInterest }),
-      ...(edit?.minPrice !== undefined ? { minPrice: edit.minPrice } : p.minPrice !== undefined ? { minPrice: p.minPrice } : {}),
-      ...(edit?.maxPrice !== undefined ? { maxPrice: edit.maxPrice } : p.maxPrice !== undefined ? { maxPrice: p.maxPrice } : {}),
+      ...(edit?.minPrice !== undefined ? (edit.minPrice !== null ? { minPrice: edit.minPrice } : {}) : p.minPrice !== undefined ? { minPrice: p.minPrice } : {}),
+      ...(edit?.maxPrice !== undefined ? (edit.maxPrice !== null ? { maxPrice: edit.maxPrice } : {}) : p.maxPrice !== undefined ? { maxPrice: p.maxPrice } : {}),
     });
   }
 
@@ -46,8 +46,8 @@ async function buildPhraseMap(): Promise<Map<string, PFPhrase>> {
         category: (edit.category ?? "Occasion") as PFPhrase["category"],
         timeSensitive: (edit.timeSensitive ?? null) as PFPhrase["timeSensitive"],
         filterByInterest: edit.filterByInterest ?? false,
-        ...(edit.minPrice !== undefined && { minPrice: edit.minPrice }),
-        ...(edit.maxPrice !== undefined && { maxPrice: edit.maxPrice }),
+        ...(edit.minPrice != null && { minPrice: edit.minPrice }),
+        ...(edit.maxPrice != null && { maxPrice: edit.maxPrice }),
       });
     }
   }

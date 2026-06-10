@@ -68,8 +68,8 @@ export interface PFPhraseEdit {
   category?: string;
   timeSensitive?: string | null;
   filterByInterest?: boolean;
-  minPrice?: number;
-  maxPrice?: number;
+  minPrice?: number | null;
+  maxPrice?: number | null;
 }
 
 // Applicability-level edit — adds or removes a type/style assignment

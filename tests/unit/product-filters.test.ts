@@ -29,12 +29,12 @@ describe("classifyStatus", () => {
 describe("contentStatus", () => {
   function node(overrides: Record<string, string | null>) {
     return {
-      productSummary: overrides.summary ? mf(overrides.summary) : nullMF,
-      wctBullet1:     overrides.wct     ? mf(overrides.wct)     : nullMF,
-      pfBullet1:      overrides.pf      ? mf(overrides.pf)      : nullMF,
-      seasonalMD:     overrides.md      ? mf(overrides.md)      : nullMF,
-      seasonalFD:     overrides.fd      ? mf(overrides.fd)      : nullMF,
-      seasonalVD:     overrides.vd      ? mf(overrides.vd)      : nullMF,
+      productSummary:    overrides.summary ? mf(overrides.summary) : nullMF,
+      wctBullet1:        overrides.wct     ? mf(overrides.wct)     : nullMF,
+      pfBullet1:         overrides.pf      ? mf(overrides.pf)      : nullMF,
+      seasonalMdPhrase:  overrides.md      ? mf(overrides.md)      : nullMF,
+      seasonalFdPhrase:  overrides.fd      ? mf(overrides.fd)      : nullMF,
+      seasonalVdPhrase:  overrides.vd      ? mf(overrides.vd)      : nullMF,
     };
   }
 

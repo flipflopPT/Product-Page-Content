@@ -4,22 +4,27 @@ import { NextRequest } from "next/server";
 vi.mock("@/lib/auth", () => ({ requireAuth: vi.fn().mockResolvedValue(null) }));
 vi.mock("@/lib/library-edits-store", () => ({
   upsertWCTEdit: vi.fn(),
-  upsertPFEdit: vi.fn(),
   deleteWCTEdit: vi.fn(),
-  deletePFEdit: vi.fn(),
+}));
+vi.mock("@/lib/pf-store", () => ({
+  createPhrase: vi.fn().mockResolvedValue("pf-phrase-123"),
+  savePhraseEdit: vi.fn().mockResolvedValue(undefined),
+  addApplicability: vi.fn().mockResolvedValue("pf-app-456"),
+  removeApplicability: vi.fn().mockResolvedValue(undefined),
+  deletePhrase: vi.fn().mockResolvedValue(undefined),
+  findPhraseForEntry: vi.fn(),
 }));
 
 import { POST, DELETE } from "@/app/api/library/entry/route";
-import { upsertWCTEdit, upsertPFEdit, deleteWCTEdit, deletePFEdit } from "@/lib/library-edits-store";
+import { upsertWCTEdit, deleteWCTEdit } from "@/lib/library-edits-store";
+import { createPhrase, deletePhrase, removeApplicability } from "@/lib/pf-store";
 import { requireAuth } from "@/lib/auth";
 
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(requireAuth).mockResolvedValue(null);
   vi.mocked(upsertWCTEdit).mockResolvedValue(undefined);
-  vi.mocked(upsertPFEdit).mockResolvedValue(undefined);
   vi.mocked(deleteWCTEdit).mockResolvedValue(undefined);
-  vi.mocked(deletePFEdit).mockResolvedValue(undefined);
 });
 
 describe("POST /api/library/entry (WCT)", () => {
@@ -40,7 +45,6 @@ describe("POST /api/library/entry (WCT)", () => {
   });
 
   it("updates existing base WCT entry preserving searchFormatted from base library", async () => {
-    // Get a real base entry id by checking the base library data
     const baseWCT = await import("@/data/why-choose-this.json");
     const firstId = (baseWCT.default as Array<{ id: string; text: string; subtext: string }>)[0]?.id;
     if (!firstId) return;
@@ -58,20 +62,20 @@ describe("POST /api/library/entry (WCT)", () => {
     expect(body.ok).toBe(true);
     expect(body.id).toBe(firstId);
     const call = vi.mocked(upsertWCTEdit).mock.calls[0][0];
-    expect(call.searchFormatted).toBeTruthy(); // should have the original formatted string
+    expect(call.searchFormatted).toBeTruthy();
   });
 });
 
-describe("POST /api/library/entry (PF)", () => {
-  it("creates new PF entry with generated id starting pf-custom-", async () => {
+describe("POST /api/library/entry (PF — create new phrase)", () => {
+  it("creates new phrase with typeStylePairs and returns phraseId", async () => {
     const req = new NextRequest("http://localhost/api/library/entry", {
       method: "POST",
       body: JSON.stringify({
         type: "pf",
         entry: {
-          productType: "Home", productStyle: "Minimal", category: "Occasion",
-          phrase: "New phrase", icon: "home", timeSensitive: null,
-          filterByInterest: false, applicabilityCount: 5,
+          phrase: "New phrase", icon: "home", category: "Occasion",
+          timeSensitive: null, filterByInterest: false,
+          typeStylePairs: [{ type: "Home", style: "Minimal" }],
         },
       }),
       headers: { "content-type": "application/json" },
@@ -79,8 +83,34 @@ describe("POST /api/library/entry (PF)", () => {
     const res = await POST(req);
     const body = await res.json();
     expect(body.ok).toBe(true);
-    expect(body.id).toMatch(/^pf-custom-/);
-    expect(upsertPFEdit).toHaveBeenCalled();
+    expect(body.phraseId).toBeDefined();
+    expect(createPhrase).toHaveBeenCalled();
+  });
+
+  it("returns 400 when phrase text is missing", async () => {
+    const req = new NextRequest("http://localhost/api/library/entry", {
+      method: "POST",
+      body: JSON.stringify({
+        type: "pf",
+        entry: { icon: "home", category: "Occasion", typeStylePairs: [{ type: "Home", style: "Minimal" }] },
+      }),
+      headers: { "content-type": "application/json" },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 when typeStylePairs is empty", async () => {
+    const req = new NextRequest("http://localhost/api/library/entry", {
+      method: "POST",
+      body: JSON.stringify({
+        type: "pf",
+        entry: { phrase: "New phrase", icon: "home", category: "Occasion", typeStylePairs: [] },
+      }),
+      headers: { "content-type": "application/json" },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
   });
 });
 
@@ -108,14 +138,25 @@ describe("DELETE /api/library/entry", () => {
     expect(deleteWCTEdit).toHaveBeenCalledWith("wct-custom-123");
   });
 
-  it("calls deletePFEdit for type=pf", async () => {
+  it("calls deletePhrase for type=pf-phrase", async () => {
     const req = new NextRequest("http://localhost/api/library/entry", {
       method: "DELETE",
-      body: JSON.stringify({ type: "pf", id: "pf-custom-456" }),
+      body: JSON.stringify({ type: "pf-phrase", id: "pf-phrase-456" }),
       headers: { "content-type": "application/json" },
     });
     const res = await DELETE(req);
     expect(res.status).toBe(200);
-    expect(deletePFEdit).toHaveBeenCalledWith("pf-custom-456");
+    expect(deletePhrase).toHaveBeenCalledWith("pf-phrase-456");
+  });
+
+  it("calls removeApplicability for type=pf-applicability", async () => {
+    const req = new NextRequest("http://localhost/api/library/entry", {
+      method: "DELETE",
+      body: JSON.stringify({ type: "pf-applicability", id: "app-789" }),
+      headers: { "content-type": "application/json" },
+    });
+    const res = await DELETE(req);
+    expect(res.status).toBe(200);
+    expect(removeApplicability).toHaveBeenCalledWith("app-789");
   });
 });

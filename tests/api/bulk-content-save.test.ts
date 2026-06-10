@@ -2,10 +2,14 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 
 vi.mock("@/lib/auth", () => ({ requireAuth: vi.fn().mockResolvedValue(null) }));
-vi.mock("@/lib/metafields", () => ({ setProductMetafields: vi.fn() }));
+vi.mock("@/lib/metafields", () => ({ setProductsMetafieldsBatch: vi.fn().mockResolvedValue(undefined) }));
+vi.mock("@/lib/pf-store", () => ({ getPfLibrary: vi.fn().mockResolvedValue([]) }));
+vi.mock("@/lib/assignment-engine", () => ({
+  assignSeasonalPhrases: vi.fn().mockReturnValue({ mothersDay: null, fathersDay: null, valentinesDay: null }),
+}));
 
 import { POST } from "@/app/api/bulk-content-save/route";
-import { setProductMetafields } from "@/lib/metafields";
+import { setProductsMetafieldsBatch } from "@/lib/metafields";
 import { requireAuth } from "@/lib/auth";
 
 const sampleRow = {
@@ -19,7 +23,7 @@ const sampleRow = {
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(requireAuth).mockResolvedValue(null);
-  vi.mocked(setProductMetafields).mockResolvedValue(undefined);
+  vi.mocked(setProductsMetafieldsBatch).mockResolvedValue(undefined);
 });
 
 describe("POST /api/bulk-content-save", () => {
@@ -33,17 +37,16 @@ describe("POST /api/bulk-content-save", () => {
     const body = await res.json();
     expect(body.saved).toBe(1);
     expect(body.failed).toBe(0);
-    expect(setProductMetafields).toHaveBeenCalledWith(sampleRow.productId, expect.objectContaining({
-      productSummary: sampleRow.summary,
-    }));
+    const batchCall = vi.mocked(setProductsMetafieldsBatch).mock.calls[0][0];
+    expect(batchCall[0].productGid).toBe(sampleRow.productId);
+    expect(batchCall[0].data).toMatchObject({ productSummary: sampleRow.summary });
   });
 
-  it("only passes optional fields when defined in the row", async () => {
+  it("includes productTypePt and seasonalOverrides when productTypePt is in the row", async () => {
     const rowWithOptionals = {
       ...sampleRow,
       productTypePt: "Home",
       productStylePt: "Minimal",
-      seasonalOverrides: { mothersDay: true, fathersDay: false, valentinesDay: false },
     };
     const req = new NextRequest("http://localhost/api/bulk-content-save", {
       method: "POST",
@@ -51,25 +54,25 @@ describe("POST /api/bulk-content-save", () => {
       headers: { "content-type": "application/json" },
     });
     await POST(req);
-    const callArgs = vi.mocked(setProductMetafields).mock.calls[0][1];
-    expect(callArgs).toHaveProperty("productTypePt", "Home");
-    expect(callArgs).toHaveProperty("seasonalOverrides");
+    const batchCall = vi.mocked(setProductsMetafieldsBatch).mock.calls[0][0];
+    expect(batchCall[0].data).toHaveProperty("productTypePt", "Home");
+    expect(batchCall[0].data).toHaveProperty("seasonalOverrides");
   });
 
-  it("does not include optional fields when undefined", async () => {
+  it("does not include productTypePt or seasonalOverrides when productTypePt is absent", async () => {
     const req = new NextRequest("http://localhost/api/bulk-content-save", {
       method: "POST",
       body: JSON.stringify({ rows: [sampleRow] }),
       headers: { "content-type": "application/json" },
     });
     await POST(req);
-    const callArgs = vi.mocked(setProductMetafields).mock.calls[0][1];
-    expect(callArgs).not.toHaveProperty("productTypePt");
-    expect(callArgs).not.toHaveProperty("seasonalOverrides");
+    const batchCall = vi.mocked(setProductsMetafieldsBatch).mock.calls[0][0];
+    expect(batchCall[0].data).not.toHaveProperty("productTypePt");
+    expect(batchCall[0].data).not.toHaveProperty("seasonalOverrides");
   });
 
-  it("counts failed when setProductMetafields throws", async () => {
-    vi.mocked(setProductMetafields).mockRejectedValueOnce(new Error("Shopify error"));
+  it("counts all rows as failed when setProductsMetafieldsBatch throws", async () => {
+    vi.mocked(setProductsMetafieldsBatch).mockRejectedValueOnce(new Error("Shopify error"));
     const req = new NextRequest("http://localhost/api/bulk-content-save", {
       method: "POST",
       body: JSON.stringify({ rows: [sampleRow] }),

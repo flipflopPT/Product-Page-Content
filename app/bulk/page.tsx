@@ -99,6 +99,7 @@ export default function BulkPage() {
   const cursorHistoryRef = useRef<Array<string | null>>([null]);
   const controllerRef = useRef<AbortController | null>(null);
   const fetchEpochRef = useRef(0);
+  const countEpochRef = useRef(0);
 
   // Content review workflow state
   const [contentRows, setContentRows] = useState<ContentRow[]>([]);
@@ -210,6 +211,8 @@ export default function BulkPage() {
 
   const fetchTotalCount = useCallback(async (signal?: AbortSignal) => {
     setTotalCount(null);
+    countEpochRef.current += 1;
+    const epoch = countEpochRef.current;
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     if (statusFilter) params.set("status", statusFilter);
@@ -221,6 +224,7 @@ export default function BulkPage() {
       const res = await fetch(`/api/products/count?${params}`, { signal });
       if (!res.ok) return;
       const data = await res.json();
+      if (countEpochRef.current !== epoch) return;
       setTotalCount(data.count);
     } catch { /* abort or network error — leave count as null (shows fallback) */ }
   }, [search, statusFilter, bestseller, reviewedFilter, typeFilter, styleFilter]);
