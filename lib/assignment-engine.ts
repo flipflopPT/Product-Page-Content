@@ -197,7 +197,12 @@ export function assignPerfectFor(
       (e) => (categoryCounts[e.category] ?? 0) === minCount && (!e.icon || !selectedIcons.has(e.icon))
     );
 
-    // Fall back: min-count category, accepting a duplicate icon
+    // Fall back 1: any category + new icon (preserve icon diversity over category balance)
+    if (idx < 0) {
+      idx = remaining.findIndex((e) => !e.icon || !selectedIcons.has(e.icon));
+    }
+
+    // Fall back 2: min-count category, accepting a duplicate icon
     if (idx < 0) {
       idx = remaining.findIndex((e) => (categoryCounts[e.category] ?? 0) === minCount);
     }

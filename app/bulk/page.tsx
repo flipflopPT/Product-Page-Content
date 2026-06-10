@@ -628,7 +628,11 @@ export default function BulkPage() {
 
     if (!res.ok) {
       let detail = "";
-      try { const e = await res.json(); detail = e?.error ? ` (${e.error})` : ""; } catch { /* ignore */ }
+      try {
+        const e = await res.json();
+        const msg = typeof e?.error === "string" ? e.error : e?.error?.message;
+        detail = msg ? ` (${msg})` : "";
+      } catch { /* ignore */ }
       setContentError(`Failed to load content — please try again.${detail}`);
       setContentPhase("idle");
       return;
@@ -809,7 +813,11 @@ export default function BulkPage() {
             ? "Loading..."
             : totalCount === null
               ? `${products.length} product${products.length !== 1 ? "s" : ""}`
-              : `${products.length} of ${totalCount} product${totalCount !== 1 ? "s" : ""}`}
+              : (() => {
+                  const from = (currentPage - 1) * pageSize + 1;
+                  const to = from + products.length - 1;
+                  return `${from} to ${to} of ${totalCount} product${totalCount !== 1 ? "s" : ""}`;
+                })()}
         </span>
         <button
           onClick={toggleAll}

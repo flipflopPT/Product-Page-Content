@@ -90,34 +90,46 @@ export async function POST(req: NextRequest) {
 
   const today = new Date();
 
-  const rows = [];
-  for (const { product, metafields } of products) {
-    const productId = product.id;
+  // First pass: build rows for products that don't need generation, and collect
+  // summary inputs for those that do. WCT + PF are synchronous so computed here.
+  type PendingRow = {
+    productId: string;
+    title: string;
+    imageUrl: string | null;
+    productTypePt: string;
+    productStylePt: string | null;
+    existingSummary: string | null;
+    summaryInput: Parameters<typeof generateProductSummary>[0] | null;
+    wctBullets: [string, string, string, string];
+    pfBullets: [string, string, string, string];
+    pfIcons: [string, string, string, string];
+  };
 
+  const settled: ReturnType<typeof storedRow>[] = [];
+  const pending: PendingRow[] = [];
+
+  for (const { product, metafields } of products) {
     const hasSummary = !!metafields.productSummary;
     const hasWct = !!metafields.whyChooseThis.bullet1;
     const hasPf = !!metafields.perfectFor.bullet1;
 
-    // Everything already populated — return as-is
     if (hasSummary && hasWct && hasPf) {
-      rows.push(storedRow(product, metafields, "existing"));
+      settled.push(storedRow(product, metafields, "existing"));
       continue;
     }
 
-    // In read-only mode just return whatever is stored, no generation
     if (readOnly) {
-      rows.push(storedRow(product, metafields, "existing"));
+      settled.push(storedRow(product, metafields, "existing"));
       continue;
     }
 
-    // Need type + style to generate any missing content
     const type   = metafields.productTypePt;
     const styles = metafields.productStylePt
       ? metafields.productStylePt.split(",").map((s) => s.trim()).filter(Boolean)
       : [];
 
     if (!type || styles.length === 0) {
-      rows.push(storedRow(product, metafields, "needs-classify"));
+      settled.push(storedRow(product, metafields, "needs-classify"));
       continue;
     }
 
@@ -131,49 +143,74 @@ export async function POST(req: NextRequest) {
     const wct = hasWct ? null : assignWhyChooseThis(ctx, wctLibrary);
     const pf  = hasPf  ? null : assignPerfectFor(ctx, pfLibrary, settings!.dateRanges, today, undefined, undefined, settings!.interestKeywords);
 
-    let summary = metafields.productSummary;
-    let summaryError: { message: string; billingUrl?: string } | undefined;
-    if (!hasSummary) {
-      try {
-        const summaryResult = await generateProductSummary({
-          title: product.title,
-          descriptionHtml: product.descriptionHtml,
-          productType: type,
-          productStyle: styles.join(", "),
-        });
-        if (!("error" in summaryResult)) {
-          summary = summaryResult.options[0] ?? "";
-        } else {
-          summaryError = { message: summaryResult.error.message, billingUrl: summaryResult.error.billingUrl };
-        }
-      } catch { /* leave blank if AI fails */ }
-    }
-
-    rows.push({
-      productId,
+    pending.push({
+      productId: product.id,
       title: product.title,
       imageUrl: product.featuredImage?.url ?? null,
       productTypePt: type,
       productStylePt: metafields.productStylePt,
-      summary,
-      summaryError,
+      existingSummary: metafields.productSummary,
+      summaryInput: hasSummary ? null : {
+        title: product.title,
+        descriptionHtml: product.descriptionHtml,
+        productType: type,
+        productStyle: styles.join(", "),
+      },
       wctBullets: wct
-        ? [wct.bullet1, wct.bullet2, wct.bullet3, wct.bullet4] as [string, string, string, string]
-        : [metafields.whyChooseThis.bullet1, metafields.whyChooseThis.bullet2, metafields.whyChooseThis.bullet3, metafields.whyChooseThis.bullet4] as [string, string, string, string],
+        ? [wct.bullet1, wct.bullet2, wct.bullet3, wct.bullet4]
+        : [metafields.whyChooseThis.bullet1, metafields.whyChooseThis.bullet2, metafields.whyChooseThis.bullet3, metafields.whyChooseThis.bullet4],
       pfBullets: pf
-        ? [pf.bullets[0] ?? "", pf.bullets[1] ?? "", pf.bullets[2] ?? "", pf.bullets[3] ?? ""] as [string, string, string, string]
-        : [metafields.perfectFor.bullet1, metafields.perfectFor.bullet2, metafields.perfectFor.bullet3, metafields.perfectFor.bullet4] as [string, string, string, string],
+        ? [pf.bullets[0] ?? "", pf.bullets[1] ?? "", pf.bullets[2] ?? "", pf.bullets[3] ?? ""]
+        : [metafields.perfectFor.bullet1, metafields.perfectFor.bullet2, metafields.perfectFor.bullet3, metafields.perfectFor.bullet4],
       pfIcons: pf
-        ? [pf.icons[0] ?? "", pf.icons[1] ?? "", pf.icons[2] ?? "", pf.icons[3] ?? ""] as [string, string, string, string]
+        ? [pf.icons[0] ?? "", pf.icons[1] ?? "", pf.icons[2] ?? "", pf.icons[3] ?? ""]
         : syncedPfIcons(
             [metafields.perfectFor.bullet1, metafields.perfectFor.bullet2, metafields.perfectFor.bullet3, metafields.perfectFor.bullet4],
             [metafields.perfectFor.icon1, metafields.perfectFor.icon2, metafields.perfectFor.icon3, metafields.perfectFor.icon4]
           ),
+    });
+  }
+
+  // Generate summaries in batches of 3 to avoid Anthropic rate limits
+  const BATCH_SIZE = 3;
+  const summaryResults: Array<{ summary: string | null; summaryError?: { message: string; billingUrl?: string } }> = [];
+
+  for (let i = 0; i < pending.length; i += BATCH_SIZE) {
+    const batch = pending.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(
+      batch.map(async (p) => {
+        if (!p.summaryInput) return { summary: p.existingSummary, summaryError: undefined };
+        try {
+          const result = await generateProductSummary(p.summaryInput);
+          if (!("error" in result)) return { summary: result.options[0] ?? "", summaryError: undefined };
+          return { summary: null, summaryError: { message: result.error.message, billingUrl: result.error.billingUrl } };
+        } catch {
+          return { summary: null, summaryError: undefined };
+        }
+      })
+    );
+    summaryResults.push(...batchResults);
+  }
+
+  // Second pass: assemble final rows
+  const rows = [
+    ...settled,
+    ...pending.map((p, i) => ({
+      productId: p.productId,
+      title: p.title,
+      imageUrl: p.imageUrl,
+      productTypePt: p.productTypePt,
+      productStylePt: p.productStylePt,
+      summary: summaryResults[i].summary,
+      summaryError: summaryResults[i].summaryError,
+      wctBullets: p.wctBullets as [string, string, string, string],
+      pfBullets: p.pfBullets as [string, string, string, string],
+      pfIcons: p.pfIcons as [string, string, string, string],
       source: "generated" as const,
       skip: false,
       regenerating: false,
-    });
-  }
+    })),
+  ];
 
   return NextResponse.json({ rows });
 }
