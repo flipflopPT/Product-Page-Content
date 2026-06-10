@@ -31,6 +31,8 @@ export async function POST(req: NextRequest) {
       category?: string;
       timeSensitive?: string | null;
       filterByInterest?: boolean;
+      minPrice?: number;
+      maxPrice?: number;
       searchPhrase?: string;
       // New phrase creation: list of type/style pairs
       typeStylePairs?: { type: string; style: string }[];
@@ -59,7 +61,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (body.type === "pf") {
-      const { id, phrase, icon, category, timeSensitive, filterByInterest, searchPhrase, phraseId, productType, productStyle, typeStylePairs } = body.entry;
+      const { id, phrase, icon, category, timeSensitive, filterByInterest, minPrice, maxPrice, searchPhrase, phraseId, productType, productStyle, typeStylePairs } = body.entry;
 
       if (!id && !phraseId) {
         // ── CREATE NEW PHRASE + applicabilities ───────────────────────────────
@@ -73,7 +75,9 @@ export async function POST(req: NextRequest) {
           category as PFPhrase["category"],
           (timeSensitive ?? null) as PFPhrase["timeSensitive"],
           filterByInterest ?? false,
-          typeStylePairs
+          typeStylePairs,
+          minPrice,
+          maxPrice
         );
         return NextResponse.json({ ok: true, phraseId: newPhraseId });
       }
@@ -102,6 +106,8 @@ export async function POST(req: NextRequest) {
         ...(category !== undefined && { category }),
         ...(timeSensitive !== undefined && { timeSensitive }),
         ...(filterByInterest !== undefined && { filterByInterest }),
+        ...(minPrice !== undefined && { minPrice }),
+        ...(maxPrice !== undefined && { maxPrice }),
       });
 
       return NextResponse.json({ ok: true, id: resolvedPhraseId });

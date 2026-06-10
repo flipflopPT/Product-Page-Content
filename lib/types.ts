@@ -15,6 +15,8 @@ export interface PFPhrase {
   category: "Occasion" | "Person" | "Context";
   timeSensitive: "mothers-day" | "fathers-day" | "valentines-day" | null;
   filterByInterest: boolean;
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 // Applicability row — one per phrase × product-type/style combination
@@ -38,6 +40,8 @@ export interface PerfectForEntry {
   timeSensitive: "mothers-day" | "fathers-day" | "valentines-day" | null;
   applicabilityCount: number;
   icon: string;
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 export interface ProductSummary {

@@ -298,6 +298,8 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
   const [category, setCategory] = useState(entry?.category ?? "");
   const [timeSensitive, setTimeSensitive] = useState<string | null>(entry?.timeSensitive ?? null);
   const [filterByInterest, setFilterByInterest] = useState(entry?.filterByInterest ?? false);
+  const [minPrice, setMinPrice] = useState<string>(entry?.minPrice !== undefined ? String(entry.minPrice) : "");
+  const [maxPrice, setMaxPrice] = useState<string>(entry?.maxPrice !== undefined ? String(entry.maxPrice) : "");
   const [currentIcon, setCurrentIcon] = useState(entry?.icon ?? "");
   const [showIconPicker, setShowIconPicker] = useState(false);
 
@@ -528,7 +530,7 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "pf",
-          entry: { phrase: phrase.trim(), icon: currentIcon, category, timeSensitive, filterByInterest, typeStylePairs },
+          entry: { phrase: phrase.trim(), icon: currentIcon, category, timeSensitive, filterByInterest, ...(minPrice !== "" && { minPrice: parseFloat(minPrice) }), ...(maxPrice !== "" && { maxPrice: parseFloat(maxPrice) }), typeStylePairs },
         }),
       });
       setSaving(false);
@@ -551,6 +553,8 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
           category,
           timeSensitive,
           filterByInterest,
+          ...(minPrice !== "" && { minPrice: parseFloat(minPrice) }),
+          ...(maxPrice !== "" && { maxPrice: parseFloat(maxPrice) }),
           searchPhrase: entry!._edit?.searchPhrase ?? entry!.phrase,
         },
       }),
@@ -747,6 +751,30 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
                 </span>
               </span>
             </label>
+
+            {/* Price range */}
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">Min Price (£)</label>
+                <input
+                  type="number" min="0" step="0.01"
+                  value={minPrice}
+                  onChange={(e) => { setMinPrice(e.target.value); setJustSaved(false); }}
+                  placeholder="No minimum"
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">Max Price (£)</label>
+                <input
+                  type="number" min="0" step="0.01"
+                  value={maxPrice}
+                  onChange={(e) => { setMaxPrice(e.target.value); setJustSaved(false); }}
+                  placeholder="No maximum"
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
 
             {/* Type/style assignments */}
             {isNew ? (

@@ -148,7 +148,8 @@ export function assignPerfectFor(
   // Step 1: filter — seasonal entries always excluded (handled by theme at display time)
   const filtered = library.filter((entry) => {
     if (entry.timeSensitive) return false;
-    if (["weddings", "wedding gifts"].includes(entry.phrase.toLowerCase().trim()) && product.price !== undefined && product.price <= 25) return false;
+    if (entry.minPrice !== undefined && (product.price === undefined || product.price < entry.minPrice)) return false;
+    if (entry.maxPrice !== undefined && (product.price === undefined || product.price > entry.maxPrice)) return false;
     if (entry.filterByInterest && !productMatchesInterest(entry, product, interestKeywords)) return false;
     const typeMatch = entry.productType === "ALL" || entry.productType === product.productType;
     const styleMatch = entry.productStyle === "ALL" || product.productStyles.includes(entry.productStyle);

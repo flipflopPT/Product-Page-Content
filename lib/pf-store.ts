@@ -31,6 +31,8 @@ async function buildPhraseMap(): Promise<Map<string, PFPhrase>> {
       ...(edit?.category !== undefined && { category: edit.category as PFPhrase["category"] }),
       ...(edit?.timeSensitive !== undefined && { timeSensitive: edit.timeSensitive as PFPhrase["timeSensitive"] }),
       ...(edit?.filterByInterest !== undefined && { filterByInterest: edit.filterByInterest }),
+      ...(edit?.minPrice !== undefined ? { minPrice: edit.minPrice } : p.minPrice !== undefined ? { minPrice: p.minPrice } : {}),
+      ...(edit?.maxPrice !== undefined ? { maxPrice: edit.maxPrice } : p.maxPrice !== undefined ? { maxPrice: p.maxPrice } : {}),
     });
   }
 
@@ -44,6 +46,8 @@ async function buildPhraseMap(): Promise<Map<string, PFPhrase>> {
         category: (edit.category ?? "Occasion") as PFPhrase["category"],
         timeSensitive: (edit.timeSensitive ?? null) as PFPhrase["timeSensitive"],
         filterByInterest: edit.filterByInterest ?? false,
+        ...(edit.minPrice !== undefined && { minPrice: edit.minPrice }),
+        ...(edit.maxPrice !== undefined && { maxPrice: edit.maxPrice }),
       });
     }
   }
@@ -100,6 +104,8 @@ export async function getPfLibrary(): Promise<PerfectForEntry[]> {
       timeSensitive: phrase.timeSensitive,
       applicabilityCount: app.applicabilityCount,
       icon: phrase.icon,
+      ...(phrase.minPrice !== undefined && { minPrice: phrase.minPrice }),
+      ...(phrase.maxPrice !== undefined && { maxPrice: phrase.maxPrice }),
     });
   }
   return result;
@@ -217,6 +223,8 @@ export async function savePhraseEdit(phraseId: string, fields: Partial<PFPhraseE
     ...(fields.category !== undefined && { category: fields.category }),
     ...(fields.timeSensitive !== undefined && { timeSensitive: fields.timeSensitive }),
     ...(fields.filterByInterest !== undefined && { filterByInterest: fields.filterByInterest }),
+    ...(fields.minPrice !== undefined && { minPrice: fields.minPrice }),
+    ...(fields.maxPrice !== undefined && { maxPrice: fields.maxPrice }),
   };
 
   await upsertPFPhraseEdit(updated);
@@ -240,6 +248,8 @@ export async function savePhraseIcon(phraseId: string, icon: string): Promise<vo
     ...(existing?.category !== undefined && { category: existing.category }),
     ...(existing?.timeSensitive !== undefined && { timeSensitive: existing.timeSensitive }),
     ...(existing?.filterByInterest !== undefined && { filterByInterest: existing.filterByInterest }),
+    ...(existing?.minPrice !== undefined && { minPrice: existing.minPrice }),
+    ...(existing?.maxPrice !== undefined && { maxPrice: existing.maxPrice }),
   });
 }
 
@@ -310,7 +320,9 @@ export async function createPhrase(
   category: PFPhrase["category"],
   timeSensitive: PFPhrase["timeSensitive"],
   filterByInterest: boolean,
-  typeStylePairs: { type: string; style: string }[]
+  typeStylePairs: { type: string; style: string }[],
+  minPrice?: number,
+  maxPrice?: number
 ): Promise<string> {
   const phraseId = `phrase-custom-${Date.now()}`;
 
@@ -323,6 +335,8 @@ export async function createPhrase(
     category,
     timeSensitive,
     filterByInterest,
+    ...(minPrice !== undefined && { minPrice }),
+    ...(maxPrice !== undefined && { maxPrice }),
   });
 
   for (const pair of typeStylePairs) {
