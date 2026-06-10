@@ -4,6 +4,7 @@ export interface ProductMetafieldData {
   productSummary: string;
   productTypePt: string;
   productStylePt: string;
+  humanReviewed?: string;
   whyChooseThis: { bullet1: string; bullet2: string; bullet3: string; bullet4: string };
   perfectFor: {
     bullet1: string; bullet2: string; bullet3: string; bullet4: string;
@@ -27,6 +28,7 @@ const GET_PRODUCT_METAFIELDS = `
       productSummary:  metafield(namespace: "product",          key: "product_summary")   { value }
       productTypePt:   metafield(namespace: "product",          key: "product_type")   { value }
       productStylePt:  metafield(namespace: "product",          key: "product_style")  { value }
+      humanReviewed:   metafield(namespace: "product",          key: "approved") { value }
       wctBullet1:      metafield(namespace: "why-choose-this",  key: "bullet_1")           { value }
       wctBullet2:      metafield(namespace: "why-choose-this",  key: "bullet_2")           { value }
       wctBullet3:      metafield(namespace: "why-choose-this",  key: "bullet_3")           { value }
@@ -57,7 +59,7 @@ interface GetProductResponse {
     handle: string;
     descriptionHtml: string;
     featuredImage: { url: string; altText: string } | null;
-    productSummary: MF; productTypePt: MF; productStylePt: MF;
+    productSummary: MF; productTypePt: MF; productStylePt: MF; humanReviewed: MF;
     wctBullet1: MF; wctBullet2: MF; wctBullet3: MF; wctBullet4: MF;
     pfBullet1: MF; pfBullet2: MF; pfBullet3: MF; pfBullet4: MF;
     pfIcon1: MF; pfIcon2: MF; pfIcon3: MF; pfIcon4: MF;
@@ -74,6 +76,7 @@ export async function getProductWithMetafields(productGid: string) {
     productSummary:  p.productSummary?.value  ?? "",
     productTypePt:   p.productTypePt?.value   ?? "",
     productStylePt:  p.productStylePt?.value  ?? "",
+    humanReviewed:   p.humanReviewed?.value   ?? "false",
     whyChooseThis: {
       bullet1: p.wctBullet1?.value ?? "",
       bullet2: p.wctBullet2?.value ?? "",
@@ -138,6 +141,7 @@ export async function setProductMetafields(
   if (data.productSummary !== undefined) add("product", "product_summary", data.productSummary, "multi_line_text_field");
   if (data.productTypePt !== undefined)  add("product", "product_type",  data.productTypePt,  "single_line_text_field");
   if (data.productStylePt !== undefined) add("product", "product_style", data.productStylePt, "single_line_text_field");
+  if (data.humanReviewed !== undefined)  add("product", "approved", data.humanReviewed, "single_line_text_field");
 
   if (data.whyChooseThis) {
     const w = data.whyChooseThis;
@@ -192,6 +196,7 @@ const PRODUCT_FIELDS = `
   productSummary:  metafield(namespace: "product",          key: "product_summary")   { value }
   productTypePt:   metafield(namespace: "product",          key: "product_type")      { value }
   productStylePt:  metafield(namespace: "product",          key: "product_style")     { value }
+  humanReviewed:   metafield(namespace: "product",          key: "approved")    { value }
   wctBullet1:      metafield(namespace: "why-choose-this",  key: "bullet_1")          { value }
   wctBullet2:      metafield(namespace: "why-choose-this",  key: "bullet_2")          { value }
   wctBullet3:      metafield(namespace: "why-choose-this",  key: "bullet_3")          { value }
@@ -220,6 +225,7 @@ function parseProductNode(p: GetProductResponse["product"]): ReturnType<typeof g
     productSummary:  p.productSummary?.value  ?? "",
     productTypePt:   p.productTypePt?.value   ?? "",
     productStylePt:  p.productStylePt?.value  ?? "",
+    humanReviewed:   p.humanReviewed?.value   ?? "false",
     whyChooseThis: {
       bullet1: p.wctBullet1?.value ?? "",
       bullet2: p.wctBullet2?.value ?? "",
@@ -294,6 +300,7 @@ export async function setProductsMetafieldsBatch(
     if (data.productSummary !== undefined) add("product", "product_summary", data.productSummary, "multi_line_text_field");
     if (data.productTypePt !== undefined)  add("product", "product_type",  data.productTypePt,  "single_line_text_field");
     if (data.productStylePt !== undefined) add("product", "product_style", data.productStylePt, "single_line_text_field");
+    if (data.humanReviewed !== undefined)  add("product", "approved", data.humanReviewed, "single_line_text_field");
     if (data.whyChooseThis) {
       const w = data.whyChooseThis;
       if (w.bullet1 !== undefined) add("why-choose-this", "bullet_1", w.bullet1, "multi_line_text_field");

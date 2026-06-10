@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
       await setProductMetafields(productId, {
         productTypePt: type,
         productStylePt: validStyles.join(","),
+        humanReviewed: "false",
       });
       saved++;
     } catch (err) {

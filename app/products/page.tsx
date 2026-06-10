@@ -26,6 +26,7 @@ function ProductsPageInner() {
   const [styleFilter, setStyleFilter] = useState("");
   const [bestseller, setBestseller] = useState(false);
   const [christmas, setChristmas] = useState(false);
+  const [reviewedFilter, setReviewedFilter] = useState("");
   const [pageSize, setPageSize] = useState(25);
   const [totalCount, setTotalCount] = useState<number | null>(null);
   const [taxonomy, setTaxonomy] = useState<Record<string, string[]>>(PRODUCT_TAXONOMY);
@@ -43,13 +44,14 @@ function ProductsPageInner() {
     if (styleFilter) params.set("style", styleFilter);
     if (bestseller) params.set("bestseller", "true");
     if (christmas) params.set("christmas", "true");
+    if (reviewedFilter) params.set("reviewed", reviewedFilter);
     try {
       const res = await fetch(`/api/products/count?${params}`);
       if (!res.ok) return;
       const data = await res.json();
       setTotalCount(data.count);
     } catch { /* network error — leave count as null */ }
-  }, [search, statusFilter, typeFilter, styleFilter, bestseller, christmas]);
+  }, [search, statusFilter, typeFilter, styleFilter, bestseller, christmas, reviewedFilter]);
 
   const fetchProducts = useCallback(async (reset = true) => {
     setLoading(true);
@@ -61,6 +63,7 @@ function ProductsPageInner() {
     if (styleFilter) params.set("style", styleFilter);
     if (bestseller) params.set("bestseller", "true");
     if (christmas) params.set("christmas", "true");
+    if (reviewedFilter) params.set("reviewed", reviewedFilter);
     params.set("limit", String(pageSize));
     if (!reset && nextCursor) params.set("cursor", nextCursor);
 
@@ -74,7 +77,7 @@ function ProductsPageInner() {
     setProducts((prev) => reset ? data.products : [...prev, ...data.products]);
     setNextCursor(data.nextCursor);
     setLoading(false);
-  }, [search, statusFilter, typeFilter, styleFilter, bestseller, christmas, pageSize, nextCursor]);
+  }, [search, statusFilter, typeFilter, styleFilter, bestseller, christmas, reviewedFilter, pageSize, nextCursor]);
 
   useEffect(() => {
     fetch("/api/taxonomy")
@@ -87,7 +90,7 @@ function ProductsPageInner() {
     fetchProducts(true);
     fetchTotalCount();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, statusFilter, typeFilter, styleFilter, bestseller, christmas, pageSize]);
+  }, [search, statusFilter, typeFilter, styleFilter, bestseller, christmas, reviewedFilter, pageSize]);
 
   const selectedProduct = products.find((p) => p.id === selectedId) ?? null;
 
@@ -144,10 +147,19 @@ function ProductsPageInner() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="">All Products</option>
+              <option value="">Content Status</option>
               <option value="missing">No Content</option>
               <option value="partial">Partial Content</option>
               <option value="complete">Complete</option>
+            </select>
+            <select
+              value={reviewedFilter}
+              onChange={(e) => setReviewedFilter(e.target.value)}
+              className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Approval Status</option>
+              <option value="true">Approved</option>
+              <option value="false">Not Approved</option>
             </select>
             <select
               value={typeFilter}

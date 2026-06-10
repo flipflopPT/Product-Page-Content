@@ -108,6 +108,7 @@ export async function POST(req: NextRequest) {
           await setProductMetafields(productGid, {
             productTypePt: type,
             productStylePt: styles.join(","),
+            humanReviewed: "false",
             whyChooseThis: wct,
             perfectFor: {
               bullet1: pf.bullets[0] ?? "",

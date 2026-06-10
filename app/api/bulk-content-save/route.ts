@@ -12,6 +12,7 @@ interface ContentRowSave {
   pfIcons: [string, string, string, string];
   productTypePt?: string;
   productStylePt?: string;
+  humanReviewed?: boolean;
 }
 
 export async function POST(req: NextRequest) {
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
             valentinesDay: seasonal.valentinesDay ?? { phrase: "", icon: "" },
           },
         }),
+        humanReviewed: row.humanReviewed === true ? "true" : "false",
         productSummary: row.summary,
         whyChooseThis: {
           bullet1: row.wctBullets[0],

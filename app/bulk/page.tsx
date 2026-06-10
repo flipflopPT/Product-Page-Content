@@ -45,6 +45,7 @@ interface ContentRow {
   dirty: boolean;
   skip: boolean;
   regenerating: boolean;
+  humanReviewed: boolean;
   summaryError?: { message: string; billingUrl?: string };
   regenerateError?: { message: string; billingUrl?: string };
 }
@@ -89,6 +90,7 @@ export default function BulkPage() {
   const [bestseller, setBestseller] = useState(false);
   const [typeFilter, setTypeFilter] = useState("");
   const [styleFilter, setStyleFilter] = useState("");
+  const [reviewedFilter, setReviewedFilter] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [pageSize, setPageSize] = useState(25);
   const [taxonomy, setTaxonomy] = useState<Record<string, string[]>>(PRODUCT_TAXONOMY);
@@ -210,13 +212,14 @@ export default function BulkPage() {
     if (search) params.set("search", search);
     if (statusFilter) params.set("status", statusFilter);
     if (bestseller) params.set("bestseller", "true");
+    if (reviewedFilter) params.set("reviewed", reviewedFilter);
     try {
       const res = await fetch(`/api/products/count?${params}`, { signal });
       if (!res.ok) return;
       const data = await res.json();
       setTotalCount(data.count);
     } catch { /* abort or network error — leave count as null (shows fallback) */ }
-  }, [search, statusFilter, bestseller]);
+  }, [search, statusFilter, bestseller, reviewedFilter]);
 
   const fetchProducts = useCallback(async (reset: boolean, signal?: AbortSignal) => {
     setLoading(true);
@@ -226,6 +229,7 @@ export default function BulkPage() {
     if (search) params.set("search", search);
     if (statusFilter) params.set("status", statusFilter);
     if (bestseller) params.set("bestseller", "true");
+    if (reviewedFilter) params.set("reviewed", reviewedFilter);
     params.set("limit", String(pageSize));
     if (!reset && cursorRef.current) params.set("cursor", cursorRef.current);
 
@@ -248,7 +252,7 @@ export default function BulkPage() {
       setFetchError("Network error — please check your connection and try again.");
       setLoading(false);
     }
-  }, [search, statusFilter, bestseller, pageSize]);
+  }, [search, statusFilter, bestseller, reviewedFilter, pageSize]);
 
   useEffect(() => {
     fetch("/api/taxonomy").then((r) => r.ok ? r.json() : null).then((d) => { if (d?.taxonomy) setTaxonomy(d.taxonomy); }).catch(() => {});
@@ -263,7 +267,7 @@ export default function BulkPage() {
     setSelectedIds(new Set());
     return () => { controller.abort(); if (controllerRef.current !== controller) controllerRef.current?.abort(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, statusFilter, bestseller, pageSize]);
+  }, [search, statusFilter, bestseller, reviewedFilter, pageSize]);
 
   // ── Selection helpers ────────────────────────────────────────────────────
 
@@ -627,7 +631,8 @@ export default function BulkPage() {
       setContentPhase("idle");
       return;
     }
-    const rows: ContentRow[] = (data.rows ?? []).map((r) => ({ ...r, dirty: false }));
+    const reviewedMap = new Map(selectedWithTypeStyle.map((p) => [p.id, p.humanReviewed ?? false]));
+    const rows: ContentRow[] = (data.rows ?? []).map((r) => ({ ...r, dirty: false, humanReviewed: reviewedMap.get(r.productId) ?? false }));
     setContentRows(rows);
     setContentPhase("review");
   }
@@ -685,6 +690,7 @@ export default function BulkPage() {
             pfIcons: r.pfIcons,
             productTypePt: r.productTypePt,
             productStylePt: r.productStylePt,
+            humanReviewed: r.humanReviewed,
           })),
         }),
       });
@@ -756,10 +762,19 @@ export default function BulkPage() {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
-          <option value="">All Products</option>
+          <option value="">Content Status</option>
           <option value="missing">No Content</option>
           <option value="partial">Partial Content</option>
           <option value="complete">Complete</option>
+        </select>
+        <select
+          value={reviewedFilter}
+          onChange={(e) => setReviewedFilter(e.target.value)}
+          className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+          <option value="">Approval Status</option>
+          <option value="true">Approved</option>
+          <option value="false">Not Approved</option>
         </select>
         <select
           value={typeFilter}
@@ -1357,6 +1372,21 @@ export default function BulkPage() {
                               })}
                             </div>
                           </div>
+                        </div>
+
+                        {/* Approved bar */}
+                        <div className={`border-t px-3 py-2.5 flex items-center gap-2 ${row.humanReviewed ? "border-emerald-200 bg-emerald-50" : "border-amber-200 bg-amber-50"}`}>
+                          <input
+                            type="checkbox"
+                            id={`reviewed-${row.productId}`}
+                            checked={row.humanReviewed}
+                            onChange={(e) => setContentRows((rows) => rows.map((r) => r.productId === row.productId ? { ...r, humanReviewed: e.target.checked, dirty: true } : r))}
+                            disabled={row.skip || contentPhase === "saving" || contentPhase === "saved"}
+                            className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                          />
+                          <label htmlFor={`reviewed-${row.productId}`} className={`text-sm font-medium cursor-pointer select-none ${row.humanReviewed ? "text-emerald-700" : "text-amber-700"}`}>
+                            {row.humanReviewed ? "Approved" : "Mark as approved"}
+                          </label>
                         </div>
                       </div>
                     ))}

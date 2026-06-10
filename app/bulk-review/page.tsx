@@ -25,6 +25,7 @@ interface ContentRow {
   pfIcons: [string, string, string, string];
   skip: boolean;
   regenerating: boolean;
+  humanReviewed: boolean;
 }
 
 export default function BulkReviewPage() {
@@ -94,15 +95,17 @@ export default function BulkReviewPage() {
         }
         const contentData: { rows: ContentRow[] } = await contentRes.json();
         if (signal?.aborted) return;
-        contentData.rows.forEach((r) => {
+        const reviewedMap = new Map(data.products.map((p) => [p.id, p.humanReviewed ?? false]));
+        const mergedRows = contentData.rows.map((r) => ({ ...r, humanReviewed: reviewedMap.get(r.productId) ?? false }));
+        mergedRows.forEach((r) => {
           if (!originalRows.current.has(r.productId)) {
             originalRows.current.set(r.productId, { ...r });
           }
         });
         if (reset) {
-          setRows(contentData.rows);
+          setRows(mergedRows);
         } else {
-          setRows((prev) => [...prev, ...contentData.rows]);
+          setRows((prev) => [...prev, ...mergedRows]);
         }
       } else if (reset) {
         setRows([]);
@@ -171,6 +174,7 @@ export default function BulkReviewPage() {
             wctBullets: r.wctBullets,
             pfBullets: r.pfBullets,
             pfIcons: r.pfIcons,
+            humanReviewed: r.humanReviewed,
           })),
         }),
       });
@@ -332,7 +336,8 @@ function RowEditor({
   const hasNoContent = !row.summary && row.wctBullets.every((b) => !b) && row.pfBullets.every((b) => !b);
 
   return (
-    <div className={`grid grid-cols-[10rem_13rem_7rem_4fr_3fr_2fr] gap-4 p-4 transition-colors ${isDirty ? "bg-amber-50" : hasNoContent ? "bg-gray-100" : "bg-white hover:bg-gray-50"} ${hasNoContent ? "opacity-70" : ""}`}>
+    <div className={`transition-colors ${isDirty ? "bg-amber-50" : hasNoContent ? "bg-gray-100" : "bg-white hover:bg-gray-50"} ${hasNoContent ? "opacity-70" : ""}`}>
+    <div className="grid grid-cols-[10rem_13rem_7rem_4fr_3fr_2fr] gap-4 p-4">
       {/* Col 1: Image + title */}
       <div>
         {row.imageUrl ? (
@@ -449,6 +454,21 @@ function RowEditor({
         </ul>
       </div>
 
+    </div>
+    {!hasNoContent && (
+      <div className={`border-t px-4 py-2.5 flex items-center gap-2 ${row.humanReviewed ? "border-emerald-200 bg-emerald-50" : "border-amber-200 bg-amber-50"}`}>
+        <input
+          type="checkbox"
+          id={`reviewed-${row.productId}`}
+          checked={row.humanReviewed}
+          onChange={(e) => onChange({ humanReviewed: e.target.checked })}
+          className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+        />
+        <label htmlFor={`reviewed-${row.productId}`} className={`text-sm font-medium cursor-pointer select-none ${row.humanReviewed ? "text-emerald-700" : "text-amber-700"}`}>
+          {row.humanReviewed ? "Approved" : "Mark as approved"}
+        </label>
+      </div>
+    )}
     </div>
   );
 }

@@ -9,6 +9,7 @@ interface AssignBody {
   productSummary: string;
   productTypePt: string;
   productStylesPt: string[];
+  humanReviewed?: boolean;
   whyChooseThis: { bullet1: string; bullet2: string; bullet3: string; bullet4: string };
   perfectFor: {
     bullet1: string; bullet2: string; bullet3: string; bullet4: string;
@@ -50,6 +51,7 @@ export async function POST(
       productSummary: body.productSummary,
       productTypePt: body.productTypePt,
       productStylePt: styles.join(","),
+      humanReviewed: body.humanReviewed === true ? "true" : "false",
       seasonalOverrides: {
         mothersDay:    seasonal.mothersDay    ?? { phrase: "", icon: "" },
         fathersDay:    seasonal.fathersDay    ?? { phrase: "", icon: "" },

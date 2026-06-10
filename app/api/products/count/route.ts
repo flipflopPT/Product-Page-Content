@@ -11,6 +11,7 @@ const COUNT_PRODUCTS = `
           productTypePt: metafield(namespace: "product", key: "product_type") { value }
           productStylePt: metafield(namespace: "product", key: "product_style") { value }
           productSummary: metafield(namespace: "product", key: "product_summary") { value }
+          humanReviewed: metafield(namespace: "product", key: "approved") { value }
           wctBullet1: metafield(namespace: "why-choose-this", key: "bullet_1") { value }
           pfBullet1: metafield(namespace: "perfect-for", key: "perfect_bullet_1") { value }
           seasonalMdPhrase: metafield(namespace: "seasonal", key: "mothers_day_phrase")    { value }
@@ -25,7 +26,7 @@ const COUNT_PRODUCTS = `
 `;
 
 type MF = { value: string } | null;
-type RawNode = { tags: string[]; productTypePt: MF; productStylePt: MF; productSummary: MF; wctBullet1: MF; pfBullet1: MF; seasonalMdPhrase: MF; seasonalFdPhrase: MF; seasonalVdPhrase: MF };
+type RawNode = { tags: string[]; productTypePt: MF; productStylePt: MF; humanReviewed: MF; productSummary: MF; wctBullet1: MF; pfBullet1: MF; seasonalMdPhrase: MF; seasonalFdPhrase: MF; seasonalVdPhrase: MF };
 type CountResult = { products: { edges: { node: RawNode; cursor: string }[]; pageInfo: { hasNextPage: boolean } } };
 
 function classifyStatus(node: RawNode) {
@@ -69,9 +70,10 @@ export async function GET(req: NextRequest) {
   const typeFilter  = searchParams.get("type")  ?? "";
   const styleFilter = searchParams.get("style") ?? "";
 
-  const bestseller   = searchParams.get("bestseller") === "true";
-  const christmas    = searchParams.get("christmas") === "true";
-  const statusFilter = status;
+  const bestseller     = searchParams.get("bestseller") === "true";
+  const christmas      = searchParams.get("christmas") === "true";
+  const reviewedFilter = searchParams.get("reviewed") ?? "";
+  const statusFilter   = status;
 
   const queryParts = ["-status:archived", "-tag:hidden", christmas ? "tag:christmas" : "-tag:christmas"];
   if (search) queryParts.push(`title:*${search}*`);
@@ -100,6 +102,9 @@ export async function GET(req: NextRequest) {
           const styles = (edge.node.productStylePt?.value ?? "").split(",").map((s: string) => s.trim());
           if (!styles.includes(styleFilter)) continue;
         }
+        const isHumanReviewed = (edge.node.humanReviewed?.value ?? "") === "true";
+        if (reviewedFilter === "true"  && !isHumanReviewed) continue;
+        if (reviewedFilter === "false" && isHumanReviewed) continue;
         if (!statusFilter || matchesFilter(statusFilter, cs, contentSt)) {
           count++;
         }

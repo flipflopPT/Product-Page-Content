@@ -17,6 +17,7 @@ const LIST_PRODUCTS = `
           productTypePt: metafield(namespace: "product", key: "product_type") { value }
           productStylePt: metafield(namespace: "product", key: "product_style") { value }
           productSummary: metafield(namespace: "product", key: "product_summary") { value }
+          humanReviewed: metafield(namespace: "product", key: "approved") { value }
           wctBullet1: metafield(namespace: "why-choose-this", key: "bullet_1") { value }
           pfBullet1: metafield(namespace: "perfect-for", key: "perfect_bullet_1") { value }
           seasonalMdPhrase: metafield(namespace: "seasonal", key: "mothers_day_phrase")    { value }
@@ -48,6 +49,7 @@ export async function GET(req: NextRequest) {
 
   const bestseller = searchParams.get("bestseller") === "true";
   const christmas  = searchParams.get("christmas") === "true";
+  const reviewedFilter = searchParams.get("reviewed") ?? "";
   const statusFilter = status;
 
   const queryParts: string[] = [];
@@ -62,7 +64,7 @@ export async function GET(req: NextRequest) {
     node: {
       id: string; title: string; handle: string; tags: string[];
       featuredImage: { url: string } | null;
-      productTypePt: MF; productStylePt: MF;
+      productTypePt: MF; productStylePt: MF; humanReviewed: MF;
       productSummary: MF; wctBullet1: MF; pfBullet1: MF;
       seasonalMdPhrase: MF; seasonalFdPhrase: MF; seasonalVdPhrase: MF;
     };
@@ -73,7 +75,7 @@ export async function GET(req: NextRequest) {
   // through pages until we accumulate PAGE_SIZE matching products.
   // Each matched item tracks its cursor so the next request resumes from exactly
   // after the last returned product.
-  const hasMetafieldFilter = !!(statusFilter || typeFilter || styleFilter);
+  const hasMetafieldFilter = !!(statusFilter || typeFilter || styleFilter || reviewedFilter);
   const matched: Array<{ product: ProductSummary; cursor: string }> = [];
   let scanCursor: string | null = cursor || null;
   let hasMore = true;
@@ -107,6 +109,9 @@ export async function GET(req: NextRequest) {
         const styles = (edge.node.productStylePt?.value ?? "").split(",").map((s: string) => s.trim());
         if (!styles.includes(styleFilter)) continue;
       }
+      const isHumanReviewed = (edge.node.humanReviewed?.value ?? "") === "true";
+      if (reviewedFilter === "true"  && !isHumanReviewed) continue;
+      if (reviewedFilter === "false" && isHumanReviewed) continue;
       if (!statusFilter || matchesFilter(statusFilter, cs, contentSt)) {
         matched.push({
           product: {
@@ -119,6 +124,7 @@ export async function GET(req: NextRequest) {
             classifyStatus: cs,
             contentStatus: contentSt,
             isChristmas,
+            humanReviewed: isHumanReviewed,
           },
           cursor: edge.cursor,
         });

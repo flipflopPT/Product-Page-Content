@@ -65,6 +65,7 @@ interface ProductData {
     productSummary: string;
     productTypePt: string;
     productStylePt: string;
+    humanReviewed: string;
     whyChooseThis: WCTBullets;
     perfectFor: { bullet1: string; bullet2: string; bullet3: string; bullet4: string; icon1: string; icon2: string; icon3: string; icon4: string };
     seasonalOverrides: { mothersDay: boolean; fathersDay: boolean; valentinesDay: boolean };
@@ -131,6 +132,7 @@ export default function ProductEditor({ productId, productTitle, onSaved, onClos
   const [typeStyleError, setTypeStyleError] = useState("");
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [taxonomy, setTaxonomy] = useState<Record<string, string[]>>(PRODUCT_TAXONOMY);
+  const [humanReviewed, setHumanReviewed] = useState(false);
 
   useEffect(() => {
     fetch("/api/taxonomy").then((r) => r.ok ? r.json() : null).then((d) => { if (d?.taxonomy) setTaxonomy(d.taxonomy); }).catch(() => {});
@@ -153,6 +155,7 @@ export default function ProductEditor({ productId, productTitle, onSaved, onClos
         setProductType(d.metafields.productTypePt);
         setProductStyles(d.metafields.productStylePt ? d.metafields.productStylePt.split(",").map(s => s.trim()).filter(Boolean) : []);
         setProductSummary(d.metafields.productSummary);
+        setHumanReviewed(d.metafields.humanReviewed === "true");
 
         // Use saved metafields, fall back to preview
         const wct = d.metafields.whyChooseThis.bullet1
@@ -254,6 +257,7 @@ export default function ProductEditor({ productId, productTitle, onSaved, onClos
       setGenerateError(result.error);
     } else {
       setSummaryOptions(result.options ?? []);
+      setHumanReviewed(false);
     }
   }
 
@@ -315,6 +319,7 @@ export default function ProductEditor({ productId, productTitle, onSaved, onClos
         productSummary,
         productTypePt: productType,
         productStylesPt: productStyles,
+        humanReviewed,
         whyChooseThis: wctBullets,
         perfectFor: {
           bullet1: pfSlots[0]?.phrase ?? "",
@@ -664,7 +669,7 @@ export default function ProductEditor({ productId, productTitle, onSaved, onClos
       </div>
 
       {/* Sticky save footer */}
-      <div className="shrink-0 border-t border-gray-100 bg-gray-50 px-5 py-4 flex items-center gap-4">
+      <div className="shrink-0 border-t border-gray-100 bg-gray-50 px-5 py-4 flex items-center gap-4 flex-wrap">
         {error && <p className="text-red-500 text-xs">{error}</p>}
         {successMsg && <p className="text-emerald-600 text-xs">{successMsg}</p>}
         <button
@@ -674,6 +679,17 @@ export default function ProductEditor({ productId, productTitle, onSaved, onClos
         >
           {saving ? "Saving…" : "Save changes"}
         </button>
+        <label className="flex items-center gap-2 cursor-pointer select-none ml-2">
+          <input
+            type="checkbox"
+            checked={humanReviewed}
+            onChange={(e) => setHumanReviewed(e.target.checked)}
+            className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+          />
+          <span className={`text-sm font-medium ${humanReviewed ? "text-emerald-600" : "text-gray-400"}`}>
+            Approved
+          </span>
+        </label>
       </div>
 
       {/* Swap modal */}

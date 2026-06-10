@@ -50,6 +50,7 @@ export interface ProductSummary {
   classifyStatus: "complete" | "partial" | "missing";
   contentStatus: "complete" | "partial" | "missing";
   isChristmas: boolean;
+  humanReviewed?: boolean;
 }
 
 export interface AppSettings {

@@ -4,8 +4,7 @@ import { HelpTooltip } from "@/components/Tooltip";
 
 const MAIN_LINKS = [
   { href: "/products",    label: "Products",         key: "products" },
-  { href: "/bulk",        label: "Bulk Assign",       key: "bulk" },
-  { href: "/bulk-review", label: "Bulk Review",       key: "bulk-review" },
+  { href: "/bulk",        label: "Bulk Assign / Review", key: "bulk" },
   { href: "/library",     label: "Why Choose This",   key: "library" },
   { href: "/library?tab=perfect", label: "Perfect For", key: "perfect-for" },
   { href: "/product-types",       label: "Product Types", key: "product-types" },
