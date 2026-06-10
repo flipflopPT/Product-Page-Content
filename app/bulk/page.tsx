@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Nav from "@/components/Nav";
+import Pagination from "@/components/Pagination";
 import SwapModal from "@/components/SwapModal";
 import { Tooltip } from "@/components/Tooltip";
 import type { ProductSummary } from "@/lib/types";
@@ -83,7 +84,8 @@ function ContentBadge({ status }: { status: ProductSummary["contentStatus"] }) {
 export default function BulkPage() {
   // Product list state
   const [products, setProducts] = useState<ProductSummary[]>([]);
-  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -94,7 +96,7 @@ export default function BulkPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [pageSize, setPageSize] = useState(25);
   const [taxonomy, setTaxonomy] = useState<Record<string, string[]>>(PRODUCT_TAXONOMY);
-  const cursorRef = useRef<string | null>(null);
+  const cursorHistoryRef = useRef<Array<string | null>>([null]);
   const controllerRef = useRef<AbortController | null>(null);
   const fetchEpochRef = useRef(0);
 
@@ -213,74 +215,83 @@ export default function BulkPage() {
     if (statusFilter) params.set("status", statusFilter);
     if (bestseller) params.set("bestseller", "true");
     if (reviewedFilter) params.set("reviewed", reviewedFilter);
+    if (typeFilter) params.set("type", typeFilter);
+    if (styleFilter) params.set("style", styleFilter);
     try {
       const res = await fetch(`/api/products/count?${params}`, { signal });
       if (!res.ok) return;
       const data = await res.json();
       setTotalCount(data.count);
     } catch { /* abort or network error — leave count as null (shows fallback) */ }
-  }, [search, statusFilter, bestseller, reviewedFilter]);
+  }, [search, statusFilter, bestseller, reviewedFilter, typeFilter, styleFilter]);
 
-  const fetchProducts = useCallback(async (reset: boolean, signal?: AbortSignal) => {
+  const fetchPage = useCallback(async (pageNum: number, signal?: AbortSignal) => {
     setLoading(true);
-    if (reset) { fetchEpochRef.current += 1; setFetchError(null); }
+    fetchEpochRef.current += 1;
+    setFetchError(null);
     const epoch = fetchEpochRef.current;
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     if (statusFilter) params.set("status", statusFilter);
     if (bestseller) params.set("bestseller", "true");
     if (reviewedFilter) params.set("reviewed", reviewedFilter);
+    if (typeFilter) params.set("type", typeFilter);
+    if (styleFilter) params.set("style", styleFilter);
     params.set("limit", String(pageSize));
-    if (!reset && cursorRef.current) params.set("cursor", cursorRef.current);
+    const cursor = cursorHistoryRef.current[pageNum - 1] ?? null;
+    if (cursor) params.set("cursor", cursor);
 
     try {
       const res = await fetch(`/api/products?${params}`, { signal });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
+        if (fetchEpochRef.current !== epoch) return;
         setFetchError(errData.error ?? "Failed to load products — please try refreshing.");
         setLoading(false);
         return;
       }
       const data = await res.json();
       if (fetchEpochRef.current !== epoch) return;
-      setProducts((prev) => (reset ? data.products : [...prev, ...data.products]));
-      setNextCursor(data.nextCursor);
-      cursorRef.current = data.nextCursor;
+      setProducts(data.products);
+      cursorHistoryRef.current[pageNum] = data.nextCursor ?? null;
+      setHasNextPage(data.nextCursor !== null);
       setLoading(false);
     } catch (err) {
       if ((err as { name?: string })?.name === "AbortError") return;
       setFetchError("Network error — please check your connection and try again.");
       setLoading(false);
     }
-  }, [search, statusFilter, bestseller, reviewedFilter, pageSize]);
+  }, [search, statusFilter, bestseller, reviewedFilter, typeFilter, styleFilter, pageSize]);
+
+  const navigate = useCallback((pageNum: number) => {
+    controllerRef.current?.abort();
+    const controller = new AbortController();
+    controllerRef.current = controller;
+    setCurrentPage(pageNum);
+    setSelectedIds(new Set());
+    fetchPage(pageNum, controller.signal);
+  }, [fetchPage]);
 
   useEffect(() => {
     fetch("/api/taxonomy").then((r) => r.ok ? r.json() : null).then((d) => { if (d?.taxonomy) setTaxonomy(d.taxonomy); }).catch(() => {});
   }, []);
 
   useEffect(() => {
+    cursorHistoryRef.current = [null];
+    setCurrentPage(1);
+    setHasNextPage(false);
+    setSelectedIds(new Set());
     const controller = new AbortController();
     controllerRef.current = controller;
-    cursorRef.current = null;
-    fetchProducts(true, controller.signal);
+    fetchPage(1, controller.signal);
     fetchTotalCount(controller.signal);
-    setSelectedIds(new Set());
-    return () => { controller.abort(); if (controllerRef.current !== controller) controllerRef.current?.abort(); };
+    return () => { controller.abort(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, statusFilter, bestseller, reviewedFilter, pageSize]);
+  }, [search, statusFilter, bestseller, reviewedFilter, typeFilter, styleFilter, pageSize]);
 
   // ── Selection helpers ────────────────────────────────────────────────────
 
-  const filteredProducts = products.filter((p) => {
-    if (typeFilter && p.productTypePt !== typeFilter) return false;
-    if (styleFilter) {
-      const styles = p.productStylePt ? p.productStylePt.split(",").map((s) => s.trim()) : [];
-      if (!styles.includes(styleFilter)) return false;
-    }
-    return true;
-  });
-
-  const allFilteredIds = filteredProducts.map((p) => p.id);
+  const allFilteredIds = products.map((p) => p.id);
   const allSelected = allFilteredIds.length > 0 && allFilteredIds.every((id) => selectedIds.has(id));
   const someSelected = allFilteredIds.some((id) => selectedIds.has(id));
 
@@ -535,12 +546,9 @@ export default function BulkPage() {
     setClassifySaveResult(null);
     setClassifyHasSaved(false);
     if (wasSaved) {
-      setSelectedIds(new Set());
-      cursorRef.current = null;
-      const controller = new AbortController();
-      controllerRef.current = controller;
-      fetchProducts(true, controller.signal);
-      fetchTotalCount(controller.signal);
+      cursorHistoryRef.current = [null];
+      navigate(1);
+      fetchTotalCount(controllerRef.current?.signal);
     }
   }
 
@@ -712,12 +720,9 @@ export default function BulkPage() {
     setContentSaveResult(null);
     setContentHasSaved(false);
     if (wasSaved) {
-      setSelectedIds(new Set());
-      cursorRef.current = null;
-      const controller = new AbortController();
-      controllerRef.current = controller;
-      fetchProducts(true, controller.signal);
-      fetchTotalCount(controller.signal);
+      cursorHistoryRef.current = [null];
+      navigate(1);
+      fetchTotalCount(controllerRef.current?.signal);
     }
   }
 
@@ -778,7 +783,7 @@ export default function BulkPage() {
         </select>
         <select
           value={typeFilter}
-          onChange={(e) => { setTypeFilter(e.target.value); setStyleFilter(""); setSelectedIds(new Set()); }}
+          onChange={(e) => { setTypeFilter(e.target.value); setStyleFilter(""); }}
           className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="">All types</option>
@@ -786,7 +791,7 @@ export default function BulkPage() {
         </select>
         <select
           value={styleFilter}
-          onChange={(e) => { setStyleFilter(e.target.value); setSelectedIds(new Set()); }}
+          onChange={(e) => { setStyleFilter(e.target.value); }}
           disabled={!typeFilter || (taxonomy[typeFilter] ?? []).length === 0}
           className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-40"
         >
@@ -796,15 +801,13 @@ export default function BulkPage() {
         <span className="text-sm text-gray-400">
           {loading && products.length === 0
             ? "Loading..."
-            : (typeFilter || styleFilter)
-              ? `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""}`
-              : totalCount === null
-                ? `${products.length}${nextCursor ? "+" : ""} product${products.length !== 1 ? "s" : ""}`
-                : `${products.length} of ${totalCount} product${totalCount !== 1 ? "s" : ""}`}
+            : totalCount === null
+              ? `${products.length} product${products.length !== 1 ? "s" : ""}`
+              : `${products.length} of ${totalCount} product${totalCount !== 1 ? "s" : ""}`}
         </span>
         <button
           onClick={toggleAll}
-          disabled={filteredProducts.length === 0}
+          disabled={products.length === 0}
           className="text-sm text-blue-600 hover:underline disabled:opacity-40"
         >
           {allSelected ? "Deselect all" : "Select all"}
@@ -848,7 +851,7 @@ export default function BulkPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredProducts.map((p) => (
+                {products.map((p) => (
                   <tr
                     key={p.id}
                     className={`hover:bg-gray-50 cursor-pointer ${selectedIds.has(p.id) ? "bg-blue-50" : ""}`}
@@ -884,22 +887,23 @@ export default function BulkPage() {
                     <td colSpan={showRightPanel ? 4 : 6} className="px-4 py-10 text-center text-red-500 text-sm">{fetchError}</td>
                   </tr>
                 )}
-                {!loading && !fetchError && filteredProducts.length === 0 && (
+                {!loading && !fetchError && products.length === 0 && (
                   <tr>
                     <td colSpan={showRightPanel ? 4 : 6} className="px-4 py-10 text-center text-gray-400 text-sm">No products found</td>
                   </tr>
                 )}
               </tbody>
             </table>
-            {nextCursor && !loading && !typeFilter && !styleFilter && (
-              <div className="p-4 text-center border-t border-gray-100">
-                <button
-                  onClick={() => fetchProducts(false, controllerRef.current?.signal)}
-                  className="text-sm text-blue-600 hover:underline"
-                >
-                  Load more
-                </button>
-              </div>
+            {!(products.length === 0 && !hasNextPage && currentPage === 1) && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalCount !== null ? Math.ceil(totalCount / pageSize) : null}
+                hasPrev={currentPage > 1}
+                hasNext={hasNextPage}
+                loading={loading}
+                onPrev={() => navigate(currentPage - 1)}
+                onNext={() => navigate(currentPage + 1)}
+              />
             )}
           </div>
 
