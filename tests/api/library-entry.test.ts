@@ -2,9 +2,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 
 vi.mock("@/lib/auth", () => ({ requireAuth: vi.fn().mockResolvedValue(null) }));
+const emptyEdits = { wct: {}, pfPhrases: {}, pfApplicability: {}, uploadedIcons: [] };
+
 vi.mock("@/lib/library-edits-store", () => ({
   upsertWCTEdit: vi.fn(),
   deleteWCTEdit: vi.fn(),
+  getLibraryEdits: vi.fn(),
 }));
 vi.mock("@/lib/pf-store", () => ({
   createPhrase: vi.fn().mockResolvedValue("pf-phrase-123"),
@@ -16,7 +19,7 @@ vi.mock("@/lib/pf-store", () => ({
 }));
 
 import { POST, DELETE } from "@/app/api/library/entry/route";
-import { upsertWCTEdit, deleteWCTEdit } from "@/lib/library-edits-store";
+import { upsertWCTEdit, deleteWCTEdit, getLibraryEdits } from "@/lib/library-edits-store";
 import { createPhrase, deletePhrase, removeApplicability } from "@/lib/pf-store";
 import { requireAuth } from "@/lib/auth";
 
@@ -25,6 +28,7 @@ beforeEach(() => {
   vi.mocked(requireAuth).mockResolvedValue(null);
   vi.mocked(upsertWCTEdit).mockResolvedValue(undefined);
   vi.mocked(deleteWCTEdit).mockResolvedValue(undefined);
+  vi.mocked(getLibraryEdits).mockResolvedValue(emptyEdits as never);
 });
 
 describe("POST /api/library/entry (WCT)", () => {

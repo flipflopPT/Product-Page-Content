@@ -77,7 +77,11 @@ export async function POST(req: NextRequest) {
     const newFormatted = formatWCT(wctEntry?.text ?? baseEntry!.text, wctEntry?.subtext ?? baseEntry!.subtext);
     const oldFormatted = wctEntry?.searchFormatted || (baseEntry ? formatWCT(baseEntry.text, baseEntry.subtext) : newFormatted);
 
-    const searchFor = new Set([oldFormatted, newFormatted].filter(Boolean));
+    // Only search for old text when it differs from new — products already on new text
+    // are already up to date and would show as "0 updated" in the push step.
+    const searchFor = oldFormatted !== newFormatted
+      ? new Set([oldFormatted])
+      : new Set([oldFormatted, newFormatted].filter(Boolean));
 
     while (true) {
       const data: ScanResult = await shopifyGraphQL<ScanResult>(SCAN_QUERY, { first: 250, after: cursor });
@@ -129,8 +133,11 @@ export async function POST(req: NextRequest) {
 
     const newPhrase = found.phrase.phrase;
     const oldPhrase = found.edit?.searchPhrase;
-    // Search for current phrase text, and also old text if the phrase was renamed
-    const searchFor = new Set([newPhrase, oldPhrase].filter(Boolean) as string[]);
+    // Only search for old text when it differs from new — products already on new text
+    // are already up to date and would show as "0 updated" in the push step.
+    const searchFor = (oldPhrase && oldPhrase !== newPhrase)
+      ? new Set([oldPhrase])
+      : new Set([newPhrase]);
 
     while (true) {
       const data: ScanResult = await shopifyGraphQL<ScanResult>(SCAN_QUERY, { first: 250, after: cursor });

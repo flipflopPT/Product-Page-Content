@@ -1,0 +1,6 @@
+<svg id="book" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Left page -->
+  <path d="M2 4H9C10.1 4 12 5 12 7V21C10 20 7 20 2 20Z"/>
+  <!-- Right page -->
+  <path d="M22 4H15C13.9 4 12 5 12 7V21C14 20 17 20 22 20Z"/>
+</svg>

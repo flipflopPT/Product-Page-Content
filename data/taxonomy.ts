@@ -11,7 +11,6 @@ export const PRODUCT_TAXONOMY: Record<string, string[]> = {
   "Greetings Cards":               ["Nature", "Novelty/Humorous"],
   "Fairy Lights":                  ["Minimal", "Decorative", "Colourful"],
   "Furniture & Lighting":          ["Minimal", "Scandi", "Statement", "Contemporary Classic"],
-  "Christmas Themed Products":     ["Traditional", "Minimal", "Novelty"],
 };
 
 export const PRODUCT_TYPES = Object.keys(PRODUCT_TAXONOMY);

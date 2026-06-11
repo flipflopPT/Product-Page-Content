@@ -1,4 +1,8 @@
 <svg id="tree" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M12 22 V14"/>
-  <path d="M5 14 C5 8 8 3 12 3 C16 3 19 8 19 14 C16 15 8 15 5 14"/>
+  <!-- Three stacked tiers -->
+  <path d="M12 2L8.5 8H15.5Z"/>
+  <path d="M12 6L7 13H17Z"/>
+  <path d="M12 10L5 18H19Z"/>
+  <!-- Trunk -->
+  <path d="M11 18V22H13V18"/>
 </svg>

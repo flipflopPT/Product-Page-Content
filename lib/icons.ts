@@ -31,7 +31,7 @@ export function getBuiltinSvg(name: string): string | null {
   }
 }
 
-function minifySvg(svg: string): string {
+export function minifySvg(svg: string): string {
   return svg.replace(/\s*\n\s*/g, " ").replace(/\s{2,}/g, " ").trim();
 }
 

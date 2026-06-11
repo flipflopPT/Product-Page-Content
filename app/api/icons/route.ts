@@ -7,7 +7,7 @@ import {
   renameUploadedIcon,
   deleteUploadedIcon,
 } from "@/lib/uploaded-icons-store";
-import { findIconUsage } from "@/lib/icon-usage";
+import { findIconUsage, getUsedBuiltinIconNames } from "@/lib/icon-usage";
 import createDOMPurify from "dompurify";
 import { JSDOM } from "jsdom";
 
@@ -19,6 +19,12 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const authError = await requireAuth(req);
   if (authError) return authError;
+
+  // ?builtinUsage=true → return which built-in icons are in use
+  if (req.nextUrl.searchParams.get("builtinUsage") === "true") {
+    const used = await getUsedBuiltinIconNames();
+    return NextResponse.json({ usedBuiltins: Array.from(used) });
+  }
 
   // ?check=iconname → return usage info for that icon
   const check = req.nextUrl.searchParams.get("check");

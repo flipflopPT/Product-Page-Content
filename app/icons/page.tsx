@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Nav from "@/components/Nav";
+import { Tooltip } from "@/components/Tooltip";
 import type { UploadedIcon } from "@/lib/uploaded-icons-store";
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
@@ -47,6 +48,11 @@ export default function IconsPage() {
 
   // Delete state
   const [deleteModal, setDeleteModal] = useState<DeleteModal | null>(null);
+
+  // Unused-only filter for built-ins
+  const [showUnusedOnly, setShowUnusedOnly] = useState(false);
+  const [usedBuiltins, setUsedBuiltins] = useState<Set<string> | null>(null);
+  const [loadingUsage, setLoadingUsage] = useState(false);
 
   useEffect(() => {
     fetch("/api/icons")
@@ -170,6 +176,29 @@ export default function IconsPage() {
     }
   }
 
+  async function handleToggleUnusedOnly() {
+    const next = !showUnusedOnly;
+    setShowUnusedOnly(next);
+    if (next && usedBuiltins === null) {
+      setLoadingUsage(true);
+      try {
+        const res = await fetch("/api/icons?builtinUsage=true");
+        if (!res.ok) throw new Error("Failed");
+        const data = await res.json();
+        setUsedBuiltins(new Set<string>(data.usedBuiltins ?? []));
+      } catch {
+        setShowUnusedOnly(false);
+      } finally {
+        setLoadingUsage(false);
+      }
+    }
+  }
+
+  const displayedBuiltins =
+    showUnusedOnly && usedBuiltins !== null
+      ? builtInIcons.filter((n) => !usedBuiltins.has(n))
+      : builtInIcons;
+
   return (
     <div className="flex flex-col min-h-screen">
       <Nav
@@ -189,20 +218,41 @@ export default function IconsPage() {
             ) : (
               <>
                 {/* Built-in icons */}
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
-                  Built-in ({builtInIcons.length})
-                </p>
-                <div className="grid grid-cols-6 sm:grid-cols-10 gap-2 mb-8">
-                  {builtInIcons.map((name) => (
-                    <div
-                      key={name}
-                      className="flex flex-col items-center gap-1 p-2 rounded-lg border border-gray-100 bg-white"
-                    >
-                      <img src={`/icons/${name}.svg`} alt={name} className="w-6 h-6" />
-                      <span className="text-[11px] text-gray-500 truncate w-full text-center">{name}</span>
-                    </div>
-                  ))}
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+                    Built-in (
+                    {showUnusedOnly && usedBuiltins !== null
+                      ? `${displayedBuiltins.length} of ${builtInIcons.length}`
+                      : builtInIcons.length}
+                    )
+                  </p>
+                  <button
+                    onClick={handleToggleUnusedOnly}
+                    disabled={loadingUsage}
+                    className={`text-xs px-2.5 py-1 rounded border transition-colors disabled:opacity-50 ${
+                      showUnusedOnly
+                        ? "border-blue-400 bg-blue-50 text-blue-700"
+                        : "border-gray-300 text-gray-500 hover:border-gray-400 hover:text-gray-700"
+                    }`}
+                  >
+                    {loadingUsage ? "Checking…" : "Unused only"}
+                  </button>
                 </div>
+                {showUnusedOnly && usedBuiltins !== null && displayedBuiltins.length === 0 ? (
+                  <p className="text-sm text-gray-400 italic mb-8">All built-in icons are in use.</p>
+                ) : (
+                  <div className="grid grid-cols-6 sm:grid-cols-10 gap-2 mb-8">
+                    {displayedBuiltins.map((name) => (
+                      <div
+                        key={name}
+                        className="flex flex-col items-center gap-1 p-2 rounded-lg border border-gray-100 bg-white"
+                      >
+                        <img src={`/icons/${name}.svg`} alt={name} className="w-6 h-6" />
+                        <span className="text-[11px] text-gray-500 truncate w-full text-center">{name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {/* Custom icons header */}
                 <div className="flex items-center justify-between mb-3">
@@ -210,13 +260,15 @@ export default function IconsPage() {
                     Custom{uploadedIcons.length > 0 ? ` (${uploadedIcons.length})` : ""}
                   </p>
                   <div>
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploading}
-                      className="px-3 py-1.5 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 transition-colors"
-                    >
-                      {uploading ? "Uploading…" : "Upload SVG"}
-                    </button>
+                    <Tooltip content="Upload an SVG file to add it to your custom icon library." side="left">
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                        className="px-3 py-1.5 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 transition-colors"
+                      >
+                        {uploading ? "Uploading…" : "Upload SVG"}
+                      </button>
+                    </Tooltip>
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -240,13 +292,14 @@ export default function IconsPage() {
                           className="relative group flex flex-col items-center gap-1.5 p-2 pt-4 rounded-lg border border-gray-100 bg-white"
                         >
                           {/* Delete button — visible on hover */}
-                          <button
-                            className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded opacity-0 group-hover:opacity-100 transition-opacity text-gray-300 hover:text-red-500"
-                            onClick={() => handleDeleteClick(name, svg)}
-                            title="Delete icon"
-                          >
-                            <TrashIcon className="w-3.5 h-3.5" />
-                          </button>
+                          <Tooltip content="Delete this icon." side="top">
+                            <button
+                              className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded opacity-0 group-hover:opacity-100 transition-opacity text-gray-300 hover:text-red-500"
+                              onClick={() => handleDeleteClick(name, svg)}
+                            >
+                              <TrashIcon className="w-3.5 h-3.5" />
+                            </button>
+                          </Tooltip>
 
                           {/* Icon SVG */}
                           <span
@@ -275,13 +328,14 @@ export default function IconsPage() {
                               disabled={savingName}
                             />
                           ) : (
-                            <button
-                              className="text-[11px] text-gray-500 truncate w-full text-center hover:text-blue-600 transition-colors"
-                              onClick={() => startEdit(name)}
-                              title="Click to rename"
-                            >
-                              {name}
-                            </button>
+                            <Tooltip content="Click to rename this icon." side="bottom">
+                              <button
+                                className="text-[11px] text-gray-500 truncate w-full text-center hover:text-blue-600 transition-colors"
+                                onClick={() => startEdit(name)}
+                              >
+                                {name}
+                              </button>
+                            </Tooltip>
                           )}
                         </div>
                       ))}

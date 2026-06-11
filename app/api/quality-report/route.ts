@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Anthropic API key not configured", results: [] }, { status: 400 });
   }
 
-  const body = await req.json() as { rows: QualityRow[] };
+  const body = await req.json() as { rows: Pick<QualityRow, "productId" | "title" | "productTypePt" | "summary" | "pfBullets">[] };
   const rows = body.rows ?? [];
 
   if (!Array.isArray(rows) || rows.length === 0) {

@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Nav from "@/components/Nav";
+import AffectedProductsModal from "@/components/AffectedProductsModal";
+import DeletePhraseModal from "@/components/DeletePhraseModal";
 import IconPicker from "@/components/IconPicker";
 import { Tooltip } from "@/components/Tooltip";
 import { PRODUCT_TAXONOMY } from "@/data/taxonomy";
@@ -49,9 +51,11 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
   const isNew = !entry;
   const [text, setText]       = useState(entry?.text ?? "");
   const [subtext, setSubtext] = useState(entry?.subtext ?? "");
+  const [entries, setEntries] = useState<Record<string, { text: string; subtext: string }>>(
+    () => Object.fromEntries(WCT_CATEGORIES.map((c) => [c, { text: "", subtext: "" }]))
+  );
   const [productType, setProductType] = useState(entry?.productType ?? "");
   const [productStyle, setProductStyle] = useState(entry?.productStyle ?? "");
-  const [category, setCategory] = useState(entry?.category ?? "");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [justSaved, setJustSaved] = useState(false);
@@ -60,7 +64,6 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
   const [foundProducts, setFoundProducts] = useState<{ id: string; title: string }[]>([]);
   const [updateLog, setUpdateLog] = useState<{ title: string; status: "updated" | "error" }[]>([]);
   const [updateResult, setUpdateResult] = useState<{ updated: number; skipped: number; failed: number } | null>(null);
-  const logRef = useRef<HTMLDivElement>(null);
   const updatingRef = useRef(false);
 
   const availableStyles = productType ? (taxonomy[productType] ?? []) : [];
@@ -73,16 +76,57 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
   async function handleSave(): Promise<boolean> {
     setSaving(true);
     setSaveError("");
+
+    if (isNew) {
+      if (!productType || !productStyle) {
+        setSaveError("Product type and style are required");
+        setSaving(false);
+        return false;
+      }
+      if (WCT_CATEGORIES.some((c) => !entries[c].text.trim())) {
+        setSaveError("Text is required for all 4 categories");
+        setSaving(false);
+        return false;
+      }
+      const results = await Promise.all(WCT_CATEGORIES.map((cat) =>
+        fetch("/api/library/entry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "wct",
+            entry: {
+              productType,
+              productStyle,
+              category: cat,
+              text: entries[cat].text.trim(),
+              subtext: entries[cat].subtext.trim(),
+              searchFormatted: "",
+            },
+          }),
+        })
+      ));
+      const failed = results.find((r) => !r.ok);
+      if (failed) {
+        setSaveError("Save failed — some entries may not have been created");
+        setSaving(false);
+        return false;
+      }
+      setSaving(false);
+      onSaved();
+      onClose();
+      return true;
+    }
+
     const res = await fetch("/api/library/entry", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         type: "wct",
         entry: {
-          id: entry?.id,
-          productType: isNew ? productType : entry!.productType,
-          productStyle: isNew ? productStyle : entry!.productStyle,
-          category: isNew ? category : entry!.category,
+          id: entry!.id,
+          productType: entry!.productType,
+          productStyle: entry!.productStyle,
+          category: entry!.category,
           text, subtext,
           searchFormatted: entry?._edit?.searchFormatted ?? "",
         },
@@ -90,23 +134,16 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
     });
     setSaving(false);
     if (!res.ok) { setSaveError("Save failed"); return false; }
-    if (!isNew) {
-      onSaved({ id: entry!.id, text, subtext });
-      setJustSaved(true);
-      setSavedConfirm(true);
-      setTimeout(() => setSavedConfirm(false), 2000);
-      return true;
-    } else {
-      onSaved();
-      onClose();
-      return true;
-    }
+    onSaved({ id: entry!.id, text, subtext });
+    setJustSaved(true);
+    setSavedConfirm(true);
+    setTimeout(() => setSavedConfirm(false), 2000);
+    if (textChanged) handleFind();
+    return true;
   }
 
   async function handleFind() {
     if (!entry) return;
-    const ok = await handleSave();
-    if (!ok) return;
     setFindPhase("finding");
     setFoundProducts([]);
     try {
@@ -117,15 +154,18 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
       const data = res.ok ? await res.json() : { products: [] };
       setFoundProducts(data.products ?? []);
       setFindPhase("found");
-    } catch { setFindPhase("idle"); }
+    } catch { setFindPhase("idle"); setSaveError("Could not search for products — try Check Usage again."); }
+  }
+
+  async function handleFindClick() {
+    if (!entry) return;
+    const ok = await handleSave();
+    if (!ok) return;
+    if (!textChanged) handleFind();
   }
 
   async function handleUpdate() {
     if (!entry || updatingRef.current) return;
-    if (textChanged) {
-      const ok = await handleSave();
-      if (!ok) return;
-    }
     updatingRef.current = true;
     setFindPhase("updating");
     setUpdateLog([]);
@@ -152,7 +192,6 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
             const event = JSON.parse(line.slice(6)) as PushEvent;
             if (event.type === "progress") {
               setUpdateLog((prev) => [...prev, { title: event.title, status: event.status }]);
-              setTimeout(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, 0);
             } else if (event.type === "done") {
               setUpdateResult({ updated: event.updated, skipped: event.skipped, failed: event.failed });
               setFindPhase("done");
@@ -171,11 +210,11 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden" onClick={(e) => e.stopPropagation()}>
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="font-semibold text-gray-900">{isNew ? "New Why Choose This entry" : "Edit entry"}</h2>
+          <h2 className="font-semibold text-gray-900">{isNew ? "New Why Choose This entries" : "Edit entry"}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
         </div>
-        <div className="px-6 py-4 space-y-4">
-          {isNew && (
+        <div className="px-6 py-4 space-y-4 max-h-[70vh] overflow-y-auto">
+          {isNew ? (
             <>
               <div>
                 <label className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">Product Type</label>
@@ -193,88 +232,73 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
                   {availableStyles.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">Category</label>
-                <select value={category} onChange={(e) => setCategory(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Select category…</option>
-                  {WCT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-            </>
-          )}
-          <div>
-            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">Text (bold)</label>
-            <input type="text" value={text} onChange={(e) => { setText(e.target.value); setJustSaved(false); }}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">Subtext</label>
-            <input type="text" value={subtext} onChange={(e) => { setSubtext(e.target.value); setJustSaved(false); }}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          {!isNew && <div className="text-xs text-gray-400 bg-gray-50 rounded px-3 py-2">Preview: <strong>{text}</strong> {subtext}</div>}
-          {saveError && <p className="text-red-600 text-xs">{saveError}</p>}
-        </div>
-        {findPhase !== "idle" && (
-          <div className="mx-6 mb-4 border border-gray-200 rounded-lg overflow-hidden">
-            <div className="bg-gray-50 px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-200">
-              {findPhase === "finding" && "Searching products…"}
-              {findPhase === "found" && `${foundProducts.length} product${foundProducts.length !== 1 ? "s" : ""} found`}
-              {findPhase === "updating" && "Updating products…"}
-              {findPhase === "done" && updateResult && `Done — ${updateResult.updated} updated${updateResult.failed > 0 ? ` · ${updateResult.failed} failed` : ""}`}
-            </div>
-            <div ref={logRef} className="max-h-36 overflow-y-auto p-3 space-y-0.5 font-mono text-xs">
-              {findPhase === "finding" && <div className="text-gray-400">Scanning products…</div>}
-              {findPhase === "found" && foundProducts.length === 0 && <div className="text-gray-500">No products found</div>}
-              {findPhase === "found" && foundProducts.map((p) => <div key={p.id} className="text-gray-700">{p.title}</div>)}
-              {(findPhase === "updating" || findPhase === "done") && updateLog.map((e, i) => (
-                <div key={i} className={e.status === "updated" ? "text-green-700" : "text-red-600"}>
-                  {e.status === "updated" ? "✓" : "✗"} {e.title}
+              {WCT_CATEGORIES.map((cat) => (
+                <div key={cat} className="border border-gray-200 rounded-lg p-3 space-y-2">
+                  <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{cat}</p>
+                  <div>
+                    <label className="text-xs text-gray-500 block mb-1">Text (bold)</label>
+                    <input type="text" value={entries[cat].text}
+                      onChange={(e) => setEntries((prev) => ({ ...prev, [cat]: { ...prev[cat], text: e.target.value } }))}
+                      className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500 block mb-1">Subtext</label>
+                    <input type="text" value={entries[cat].subtext}
+                      onChange={(e) => setEntries((prev) => ({ ...prev, [cat]: { ...prev[cat], subtext: e.target.value } }))}
+                      className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  </div>
                 </div>
               ))}
-            </div>
-          </div>
-        )}
+            </>
+          ) : (
+            <>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">Text (bold)</label>
+                <input type="text" value={text} onChange={(e) => { setText(e.target.value); setJustSaved(false); }}
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">Subtext</label>
+                <input type="text" value={subtext} onChange={(e) => { setSubtext(e.target.value); setJustSaved(false); }}
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <div className="text-xs text-gray-400 bg-gray-50 rounded px-3 py-2">Preview: <strong>{text}</strong> {subtext}</div>
+            </>
+          )}
+          {saveError && <p className="text-red-600 text-xs">{saveError}</p>}
+        </div>
         <div className="px-6 py-4 border-t border-gray-100 flex items-center gap-3">
           <button onClick={onClose} disabled={findPhase === "updating"}
             className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-40 transition-colors">
-            {findPhase === "done" ? "Close" : "Cancel"}
+            Close
           </button>
           <div className="flex-1" />
-          {findPhase === "idle" && (
-            <>
-              {canFind && (
-                <Tooltip content="Search all your products to find which ones currently use this entry.">
-                  <button onClick={handleFind} disabled={saving}
-                    className="px-4 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700 disabled:opacity-40 transition-colors">
-                    Find Products Using This
-                  </button>
-                </Tooltip>
-              )}
-              <button onClick={handleSave} disabled={saving || savedConfirm}
-                className="px-4 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700 disabled:opacity-40 transition-colors">
-                {saving ? "Saving…" : savedConfirm ? "Saved ✓" : "Save"}
+          {canFind && (
+            <Tooltip content="Search all your products to find which ones currently use this entry.">
+              <button onClick={handleFindClick} disabled={saving}
+                className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-40 transition-colors">
+                Check Usage
               </button>
-            </>
+            </Tooltip>
           )}
-          {findPhase === "finding" && <button disabled className="px-4 py-2 text-sm border border-gray-300 rounded opacity-40">Searching…</button>}
-          {findPhase === "found" && (
-            <>
-              <button onClick={() => { setFindPhase("idle"); setFoundProducts([]); }}
-                className="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors">Back</button>
-              {textChanged && (
-                <Tooltip content="Push this updated entry out to all the products that use it.">
-                  <button onClick={handleUpdate} disabled={foundProducts.length === 0}
-                    className="px-4 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700 disabled:opacity-40 transition-colors">
-                    {foundProducts.length > 0 ? `Update All (${foundProducts.length})` : "Update All"}
-                  </button>
-                </Tooltip>
-              )}
-            </>
-          )}
+          <button onClick={handleSave} disabled={saving || savedConfirm}
+            className="px-4 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700 disabled:opacity-40 transition-colors">
+            {saving ? "Saving…" : savedConfirm ? "Saved ✓" : "Save"}
+          </button>
         </div>
       </div>
+      {findPhase !== "idle" && (
+        <AffectedProductsModal
+          title="Products using this entry"
+          phase={findPhase}
+          products={foundProducts}
+          updateLog={updateLog}
+          updateResult={updateResult}
+          canUpdate={textChanged}
+          onUpdate={handleUpdate}
+          onDismiss={() => { setFindPhase("idle"); setFoundProducts([]); setUpdateLog([]); setUpdateResult(null); }}
+        />
+      )}
     </div>
   );
 }
@@ -318,7 +342,6 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
   const [foundProducts, setFoundProducts] = useState<{ id: string; title: string }[]>([]);
   const [updateLog, setUpdateLog] = useState<{ title: string; status: "updated" | "error" }[]>([]);
   const [updateResult, setUpdateResult] = useState<{ updated: number; skipped: number; failed: number } | null>(null);
-  const logRef = useRef<HTMLDivElement>(null);
   const updatingRef = useRef(false);
 
   // Delete phrase / remove assignment shared state
@@ -333,14 +356,12 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
   const [actionLog, setActionLog] = useState<{ title: string; status: "updated" | "error" }[]>([]);
   const [actionResult, setActionResult] = useState<{ updated: number; swapped: number; alternated: number; failed: number } | null>(null);
   const [actionError, setActionError] = useState("");
-  const actionLogRef = useRef<HTMLDivElement>(null);
   const actionRef = useRef(false);
 
   const hasEdit = !!entry?._edit;
   const [originalPhrase] = useState(entry?.phrase ?? "");
   const [originalIcon] = useState(entry?.icon ?? "");
   const [originalFilterByInterest] = useState(entry?.filterByInterest ?? false);
-  const [contentSavedNeedsUpdate, setContentSavedNeedsUpdate] = useState(false);
   const [showKeywordsReminder, setShowKeywordsReminder] = useState(false);
   const phraseChangedSinceOpen = phrase !== originalPhrase;
   const iconChangedSinceOpen = currentIcon !== originalIcon;
@@ -377,7 +398,6 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
             const event = JSON.parse(line.slice(6)) as PushEvent;
             if (event.type === "progress") {
               setActionLog((prev) => [...prev, { title: event.title, status: event.status }]);
-              setTimeout(() => { if (actionLogRef.current) actionLogRef.current.scrollTop = actionLogRef.current.scrollHeight; }, 0);
             } else if (event.type === "done") {
               setActionResult({ updated: event.updated, swapped: event.swapped ?? event.updated, alternated: event.alternated ?? 0, failed: event.failed });
               setActionPhase("done");
@@ -565,8 +585,8 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
     if (phrase.trim() !== previousPhrase) setJustSaved(true);
     setSavedConfirm(true);
     setTimeout(() => setSavedConfirm(false), 2000);
-    if (phraseChangedSinceOpen || iconChangedSinceOpen) setContentSavedNeedsUpdate(true);
     if (filterByInterest && !originalFilterByInterest) setShowKeywordsReminder(true);
+    if (phraseChangedSinceOpen || iconChangedSinceOpen) handleFind();
     onSaved();
     return true;
   }
@@ -585,8 +605,8 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
         setSaveError(data.error ?? "Failed to save icon");
         return;
       }
-      setContentSavedNeedsUpdate(true);
       onSaved();
+      handleFind();
     }
   }
 
@@ -613,11 +633,6 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
 
   async function handleFind() {
     if (!entry) return;
-    if (phraseChangedSinceOpen) {
-      const ok = await handleSave();
-      if (!ok) return;
-    }
-    setContentSavedNeedsUpdate(false);
     setFindPhase("finding");
     setFoundProducts([]);
     try {
@@ -628,15 +643,18 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
       const data = res.ok ? await res.json() : { products: [] };
       setFoundProducts(data.products ?? []);
       setFindPhase("found");
-    } catch { setFindPhase("idle"); }
+    } catch { setFindPhase("idle"); setSaveError("Could not search for products — try Check Usage again."); }
+  }
+
+  async function handleFindClick() {
+    if (!entry) return;
+    const ok = await handleSave();
+    if (!ok) return;
+    if (!phraseChangedSinceOpen && !iconChangedSinceOpen) handleFind();
   }
 
   async function handleUpdate() {
     if (!entry || updatingRef.current) return;
-    if (phraseChangedSinceOpen) {
-      const ok = await handleSave();
-      if (!ok) return;
-    }
     updatingRef.current = true;
     setFindPhase("updating");
     setUpdateLog([]);
@@ -663,7 +681,6 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
             const event = JSON.parse(line.slice(6)) as PushEvent;
             if (event.type === "progress") {
               setUpdateLog((prev) => [...prev, { title: event.title, status: event.status }]);
-              setTimeout(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, 0);
             } else if (event.type === "done") {
               setUpdateResult({ updated: event.updated, skipped: event.skipped, failed: event.failed });
               setFindPhase("done");
@@ -872,119 +889,8 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
             {saveError && <p className="text-red-600 text-xs">{saveError}</p>}
           </div>
 
-          {/* Delete phrase / remove assignment panel */}
-          {mode !== "edit" && (
-            <div className="mx-6 mb-4 border border-red-100 rounded-lg overflow-hidden shrink-0">
-              <div className="bg-red-50 px-3 py-2 text-xs font-medium text-red-700 border-b border-red-100 flex items-center justify-between">
-                <span>
-                  {mode === "delete" ? `Delete "${entry?.phrase}"` : `Remove ${removeApp?.productType} · ${removeApp?.productStyle}`}
-                </span>
-                {actionPhase !== "replacing" && (
-                  <button onClick={cancelAction} className="text-red-400 hover:text-red-600 text-xs">Cancel</button>
-                )}
-              </div>
-              <div className="p-4 space-y-3">
-                {actionPhase === "checking" && (
-                  <p className="text-sm text-gray-400">Checking for product uses…</p>
-                )}
-                {actionPhase === "confirm" && (
-                  <>
-                    {actionFoundCount === 0 ? (
-                      <p className="text-sm text-gray-700">
-                        No products currently use this {mode === "delete" ? "phrase" : "assignment"}. Safe to remove.
-                      </p>
-                    ) : (
-                      <>
-                        <p className="text-sm text-gray-700">
-                          <strong>{actionFoundCount}</strong> product{actionFoundCount !== 1 ? "s" : ""} use this phrase
-                          {mode === "remove-assignment" ? ` for ${removeApp?.productType} · ${removeApp?.productStyle}` : ""}.
-                          Choose a replacement:
-                        </p>
-                        <div className="max-h-28 overflow-y-auto font-mono text-xs space-y-0.5 border border-gray-100 rounded p-2 bg-gray-50">
-                          {actionFoundProducts.map((p) => (
-                            <div key={p.id} className="text-gray-700">{p.title}</div>
-                          ))}
-                        </div>
-                        <select
-                          value={actionReplacement}
-                          onChange={(e) => setActionReplacement(e.target.value)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          <option value="">Select replacement phrase…</option>
-                          {actionReplacementPhrases.map((p) => (
-                            <option key={p.phraseId} value={p.phraseId}>{p.phrase}</option>
-                          ))}
-                        </select>
-                      </>
-                    )}
-                    <button
-                      onClick={mode === "delete" ? confirmDeletePhrase : confirmRemoveAssignment}
-                      disabled={actionFoundCount > 0 && !actionReplacement}
-                      className="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-40 transition-colors"
-                    >
-                      {actionFoundCount > 0
-                        ? mode === "delete" ? "Replace & Delete phrase" : "Replace & Remove"
-                        : mode === "delete" ? "Delete phrase" : "Remove assignment"}
-                    </button>
-                  </>
-                )}
-                {actionPhase === "error" && (
-                  <p className="text-sm text-red-600">{actionError}</p>
-                )}
-                {(actionPhase === "replacing" || actionPhase === "done") && (
-                  <>
-                    <div ref={actionLogRef} className="max-h-32 overflow-y-auto space-y-0.5 font-mono text-xs">
-                      {actionPhase === "replacing" && actionLog.length === 0 && (
-                        <div className="text-gray-400">Updating products…</div>
-                      )}
-                      {actionLog.map((e, i) => (
-                        <div key={i} className={e.status === "updated" ? "text-green-700" : "text-red-600"}>
-                          {e.status === "updated" ? "✓" : "✗"} {e.title}
-                        </div>
-                      ))}
-                    </div>
-                    {actionPhase === "done" && actionResult && (
-                      <p className="text-xs text-gray-500">
-                        {actionResult.swapped} received replacement phrase
-                        {actionResult.alternated > 0 && ` · ${actionResult.alternated} received an alternative (already had replacement)`}
-                        {actionResult.failed > 0 && ` · ${actionResult.failed} failed`}
-                      </p>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Find / update panel */}
-          {findPhase !== "idle" && (
-            <div className="mx-6 mb-4 border border-gray-200 rounded-lg overflow-hidden shrink-0">
-              <div className="bg-gray-50 px-3 py-2 text-xs font-medium text-gray-500 border-b border-gray-200">
-                {findPhase === "finding" && "Searching products…"}
-                {findPhase === "found" && `${foundProducts.length} product${foundProducts.length !== 1 ? "s" : ""} found`}
-                {findPhase === "updating" && "Updating products…"}
-                {findPhase === "done" && updateResult && `Done — ${updateResult.updated} updated${updateResult.failed > 0 ? ` · ${updateResult.failed} failed` : ""}`}
-              </div>
-              <div ref={logRef} className="max-h-36 overflow-y-auto p-3 space-y-0.5 font-mono text-xs">
-                {findPhase === "finding" && <div className="text-gray-400">Scanning products…</div>}
-                {findPhase === "found" && foundProducts.length === 0 && <div className="text-gray-500">No products found</div>}
-                {findPhase === "found" && foundProducts.map((p) => <div key={p.id} className="text-gray-700">{p.title}</div>)}
-                {(findPhase === "updating" || findPhase === "done") && updateLog.map((e, i) => (
-                  <div key={i} className={e.status === "updated" ? "text-green-700" : "text-red-600"}>
-                    {e.status === "updated" ? "✓" : "✗"} {e.title}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           <div className="px-6 py-4 border-t border-gray-100 flex flex-col gap-2 shrink-0">
-            {findPhase === "idle" && mode === "edit" && contentSavedNeedsUpdate && (
-              <div className="px-3 py-2 bg-amber-100 border border-amber-400 rounded text-sm text-amber-900 font-medium">
-                Saved. Remember to update products using this phrase.
-              </div>
-            )}
-            {findPhase === "idle" && mode === "edit" && showKeywordsReminder && (
+            {mode === "edit" && showKeywordsReminder && (
               <div className="px-3 py-2 bg-blue-100 border border-blue-400 rounded text-sm text-blue-900 font-medium flex items-center justify-between">
                 <span>Interest filter enabled. Add keywords in the Interest Filter page.</span>
                 <a href="/settings/keywords" className="ml-3 underline hover:no-underline whitespace-nowrap">
@@ -993,52 +899,67 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
               </div>
             )}
             <div className="flex items-center gap-3">
-            <button onClick={onClose} disabled={findPhase === "updating" || actionPhase === "replacing"}
-              className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-40 transition-colors">
-              {findPhase === "done" ? "Close" : "Cancel"}
-            </button>
-            {!isNew && mode === "edit" && findPhase === "idle" && (
-              <button onClick={startDeletePhrase}
-                className="text-xs text-red-400 hover:text-red-600 transition-colors">
-                Delete phrase
+              <button onClick={onClose} disabled={findPhase === "updating"}
+                className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-40 transition-colors">
+                Close
               </button>
-            )}
-            <div className="flex-1" />
-            {findPhase === "idle" && mode === "edit" && (
-              <>
-                {canFind && (
-                  <Tooltip content="Search all your products to find which ones currently use this phrase.">
-                    <button onClick={handleFind} disabled={saving}
-                      className="px-4 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700 disabled:opacity-40 transition-colors">
-                      Find Products Using This Phrase
-                    </button>
-                  </Tooltip>
-                )}
-                <button onClick={handleSave} disabled={saving || savedConfirm}
-                  className="px-4 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700 disabled:opacity-40 transition-colors">
-                  {saving ? "Saving…" : savedConfirm ? "Saved ✓" : "Save"}
+              {!isNew && mode === "edit" && (
+                <button onClick={startDeletePhrase}
+                  className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+                  Delete phrase
                 </button>
-              </>
-            )}
-            {findPhase === "finding" && <button disabled className="px-4 py-2 text-sm border border-gray-300 rounded opacity-40">Searching…</button>}
-            {findPhase === "found" && (
-              <>
-                <button onClick={() => { setFindPhase("idle"); setFoundProducts([]); }}
-                  className="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors">Back</button>
-                {(phraseChangedSinceOpen || iconChangedSinceOpen) && (
-                  <Tooltip content="Push this updated phrase out to all the products that use it — their Shopify content will update immediately.">
-                    <button onClick={handleUpdate} disabled={foundProducts.length === 0}
-                      className="px-4 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700 disabled:opacity-40 transition-colors">
-                      {foundProducts.length > 0 ? `Update All (${foundProducts.length})` : "Update All"}
-                    </button>
-                  </Tooltip>
-                )}
-              </>
-            )}
+              )}
+              <div className="flex-1" />
+              {mode === "edit" && (
+                <>
+                  {canFind && (
+                    <Tooltip content="Search all your products to find which ones currently use this phrase.">
+                      <button onClick={handleFindClick} disabled={saving}
+                        className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-40 transition-colors">
+                        Check Usage
+                      </button>
+                    </Tooltip>
+                  )}
+                  <button onClick={handleSave} disabled={saving || savedConfirm}
+                    className="px-4 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700 disabled:opacity-40 transition-colors">
+                    {saving ? "Saving…" : savedConfirm ? "Saved ✓" : "Save"}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
       </div>
+      {findPhase !== "idle" && (
+        <AffectedProductsModal
+          title="Products using this phrase"
+          phase={findPhase}
+          products={foundProducts}
+          updateLog={updateLog}
+          updateResult={updateResult}
+          canUpdate={phraseChangedSinceOpen || iconChangedSinceOpen}
+          onUpdate={handleUpdate}
+          onDismiss={() => { setFindPhase("idle"); setFoundProducts([]); setUpdateLog([]); setUpdateResult(null); }}
+        />
+      )}
+      {mode !== "edit" && (
+        <DeletePhraseModal
+          mode={mode}
+          phraseText={entry?.phrase ?? ""}
+          removeApp={removeApp ?? undefined}
+          actionPhase={actionPhase}
+          actionFoundCount={actionFoundCount}
+          actionFoundProducts={actionFoundProducts}
+          actionReplacement={actionReplacement}
+          actionReplacementPhrases={actionReplacementPhrases}
+          actionLog={actionLog}
+          actionResult={actionResult}
+          actionError={actionError}
+          onReplacementChange={setActionReplacement}
+          onConfirm={mode === "delete" ? confirmDeletePhrase : confirmRemoveAssignment}
+          onCancel={cancelAction}
+        />
+      )}
       {showIconPicker && (
         <IconPicker current={currentIcon} onSelect={handleIconSelect} onClose={() => setShowIconPicker(false)} />
       )}
@@ -1074,6 +995,14 @@ function LibraryPageInner() {
   const [editWctTarget, setEditWctTarget] = useState<WCTRow | null | undefined>(undefined);
   const [editPfTarget, setEditPfTarget] = useState<PFPhraseRow | null | undefined>(undefined);
   const [addingNew, setAddingNew] = useState(false);
+
+  // Keep open WCT modal in sync so searchFormatted stays current after pushes
+  const editWctTargetId = editWctTarget?.id;
+  useEffect(() => {
+    if (!editWctTargetId) return;
+    const updated = wctEntries.find((e) => e.id === editWctTargetId);
+    if (updated) setEditWctTarget(updated);
+  }, [wctEntries, editWctTargetId]);
 
   // Keep the open PF modal entry in sync with freshly fetched phrase data
   const editPfTargetId = editPfTarget?.id;
@@ -1239,7 +1168,7 @@ function WctTable({ entries, loading, onEdit }: { entries: WCTRow[]; loading: bo
 type PfSortCol = "phrase" | "category" | "timeSensitive" | "icon" | "price";
 
 function PfTable({ phrases, loading, onEdit }: { phrases: PFPhraseRow[]; loading: boolean; onEdit: (e: PFPhraseRow) => void }) {
-  const [sortCol, setSortCol] = useState<PfSortCol | null>(null);
+  const [sortCol, setSortCol] = useState<PfSortCol | null>("phrase");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
   function toggleSort(col: PfSortCol) {

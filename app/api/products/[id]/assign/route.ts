@@ -29,6 +29,10 @@ export async function POST(
 
   const body = (await req.json()) as AssignBody;
 
+  if (!body.perfectFor) {
+    return NextResponse.json({ error: "perfectFor is required" }, { status: 400 });
+  }
+
   const styles = body.productStylesPt ?? [];
   if (body.productTypePt && styles.length > 0) {
     const taxonomy = await getTaxonomy();
@@ -45,7 +49,13 @@ export async function POST(
   try {
     const pfLibrary = await getPfLibrary();
     const ctx = { title: "", descriptionText: "", productType: body.productTypePt, productStyles: styles };
-    const seasonal = assignSeasonalPhrases(ctx, pfLibrary);
+    const assignedBullets = [
+      body.perfectFor.bullet1,
+      body.perfectFor.bullet2,
+      body.perfectFor.bullet3,
+      body.perfectFor.bullet4,
+    ].filter(Boolean);
+    const seasonal = assignSeasonalPhrases(ctx, pfLibrary, undefined, assignedBullets);
 
     await setProductMetafields(productGid, {
       productSummary: body.productSummary,

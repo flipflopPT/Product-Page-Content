@@ -38,7 +38,7 @@ beforeEach(() => {
 });
 
 describe("POST /api/library/find (WCT)", () => {
-  it("returns products whose WCT bullet matches searchFormatted or newFormatted", async () => {
+  it("returns only products on old text when text has changed (not products already on new text)", async () => {
     const oldFormatted = "<strong>Old text</strong> old sub";
     const newFormatted = "<strong>New text</strong> new sub";
     vi.mocked(getLibraryEdits).mockResolvedValue({
@@ -57,10 +57,12 @@ describe("POST /api/library/find (WCT)", () => {
     });
     const res = await POST(req);
     const body = await res.json();
-    expect(body.products).toHaveLength(2);
+    // Only products still on the old text are returned — those already on new text are
+    // already up to date and would show as "0 updated" in the push step.
+    expect(body.products).toHaveLength(1);
     const titles = body.products.map((p: { title: string }) => p.title);
     expect(titles).toContain("Has old text");
-    expect(titles).toContain("Has new text");
+    expect(titles).not.toContain("Has new text");
   });
 
   it("returns 404 when WCT entry is not found in edits or base library", async () => {
@@ -97,7 +99,7 @@ describe("POST /api/library/find (WCT)", () => {
 });
 
 describe("POST /api/library/find (PF)", () => {
-  it("returns products whose PF bullet matches the phrase's searchPhrase or current phrase", async () => {
+  it("returns only products matching old searchPhrase when phrase has changed (not products already on new phrase)", async () => {
     const oldPhrase = "Old phrase";
     const newPhrase = "New phrase";
     vi.mocked(findPhraseForEntry).mockResolvedValue({
@@ -116,7 +118,12 @@ describe("POST /api/library/find (PF)", () => {
     });
     const res = await POST(req);
     const body = await res.json();
-    expect(body.products).toHaveLength(2);
+    // Only products still on the old phrase are returned — products already on the
+    // new phrase are already up to date and don't need a push.
+    expect(body.products).toHaveLength(1);
+    const titles = body.products.map((p: { title: string }) => p.title);
+    expect(titles).toContain("Match (old)");
+    expect(titles).not.toContain("Match (new)");
   });
 
   it("returns 404 when PF phrase entry is not found", async () => {

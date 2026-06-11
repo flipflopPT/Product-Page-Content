@@ -99,12 +99,18 @@ function productMatchesInterest(
   return keywords.some((k) => text.includes(k.toLowerCase()));
 }
 
+const MUM_REGEX = /\b(mum|mums|mother|mothers)\b/i;
+const DAD_REGEX = /\b(dad|dads|father|fathers)\b/i;
+
 export function assignSeasonalPhrases(
   product: ProductContext,
   library: PerfectForEntry[],
-  seed?: number
+  seed?: number,
+  assignedBullets?: string[]
 ): AssignedSeasonalPhrases {
   const rand = seed !== undefined ? seededRandom(seed) : Math.random.bind(Math);
+  const hasMum = assignedBullets?.some((b) => MUM_REGEX.test(b)) ?? false;
+  const hasDad = assignedBullets?.some((b) => DAD_REGEX.test(b)) ?? false;
 
   function pickForSeason(key: "mothers-day" | "fathers-day" | "valentines-day"): { phrase: string; icon: string } | null {
     const candidates = library.filter((e) => {
@@ -128,8 +134,8 @@ export function assignSeasonalPhrases(
   }
 
   return {
-    mothersDay:    pickForSeason("mothers-day"),
-    fathersDay:    pickForSeason("fathers-day"),
+    mothersDay:    hasMum ? null : pickForSeason("mothers-day"),
+    fathersDay:    hasDad ? null : pickForSeason("fathers-day"),
     valentinesDay: pickForSeason("valentines-day"),
   };
 }

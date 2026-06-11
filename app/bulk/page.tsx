@@ -46,6 +46,7 @@ interface ContentRow {
   dirty: boolean;
   skip: boolean;
   regenerating: boolean;
+  wctPfRecalculating?: boolean;
   humanReviewed: boolean;
   summaryError?: { message: string; billingUrl?: string };
   regenerateError?: { message: string; billingUrl?: string };
@@ -67,7 +68,7 @@ function ClassifyBadge({ status }: { status: ProductSummary["classifyStatus"] })
   if (status === "complete")
     return <Tooltip content="This product already has a Product Type and Style assigned."><span className="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700 cursor-default">Type and Style set</span></Tooltip>;
   if (status === "partial")
-    return <Tooltip content="This product has a Type but no Style, or vice versa — it needs both before content can be generated."><span className="px-2 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-700 cursor-default">Part. classified</span></Tooltip>;
+    return <Tooltip content="This product has a Type but no Style (or vice versa). Both are needed before content can be generated."><span className="px-2 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-700 cursor-default">Part. classified</span></Tooltip>;
   return <Tooltip content="This product hasn't been classified yet. Use Set Type & Style to assign one."><span className="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-500 cursor-default">No Type and Style set</span></Tooltip>;
 }
 
@@ -689,6 +690,43 @@ export default function BulkPage() {
     }
   }
 
+  async function handleContentStyleToggle(productId: string, style: string) {
+    const row = contentRows.find((r) => r.productId === productId);
+    if (!row) return;
+    const current = row.productStylePt ? row.productStylePt.split(",").map((s) => s.trim()).filter(Boolean) : [];
+    const newStyles = current.includes(style) ? current.filter((s) => s !== style) : [...current, style];
+
+    setContentRows((rows) => rows.map((r) =>
+      r.productId === productId
+        ? { ...r, productStylePt: newStyles.join(", "), dirty: true, wctPfRecalculating: true }
+        : r
+    ));
+
+    try {
+      const res = await fetch("/api/recalculate-wct-pf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, styles: newStyles }),
+      });
+      if (res.ok) {
+        const { wctBullets, pfBullets, pfIcons } = await res.json();
+        setContentRows((rows) => rows.map((r) =>
+          r.productId === productId
+            ? { ...r, wctBullets, pfBullets, pfIcons, wctPfRecalculating: false }
+            : r
+        ));
+      } else {
+        setContentRows((rows) => rows.map((r) =>
+          r.productId === productId ? { ...r, wctPfRecalculating: false } : r
+        ));
+      }
+    } catch {
+      setContentRows((rows) => rows.map((r) =>
+        r.productId === productId ? { ...r, wctPfRecalculating: false } : r
+      ));
+    }
+  }
+
   async function handleSaveContent() {
     const toSave = contentRows.filter((r) => !r.skip && (r.source === "generated" || (r.source === "existing" && r.dirty)));
     if (toSave.length === 0 || contentPhase !== "review") return;
@@ -938,7 +976,7 @@ export default function BulkPage() {
                 Set Type &amp; Style{selectedCount > 0 ? ` (${selectedCount})` : ""}
               </button>
             </Tooltip>
-            <Tooltip content="Load Why People Love This and Perfect For content for selected products. AI generates it where missing — you review everything before saving." side="top">
+            <Tooltip content="Load Why People Love This and Perfect For content for selected products. AI generates it where missing and you review everything before saving." side="top">
               <button
                 onClick={handleSetContent}
                 disabled={populateCount === 0 || contentPhase !== "idle" || classifyPhase !== "idle"}
@@ -1000,20 +1038,21 @@ export default function BulkPage() {
                           {/* Thumbnail */}
                           <td className="px-3 py-2">
                             {row.imageUrl ? (
-                              <button
-                                onClick={() => setModalImage(row.imageUrl)}
-                                className="block w-16 h-16 rounded overflow-hidden hover:ring-2 hover:ring-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
-                                title="Click to enlarge"
-                              >
-                                <Image
-                                  src={row.imageUrl}
-                                  alt={row.title}
-                                  width={64}
-                                  height={64}
-                                  className="w-16 h-16 object-cover"
-                                  unoptimized
-                                />
-                              </button>
+                              <Tooltip content="Click to enlarge">
+                                <button
+                                  onClick={() => setModalImage(row.imageUrl)}
+                                  className="block w-16 h-16 rounded overflow-hidden hover:ring-2 hover:ring-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow"
+                                >
+                                  <Image
+                                    src={row.imageUrl}
+                                    alt={row.title}
+                                    width={64}
+                                    height={64}
+                                    className="w-16 h-16 object-cover"
+                                    unoptimized
+                                  />
+                                </button>
+                              </Tooltip>
                             ) : (
                               <div className="w-16 h-16 rounded bg-gray-200" />
                             )}
@@ -1022,12 +1061,13 @@ export default function BulkPage() {
                           <td className="px-3 py-2 text-gray-900">
                             <div className="flex items-start gap-1.5">
                               <span className="leading-tight text-sm">{row.title}</span>
-                              <a
-                                href={`https://admin.shopify.com/store/${(process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ?? "penelopetom-office.myshopify.com").replace(".myshopify.com", "")}/products/${row.productId.split("/").pop()}`}
-                                target="_blank" rel="noreferrer"
-                                className="shrink-0 text-[10px] text-blue-500 hover:text-blue-700 leading-tight mt-0.5"
-                                title="Open in Shopify Admin"
-                              >↗</a>
+                              <Tooltip content="Open in Shopify Admin" side="right">
+                                <a
+                                  href={`https://admin.shopify.com/store/${(process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ?? "penelopetom-office.myshopify.com").replace(".myshopify.com", "")}/products/${row.productId.split("/").pop()}`}
+                                  target="_blank" rel="noreferrer"
+                                  className="shrink-0 text-[10px] text-blue-500 hover:text-blue-700 leading-tight mt-0.5"
+                                >↗</a>
+                              </Tooltip>
                             </div>
                             {row.error ? (
                               <span className="text-red-500 block mt-0.5">{row.error}</span>
@@ -1079,7 +1119,7 @@ export default function BulkPage() {
                           </td>
                           {/* Skip toggle */}
                           <td className="px-3 py-2 text-center">
-                            <Tooltip content="Tick to skip this product — it won't be updated when you save." side="left">
+                            <Tooltip content="Tick to skip this product. It won't be updated when you save." side="left">
                               <input
                                 type="checkbox"
                                 checked={row.skip}
@@ -1141,7 +1181,8 @@ export default function BulkPage() {
                     )}
                   </div>
 
-                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  <div className="flex-1 overflow-y-auto">
+                    <div className="max-w-5xl mx-auto px-6 py-4 space-y-4">
                     {contentPhase === "loading" && (
                       <div className="text-center text-gray-400 text-sm py-8">Loading content — this may take several minutes when generating for a large number of products…</div>
                     )}
@@ -1150,25 +1191,27 @@ export default function BulkPage() {
                         {/* Product header */}
                         <div className="flex items-center gap-3 p-3 border-b border-gray-100">
                           {row.imageUrl ? (
-                            <button
-                              onClick={() => setModalImage(row.imageUrl)}
-                              className="block w-10 h-10 rounded overflow-hidden hover:ring-2 hover:ring-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow shrink-0"
-                              title="Click to enlarge"
-                            >
-                              <img src={row.imageUrl} alt="" className="w-10 h-10 object-cover" />
-                            </button>
+                            <Tooltip content="Click to enlarge">
+                              <button
+                                onClick={() => setModalImage(row.imageUrl)}
+                                className="block w-10 h-10 rounded overflow-hidden hover:ring-2 hover:ring-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-shadow shrink-0"
+                              >
+                                <img src={row.imageUrl} alt="" className="w-10 h-10 object-cover" />
+                              </button>
+                            </Tooltip>
                           ) : (
                             <div className="w-10 h-10 bg-gray-100 rounded shrink-0" />
                           )}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <span className="font-medium text-sm text-gray-900 truncate">{row.title}</span>
-                              <a
-                                href={`https://admin.shopify.com/store/${(process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ?? "penelopetom-office.myshopify.com").replace(".myshopify.com", "")}/products/${row.productId.split("/").pop()}`}
-                                target="_blank" rel="noreferrer"
-                                className="shrink-0 text-[10px] text-blue-500 hover:text-blue-700"
-                                title="Open in Shopify Admin"
-                              >↗</a>
+                              <Tooltip content="Open in Shopify Admin" side="right">
+                                <a
+                                  href={`https://admin.shopify.com/store/${(process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ?? "penelopetom-office.myshopify.com").replace(".myshopify.com", "")}/products/${row.productId.split("/").pop()}`}
+                                  target="_blank" rel="noreferrer"
+                                  className="shrink-0 text-[10px] text-blue-500 hover:text-blue-700"
+                                >↗</a>
+                              </Tooltip>
                               {row.source === "needs-classify"
                                 ? <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-600">Needs Type &amp; Style</span>
                                 : row.source === "existing" && !row.dirty
@@ -1178,7 +1221,24 @@ export default function BulkPage() {
                                     : <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-600">Newly Generated - Unsaved</span>
                               }
                             </div>
-                            <div className="text-xs text-gray-400">{row.productTypePt} · {row.productStylePt}</div>
+                            <div className="flex items-center flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
+                              <span className="text-xs text-gray-400">{row.productTypePt}</span>
+                              {(taxonomy[row.productTypePt] ?? []).map((style) => (
+                                <label key={style} className="flex items-center gap-1 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={(row.productStylePt ?? "").split(",").map((s) => s.trim()).includes(style)}
+                                    onChange={() => handleContentStyleToggle(row.productId, style)}
+                                    disabled={row.skip || row.source === "needs-classify" || !!row.wctPfRecalculating || contentPhase === "saving" || contentPhase === "saved"}
+                                    className="rounded border-gray-300"
+                                  />
+                                  <span className="text-xs text-gray-600">{style}</span>
+                                </label>
+                              ))}
+                              {row.wctPfRecalculating && (
+                                <span className="text-xs text-gray-400 italic">Recalculating…</span>
+                              )}
+                            </div>
                           </div>
                           <div className="flex flex-col items-end gap-1">
                             <button
@@ -1197,7 +1257,7 @@ export default function BulkPage() {
                               </p>
                             )}
                           </div>
-                          <Tooltip content="Tick to skip this product — it won't be updated when you save." side="left">
+                          <Tooltip content="Tick to skip this product. It won't be updated when you save." side="left">
                             <label className="flex items-center gap-1 text-sm text-gray-600 shrink-0 cursor-pointer">
                               <input
                                 type="checkbox"
@@ -1283,7 +1343,7 @@ export default function BulkPage() {
                             })()}
                           </div>
 
-                          <div>
+                          <div className={row.wctPfRecalculating ? "opacity-40 pointer-events-none" : ""}>
                             <label className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-2">Why Choose This</label>
                             <div className="space-y-1.5">
                               {row.wctBullets.map((bullet, i) => {
@@ -1344,7 +1404,7 @@ export default function BulkPage() {
                             </div>
                           </div>
 
-                          <div>
+                          <div className={row.wctPfRecalculating ? "opacity-40 pointer-events-none" : ""}>
                             <label className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-2">Perfect For</label>
                             <div className="space-y-1.5">
                               {row.pfBullets.map((phrase, i) => {
@@ -1407,6 +1467,7 @@ export default function BulkPage() {
                         </div>
                       </div>
                     ))}
+                    </div>
                   </div>
 
                   <div className="border-t border-gray-200 px-4 py-3 bg-white flex items-center gap-3 shrink-0">

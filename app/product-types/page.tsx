@@ -155,7 +155,7 @@ export default function ProductTypesPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      <Nav active="product-types" helpText={"Set up your product taxonomy — the Types and Styles used to classify products.\nThese control which library content is suggested when generating product copy.\nTypes and Styles can only be deleted when no products are using them."} />
+      <Nav active="product-types" helpText={"Set up your product taxonomy. These Types and Styles are used to classify products.\nThey control which library content is suggested when generating product copy.\nTypes and Styles can only be deleted when no products are using them."} />
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-7xl mx-auto px-6 py-8">
 
@@ -227,7 +227,7 @@ export default function ProductTypesPage() {
                     <div className="flex items-center gap-2 w-full">
                       <span className="flex-1 font-medium text-gray-900 text-sm">{type}</span>
                       <button onClick={() => { setEditingType(type); setEditTypeName(type); }} className="text-xs text-gray-400 hover:text-gray-700 shrink-0">Edit</button>
-                      <Tooltip content="Remove this product type. You'll be shown how many products use it — it can only be deleted when none do.">
+                      <Tooltip content="Remove this product type. You'll be shown how many products use it. It can only be deleted when no products are assigned to it.">
                         <button onClick={() => confirmDeleteType(type)} className="text-gray-300 hover:text-red-500 transition-colors leading-none shrink-0">&times;</button>
                       </Tooltip>
                     </div>
@@ -259,11 +259,10 @@ export default function ProductTypesPage() {
                           >
                             {style}
                           </button>
-                          <Tooltip content="Remove this style. You'll be shown how many products use it — it can only be deleted when none do.">
+                          <Tooltip content="Remove this style. You'll be shown how many products use it. It can only be deleted when no products are assigned to it.">
                             <button
                               onClick={() => confirmDeleteStyle(type, style)}
                               className="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity leading-none"
-                              title="Delete style"
                             >
                               ×
                             </button>
@@ -330,56 +329,65 @@ export default function ProductTypesPage() {
 
       {/* Delete confirmation modal */}
       {deleteTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
-            <h2 className="font-semibold text-gray-900 text-base mb-1">
-              Delete {isDeleteType ? "type" : "style"}: {isDeleteType ? deleteTarget.type : deleteTarget.style}?
-            </h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setDeleteTarget(null)}>
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm mx-4 flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between">
+              <span className="text-sm font-semibold text-gray-900">
+                Delete {isDeleteType ? "type" : "style"}: {isDeleteType ? deleteTarget.type : deleteTarget.style}
+              </span>
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 text-lg leading-none"
+              >
+                &times;
+              </button>
+            </div>
 
-            {usage.loading && (
-              <p className="text-sm text-gray-400 mt-3">Checking product usage…</p>
-            )}
-
-            {!usage.loading && usage.count !== null && (
-              usage.count > 0 ? (
-                <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                  <p className="text-sm text-amber-800 font-medium">
-                    {usage.count} product{usage.count !== 1 ? "s" : ""}{" "}
-                    {isDeleteType
-                      ? `use the type "${deleteTarget.type}"`
-                      : `use the style "${deleteTarget.style}" under "${deleteTarget.type}"`}.
-                  </p>
-                  <p className="text-xs text-amber-700 mt-1 mb-2">
+            {/* Body */}
+            <div className="px-5 py-3 space-y-2 text-sm">
+              {usage.loading && (
+                <p className="text-gray-400">Checking product usage…</p>
+              )}
+              {!usage.loading && usage.count !== null && usage.count === 0 && (
+                <p className="text-gray-700">No products use this {isDeleteType ? "type" : "style"}. Safe to delete.</p>
+              )}
+              {!usage.loading && usage.count !== null && usage.count > 0 && (
+                <>
+                  <p className="text-gray-700">
+                    <strong>{usage.count}</strong> product{usage.count !== 1 ? "s" : ""} use this {isDeleteType ? "type" : "style"}.
                     Reassign these products before deleting.
                   </p>
                   {usage.products && usage.products.length > 0 && (
-                    <ul className="max-h-48 overflow-y-auto border border-amber-200 rounded bg-white text-xs text-gray-700 divide-y divide-amber-100">
+                    <div className="max-h-48 overflow-y-auto space-y-0.5 border border-gray-200 rounded p-2 bg-gray-50">
                       {usage.products.map((title) => (
-                        <li key={title} className="px-2 py-1">{title}</li>
+                        <div key={title} className="text-gray-700">{title}</div>
                       ))}
-                    </ul>
+                    </div>
                   )}
-                </div>
-              ) : (
-                <p className="text-sm text-gray-500 mt-3">No products are using this {isDeleteType ? "type" : "style"}. Safe to delete.</p>
-              )
-            )}
-
-            <div className="flex justify-end gap-3 mt-5">
-              <button
-                onClick={() => setDeleteTarget(null)}
-                className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                disabled={!canDelete}
-                onClick={isDeleteType ? deleteType : deleteStyle}
-                className="px-4 py-2 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                Delete
-              </button>
+                </>
+              )}
             </div>
+
+            {/* Footer */}
+            {!usage.loading && usage.count !== null && (
+              <div className="px-5 py-3.5 border-t border-gray-100 flex items-center justify-end gap-3">
+                <button
+                  onClick={() => setDeleteTarget(null)}
+                  className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                >
+                  Close
+                </button>
+                {canDelete && (
+                  <button
+                    onClick={isDeleteType ? deleteType : deleteStyle}
+                    className="px-4 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700 transition-colors"
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import {
-  upsertWCTEdit, deleteWCTEdit,
+  upsertWCTEdit, deleteWCTEdit, getLibraryEdits,
   type WCTEdit,
 } from "@/lib/library-edits-store";
 import {
@@ -47,13 +47,19 @@ export async function POST(req: NextRequest) {
     if (body.type === "wct") {
       const { id, productType, productStyle, category, text, subtext } = body.entry as WCTEdit;
 
+      if (!category) return NextResponse.json({ error: "category is required" }, { status: 400 });
+
       const isNew = !id || id.startsWith("wct-custom-");
       const entryId = id || `wct-custom-${Date.now()}`;
 
       let searchFormatted = "";
       if (!isNew) {
+        const existingEdits = await getLibraryEdits();
+        const existingEdit = existingEdits.wct[entryId];
         const base = wctLibrary.find((e) => e.id === entryId);
-        searchFormatted = (body.entry as WCTEdit).searchFormatted || (base ? formatWCT(base.text, base.subtext) : "");
+        searchFormatted = (body.entry as WCTEdit).searchFormatted
+          || existingEdit?.searchFormatted
+          || (base ? formatWCT(base.text, base.subtext) : "");
       }
 
       await upsertWCTEdit({ id: entryId, productType: productType!, productStyle: productStyle!, category: category!, text: text!, subtext: subtext!, searchFormatted, isNew: !!isNew });
