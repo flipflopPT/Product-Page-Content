@@ -3,6 +3,8 @@ import { requireAuth } from "@/lib/auth";
 import { getProductWithMetafields } from "@/lib/metafields";
 import { generateProductSummary } from "@/lib/generate-summary";
 
+export const maxDuration = 60;
+
 export async function POST(req: NextRequest) {
   const authError = await requireAuth(req);
   if (authError) return authError;
