@@ -29,6 +29,7 @@ function ProductsPageInner() {
   const [reviewedFilter, setReviewedFilter] = useState("");
   const [pageSize, setPageSize] = useState(25);
   const [totalCount, setTotalCount] = useState<number | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [taxonomy, setTaxonomy] = useState<Record<string, string[]>>(PRODUCT_TAXONOMY);
   const searchParams = useSearchParams();
   const [selectedId, setSelectedId] = useState<string | null>(
@@ -55,7 +56,7 @@ function ProductsPageInner() {
 
   const fetchProducts = useCallback(async (reset = true) => {
     setLoading(true);
-    if (reset) { setProducts([]); setNextCursor(null); }
+    if (reset) { setProducts([]); setNextCursor(null); setFetchError(null); }
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     if (statusFilter) params.set("status", statusFilter);
@@ -69,6 +70,8 @@ function ProductsPageInner() {
 
     const res = await fetch(`/api/products?${params}`);
     if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      setFetchError(errData.error ?? "Failed to load products — please try refreshing.");
       setLoading(false);
       return;
     }
@@ -88,7 +91,9 @@ function ProductsPageInner() {
 
   useEffect(() => {
     fetchProducts(true);
-    fetchTotalCount();
+    // Delay count by 1s so it doesn't fire simultaneously with the list and exhaust the Shopify rate-limit bucket.
+    const timer = setTimeout(() => fetchTotalCount(), 1000);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, statusFilter, typeFilter, styleFilter, bestseller, christmas, reviewedFilter, pageSize]);
 
@@ -100,11 +105,11 @@ function ProductsPageInner() {
 
   function handleChristmasToggle(checked: boolean) {
     setChristmas(checked);
-    // Christmas mode doesn't use type/style/status filters
     if (checked) {
       setTypeFilter("");
       setStyleFilter("");
       setStatusFilter("");
+      setReviewedFilter("");
     }
     setSelectedId(null);
   }
@@ -140,27 +145,27 @@ function ProductsPageInner() {
           />
           Christmas Tag
         </label>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+          <option value="">Content Status</option>
+          <option value="missing">No Content</option>
+          <option value="partial">Partial Content</option>
+          <option value="complete">Complete</option>
+        </select>
+        <select
+          value={reviewedFilter}
+          onChange={(e) => setReviewedFilter(e.target.value)}
+          className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+          <option value="">Approval Status</option>
+          <option value="true">Approved</option>
+          <option value="false">Not Approved</option>
+        </select>
         {!christmas && (
           <>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Content Status</option>
-              <option value="missing">No Content</option>
-              <option value="partial">Partial Content</option>
-              <option value="complete">Complete</option>
-            </select>
-            <select
-              value={reviewedFilter}
-              onChange={(e) => setReviewedFilter(e.target.value)}
-              className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Approval Status</option>
-              <option value="true">Approved</option>
-              <option value="false">Not Approved</option>
-            </select>
             <select
               value={typeFilter}
               onChange={(e) => { setTypeFilter(e.target.value); setStyleFilter(""); }}
@@ -202,13 +207,17 @@ function ProductsPageInner() {
       <div className="flex flex-1 overflow-hidden">
         {/* Product list */}
         <div className={`${selectedId ? "hidden md:flex" : "flex"} flex-col w-full md:w-80 border-r border-gray-200 bg-white`}>
-          <ProductList
-            products={products}
-            loading={loading}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-            onLoadMore={nextCursor ? () => fetchProducts(false) : undefined}
-          />
+          {fetchError ? (
+            <div className="flex-1 flex items-center justify-center p-4 text-red-500 text-sm text-center">{fetchError}</div>
+          ) : (
+            <ProductList
+              products={products}
+              loading={loading}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+              onLoadMore={nextCursor ? () => fetchProducts(false) : undefined}
+            />
+          )}
         </div>
 
         {/* Editor panel */}

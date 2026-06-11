@@ -16,32 +16,54 @@ async function doRequest(query: string, variables?: Record<string, unknown>): Pr
   );
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 export async function shopifyGraphQL<T>(
   query: string,
   variables?: Record<string, unknown>
 ): Promise<T> {
-  let res = await doRequest(query, variables);
+  const MAX_ATTEMPTS = 4;
 
-  // Retry once on rate limit, honouring Retry-After header (cap at 5s)
-  if (res.status === 429) {
-    const retryAfter = Math.min(parseFloat(res.headers.get("Retry-After") ?? "1"), 5);
-    await new Promise((r) => setTimeout(r, retryAfter * 1000));
-    res = await doRequest(query, variables);
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const res = await doRequest(query, variables);
+
+    // HTTP-level rate limit — honour Retry-After header (cap at 8s)
+    if (res.status === 429) {
+      if (attempt < MAX_ATTEMPTS) {
+        const retryAfter = Math.min(parseFloat(res.headers.get("Retry-After") ?? "1"), 8);
+        await sleep(retryAfter * 1000);
+        continue;
+      }
+      throw new Error("Shopify API rate limit exceeded after retries");
+    }
+
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      const url = `https://${domain}/admin/api/${API_VERSION}/graphql.json`;
+      throw new Error(`Shopify API error: ${res.status} ${res.statusText} (url: ${url})${body ? ` — ${body.slice(0, 200)}` : ""}`);
+    }
+
+    const json = await res.json();
+
+    // GraphQL-level throttle (HTTP 200 but errors[].extensions.code === "THROTTLED")
+    const isThrottled = json.errors?.some(
+      (e: { extensions?: { code?: string } }) => e.extensions?.code === "THROTTLED"
+    );
+    if (isThrottled) {
+      if (attempt < MAX_ATTEMPTS) {
+        await sleep(1500 * attempt); // 1.5s, 3s, 4.5s
+        continue;
+      }
+      throw new Error(`Shopify GraphQL error: ${JSON.stringify(json.errors)}`);
+    }
+
+    // Other fatal GraphQL errors (no data at all)
+    if (json.errors && !json.data) {
+      throw new Error(`Shopify GraphQL error: ${JSON.stringify(json.errors)}`);
+    }
+
+    return json.data as T;
   }
 
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    const url = `https://${domain}/admin/api/${API_VERSION}/graphql.json`;
-    throw new Error(`Shopify API error: ${res.status} ${res.statusText} (url: ${url})${body ? ` — ${body.slice(0, 200)}` : ""}`);
-  }
-
-  const json = await res.json();
-
-  // Only throw on fatal GraphQL errors (no data returned).
-  // Shopify can return data + errors together for partial/field-level issues; those are non-fatal.
-  if (json.errors && !json.data) {
-    throw new Error(`Shopify GraphQL error: ${JSON.stringify(json.errors)}`);
-  }
-
-  return json.data as T;
+  throw new Error("Shopify GraphQL: max retries exceeded");
 }
