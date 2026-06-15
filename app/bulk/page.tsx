@@ -708,15 +708,54 @@ export default function BulkPage() {
     }
   }
 
+  async function recalcWctAvailabilityForProduct(
+    productId: string,
+    productTypePt: string,
+    newStylePt: string,
+    newWctBullets: [string, string, string, string]
+  ) {
+    const styles = newStylePt ? newStylePt.split(",").map((s) => s.trim()).filter(Boolean) : [];
+    const stylesToFetch = styles.length > 0 ? styles : [""];
+
+    const pairs = await Promise.all(
+      WCT_LABELS.map(async (category, i) => {
+        const results = await Promise.all(
+          stylesToFetch.map((style) => {
+            const params = new URLSearchParams({ type: "why", category });
+            if (productTypePt) params.set("productType", productTypePt);
+            if (style) params.set("productStyle", style);
+            return fetch(`/api/library?${params}`).then((r) => r.json()).catch(() => ({ entries: [] }));
+          })
+        );
+        const seen = new Set<string>();
+        const entries = results.flatMap((d) => (d.entries ?? []) as { text: string; subtext?: string }[])
+          .filter((e) => {
+            const k = `${e.text}|${e.subtext ?? ""}`;
+            if (seen.has(k)) return false;
+            seen.add(k);
+            return true;
+          });
+        const current = parseBullet(newWctBullets[i]);
+        const hasAlternative = entries.some(
+          (e) => e.text !== current.text || (e.subtext ?? "") !== current.subtext
+        );
+        return [`${productId}|${i}`, hasAlternative] as [string, boolean];
+      })
+    );
+
+    setWctAvailability((prev) => ({ ...prev, ...Object.fromEntries(pairs) }));
+  }
+
   async function handleContentStyleToggle(productId: string, style: string) {
     const row = contentRows.find((r) => r.productId === productId);
     if (!row) return;
     const current = row.productStylePt ? row.productStylePt.split(",").map((s) => s.trim()).filter(Boolean) : [];
     const newStyles = current.includes(style) ? current.filter((s) => s !== style) : [...current, style];
+    const newStylePt = newStyles.join(", ");
 
     setContentRows((rows) => rows.map((r) =>
       r.productId === productId
-        ? { ...r, productStylePt: newStyles.join(", "), dirty: true, wctPfRecalculating: true }
+        ? { ...r, productStylePt: newStylePt, dirty: true, wctPfRecalculating: true }
         : r
     ));
 
@@ -733,6 +772,7 @@ export default function BulkPage() {
             ? { ...r, wctBullets, pfBullets, pfIcons, wctPfRecalculating: false }
             : r
         ));
+        void recalcWctAvailabilityForProduct(productId, row.productTypePt, newStylePt, wctBullets);
       } else {
         setContentRows((rows) => rows.map((r) =>
           r.productId === productId ? { ...r, wctPfRecalculating: false } : r
