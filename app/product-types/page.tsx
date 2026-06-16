@@ -22,6 +22,7 @@ interface UsageState {
 export default function ProductTypesPage() {
   const [taxonomy, setTaxonomy] = useState<Taxonomy>({});
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -76,8 +77,12 @@ export default function ProductTypesPage() {
 
   useEffect(() => {
     fetch("/api/taxonomy")
-      .then((r) => r.json())
-      .then((d) => setTaxonomy(d.taxonomy ?? {}))
+      .then(async (r) => {
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.error ?? "Failed to load taxonomy");
+        setTaxonomy(d.taxonomy ?? {});
+      })
+      .catch((err) => setLoadError(err.message ?? "Failed to load taxonomy"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -530,6 +535,9 @@ export default function ProductTypesPage() {
           )}
 
           {loading && <p className="text-gray-400 text-sm">Loading…</p>}
+          {loadError && (
+            <p className="text-red-600 text-sm mb-2">Couldn't load taxonomy: {loadError}</p>
+          )}
 
           <div className="border border-gray-200 rounded-lg bg-white overflow-hidden w-full">
             {/* Column headings */}

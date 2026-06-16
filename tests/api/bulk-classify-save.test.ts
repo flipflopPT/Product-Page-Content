@@ -3,6 +3,10 @@ import { NextRequest } from "next/server";
 
 vi.mock("@/lib/auth", () => ({ requireAuth: vi.fn().mockResolvedValue(null) }));
 vi.mock("@/lib/metafields", () => ({ setProductMetafields: vi.fn() }));
+vi.mock("@/lib/taxonomy-store", async () => {
+  const { PRODUCT_TAXONOMY } = await import("@/data/taxonomy");
+  return { getTaxonomy: vi.fn().mockResolvedValue(PRODUCT_TAXONOMY) };
+});
 
 import { POST } from "@/app/api/bulk-classify/save/route";
 import { setProductMetafields } from "@/lib/metafields";

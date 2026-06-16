@@ -5,8 +5,12 @@ import { getTaxonomy, saveTaxonomy } from "@/lib/taxonomy-store";
 export async function GET(req: NextRequest) {
   const authError = await requireAuth(req);
   if (authError) return authError;
-  const taxonomy = await getTaxonomy();
-  return NextResponse.json({ taxonomy });
+  try {
+    const taxonomy = await getTaxonomy();
+    return NextResponse.json({ taxonomy });
+  } catch (err) {
+    return NextResponse.json({ error: (err as Error).message ?? "Failed to load taxonomy" }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {

@@ -56,27 +56,25 @@ let _cacheExpiry = 0;
 export async function getTaxonomy(): Promise<Record<string, string[]>> {
   if (_cache && Date.now() < _cacheExpiry) return _cache;
 
-  // Try Shopify metaobject first
-  try {
-    const data = await shopifyGraphQL<{ metaobjects: { nodes: ShopifyNode[] } }>(QUERY);
-    const node = data.metaobjects.nodes[0] ?? null;
-    if (node) {
-      _nodeId = node.id;
-      const field = node.fields.find((f) => f.key === FIELD_KEY);
-      if (field?.value) {
-        try {
-          _cache = JSON.parse(field.value) as Record<string, string[]>;
-          _cacheExpiry = Date.now() + CACHE_TTL_MS;
-          return _cache;
-        } catch {}
-      }
-      _cache = { ...PRODUCT_TAXONOMY };
+  // Shopify metaobject is the source of truth — let errors (network, auth, etc.) propagate
+  // rather than silently falling back to stale local data.
+  const data = await shopifyGraphQL<{ metaobjects: { nodes: ShopifyNode[] } }>(QUERY);
+  const node = data.metaobjects.nodes[0] ?? null;
+  if (node) {
+    _nodeId = node.id;
+    const field = node.fields.find((f) => f.key === FIELD_KEY);
+    if (field?.value) {
+      _cache = JSON.parse(field.value) as Record<string, string[]>;
       _cacheExpiry = Date.now() + CACHE_TTL_MS;
       return _cache;
     }
-  } catch {}
+    _cache = { ...PRODUCT_TAXONOMY };
+    _cacheExpiry = Date.now() + CACHE_TTL_MS;
+    return _cache;
+  }
 
-  // Fallback: committed file seed (readable on Vercel, used before metaobject is created)
+  // No metaobject exists yet (first run, before it's been created) — seed from the
+  // committed file, falling back to the hardcoded default if that's missing too.
   try {
     const raw = await fs.readFile(FILE_PATH, "utf-8");
     _cache = JSON.parse(raw) as Record<string, string[]>;

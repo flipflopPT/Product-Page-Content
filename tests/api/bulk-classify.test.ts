@@ -4,6 +4,10 @@ import { collectSSE } from "./helpers";
 
 vi.mock("@/lib/auth", () => ({ requireAuth: vi.fn().mockResolvedValue(null) }));
 vi.mock("@/lib/metafields", () => ({ getProductWithMetafields: vi.fn() }));
+vi.mock("@/lib/taxonomy-store", async () => {
+  const { PRODUCT_TAXONOMY } = await import("@/data/taxonomy");
+  return { getTaxonomy: vi.fn().mockResolvedValue(PRODUCT_TAXONOMY) };
+});
 vi.mock("@anthropic-ai/sdk", () => {
   const mockCreate = vi.fn();
   return {
