@@ -247,16 +247,6 @@ export function deleteWCTEdit(id: string): Promise<void> {
   });
 }
 
-export function markWCTPushed(id: string, newFormatted: string): Promise<void> {
-  return serialized(async () => {
-    const edits = await getLibraryEdits();
-    if (edits.wct[id]) {
-      edits.wct[id].searchFormatted = newFormatted;
-      await persist(edits);
-    }
-  });
-}
-
 // ── PF Phrases ────────────────────────────────────────────────────────────────
 
 export function upsertPFPhraseEdit(entry: PFPhraseEdit): Promise<void> {
@@ -275,15 +265,6 @@ export function deletePFPhraseEdit(phraseId: string): Promise<void> {
   });
 }
 
-export function markPFPhrasePushed(phraseId: string, newPhrase: string): Promise<void> {
-  return serialized(async () => {
-    const edits = await getLibraryEdits();
-    if (edits.pfPhrases[phraseId]) {
-      edits.pfPhrases[phraseId].searchPhrase = newPhrase;
-      await persist(edits);
-    }
-  });
-}
 
 // ── PF Applicability ──────────────────────────────────────────────────────────
 

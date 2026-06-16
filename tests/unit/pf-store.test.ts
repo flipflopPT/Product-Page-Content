@@ -8,7 +8,6 @@ vi.mock("@/lib/library-edits-store", () => ({
   deletePFPhraseEdit: vi.fn().mockResolvedValue(undefined),
   upsertPFApplicabilityEdit: vi.fn().mockResolvedValue(undefined),
   deletePFApplicabilityEdit: vi.fn().mockResolvedValue(undefined),
-  markPFPhrasePushed: vi.fn(),
 }));
 vi.mock("@/lib/settings-store", () => ({
   getSettings: vi.fn().mockResolvedValue({ interestKeywords: {} }),

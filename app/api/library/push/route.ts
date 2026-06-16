@@ -2,8 +2,8 @@ import { NextRequest } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { shopifyGraphQL } from "@/lib/shopify";
 import { setProductMetafields } from "@/lib/metafields";
-import { getLibraryEdits, markWCTPushed } from "@/lib/library-edits-store";
-import { findPhraseForEntry, markPFPhrasePushed } from "@/lib/pf-store";
+import { getLibraryEdits, upsertWCTEdit, upsertPFPhraseEdit } from "@/lib/library-edits-store";
+import { findPhraseForEntry } from "@/lib/pf-store";
 
 const SCAN_QUERY = `
   query ScanProducts($first: Int!, $after: String) {
@@ -78,12 +78,23 @@ export async function POST(req: NextRequest) {
   const authError = await requireAuth(req);
   if (authError) return authError;
 
-  const { type, id, retryIds, revertIds, revertIcons } = await req.json() as {
+  const { type, id, retryIds, revertIds, revertIcons, pendingText, pendingSubtext, pendingPhrase, pendingIcon, pendingCategory, pendingTimeSensitive, pendingFilterByInterest, pendingMinPrice, pendingMaxPrice } = await req.json() as {
     type: "wct" | "pf";
     id: string;
     retryIds?: string[];
     revertIds?: string[];
     revertIcons?: Record<string, string>;
+    // Not-yet-committed edits — the entry/phrase isn't saved to the library until
+    // this push completes cleanly (or the user explicitly skips updating products).
+    pendingText?: string;
+    pendingSubtext?: string;
+    pendingPhrase?: string;
+    pendingIcon?: string;
+    pendingCategory?: string;
+    pendingTimeSensitive?: string | null;
+    pendingFilterByInterest?: boolean;
+    pendingMinPrice?: number | null;
+    pendingMaxPrice?: number | null;
   };
 
   const encoder = new TextEncoder();
@@ -121,7 +132,9 @@ export async function POST(req: NextRequest) {
           return;
         }
 
-        const newFormatted = formatWCT(wctEntry.text, wctEntry.subtext);
+        const effectiveText = pendingText ?? wctEntry.text;
+        const effectiveSubtext = pendingSubtext ?? wctEntry.subtext;
+        const newFormatted = formatWCT(effectiveText, effectiveSubtext);
         const oldFormatted = wctEntry.searchFormatted || newFormatted;
         // Revert pushes oldFormatted back onto the given ids; otherwise old -> new.
         const [fromFormatted, toFormatted] = revertIds ? [newFormatted, oldFormatted] : [oldFormatted, newFormatted];
@@ -161,14 +174,18 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Only commit the "pushed" marker once this run is fully clean — a
-        // partial failure must leave it pointing at the old value so a future
-        // Check Usage still finds the unfinished products. Never mark on
-        // revert. Note: gated on failed===0 alone (not updated>0) — a retry
-        // batch that finds every target already correct (updated===0,
-        // failed===0) still means nothing is left outstanding, and should
-        // still commit the marker rather than getting stuck "unpushed" forever.
-        if (!revertIds && failed === 0) await markWCTPushed(id, newFormatted);
+        // Only commit the entry (new text/subtext + the "pushed" marker) once
+        // this run is fully clean — a partial failure must leave both pointing
+        // at the old value so a future Check Usage still finds the unfinished
+        // products, and the edit modal's "Save" never actually persisted the
+        // change ahead of the cascade. Never commit on revert. Note: gated on
+        // failed===0 alone (not updated>0) — a retry batch that finds every
+        // target already correct (updated===0, failed===0) still means nothing
+        // is left outstanding, and should still commit rather than getting
+        // stuck "unpushed" forever.
+        if (!revertIds && failed === 0) {
+          await upsertWCTEdit({ ...wctEntry, text: effectiveText, subtext: effectiveSubtext, searchFormatted: newFormatted });
+        }
 
       } else {
         // PF: id is a phraseId
@@ -180,8 +197,8 @@ export async function POST(req: NextRequest) {
         }
 
         const oldPhrase = found.edit.searchPhrase;
-        const newPhrase = found.phrase.phrase;
-        const newIcon = found.edit?.icon ?? found.phrase.icon;
+        const newPhrase = pendingPhrase ?? found.phrase.phrase;
+        const newIcon = pendingIcon ?? found.edit?.icon ?? found.phrase.icon;
         const [fromPhrase, toPhrase] = revertIds ? [newPhrase, oldPhrase] : [oldPhrase, newPhrase];
 
         const nodes = revertIds ? await fetchNodes(revertIds) : retryIds ? await fetchNodes(retryIds) : scanAll();
@@ -227,7 +244,19 @@ export async function POST(req: NextRequest) {
         }
 
         // See the WCT branch above for why this is gated on failed===0 alone.
-        if (!revertIds && failed === 0) await markPFPhrasePushed(id, newPhrase);
+        if (!revertIds && failed === 0) {
+          await upsertPFPhraseEdit({
+            ...found.edit,
+            phrase: newPhrase,
+            icon: newIcon,
+            searchPhrase: newPhrase,
+            ...(pendingCategory !== undefined && { category: pendingCategory }),
+            ...(pendingTimeSensitive !== undefined && { timeSensitive: pendingTimeSensitive }),
+            ...(pendingFilterByInterest !== undefined && { filterByInterest: pendingFilterByInterest }),
+            ...(pendingMinPrice !== undefined && { minPrice: pendingMinPrice }),
+            ...(pendingMaxPrice !== undefined && { maxPrice: pendingMaxPrice }),
+          });
+        }
       }
 
       const total = updated + skipped + failed;

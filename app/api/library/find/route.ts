@@ -54,8 +54,13 @@ export async function POST(req: NextRequest) {
     phraseText?: string;
     filterType?: string;
     filterStyle?: string;
+    // Not-yet-committed edits being previewed — search using these as the
+    // "new" value instead of whatever is currently saved in the library.
+    pendingText?: string;
+    pendingSubtext?: string;
+    pendingPhrase?: string;
   };
-  const { type, id } = body;
+  const { type, id, pendingText, pendingSubtext, pendingPhrase } = body;
 
   const edits = await getLibraryEdits();
   const matches: { id: string; title: string }[] = [];
@@ -69,7 +74,7 @@ export async function POST(req: NextRequest) {
     const entryProductType = wctEntry.productType;
     const entryProductStyle = wctEntry.productStyle;
 
-    const newFormatted = formatWCT(wctEntry.text, wctEntry.subtext);
+    const newFormatted = formatWCT(pendingText ?? wctEntry.text, pendingSubtext ?? wctEntry.subtext);
     const oldFormatted = wctEntry.searchFormatted || newFormatted;
 
     // Only search for old text when it differs from new — products already on new text
@@ -126,7 +131,7 @@ export async function POST(req: NextRequest) {
     const found = await findPhraseForEntry(id);
     if (!found) return NextResponse.json({ error: "Phrase not found" }, { status: 404 });
 
-    const newPhrase = found.phrase.phrase;
+    const newPhrase = pendingPhrase ?? found.phrase.phrase;
     const oldPhrase = found.edit?.searchPhrase;
     // Only search for old text when it differs from new — products already on new text
     // are already up to date and would show as "0 updated" in the push step.

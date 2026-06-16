@@ -7,18 +7,18 @@ vi.mock("@/lib/shopify", () => ({ shopifyGraphQL: vi.fn() }));
 vi.mock("@/lib/metafields", () => ({ setProductMetafields: vi.fn() }));
 vi.mock("@/lib/library-edits-store", () => ({
   getLibraryEdits: vi.fn(),
-  markWCTPushed: vi.fn(),
+  upsertWCTEdit: vi.fn(),
+  upsertPFPhraseEdit: vi.fn(),
 }));
 vi.mock("@/lib/pf-store", () => ({
   findPhraseForEntry: vi.fn(),
-  markPFPhrasePushed: vi.fn(),
 }));
 
 import { POST } from "@/app/api/library/push/route";
 import { shopifyGraphQL } from "@/lib/shopify";
 import { setProductMetafields } from "@/lib/metafields";
-import { getLibraryEdits, markWCTPushed } from "@/lib/library-edits-store";
-import { findPhraseForEntry, markPFPhrasePushed } from "@/lib/pf-store";
+import { getLibraryEdits, upsertWCTEdit, upsertPFPhraseEdit } from "@/lib/library-edits-store";
+import { findPhraseForEntry } from "@/lib/pf-store";
 import { requireAuth } from "@/lib/auth";
 
 const emptyEdits = { wct: {}, pfPhrases: {}, pfApplicability: {}, uploadedIcons: [] };
@@ -46,8 +46,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(requireAuth).mockResolvedValue(null);
   vi.mocked(setProductMetafields).mockResolvedValue(undefined);
-  vi.mocked(markWCTPushed).mockResolvedValue(undefined);
-  vi.mocked(markPFPhrasePushed).mockResolvedValue(undefined);
+  vi.mocked(upsertWCTEdit).mockResolvedValue(undefined);
+  vi.mocked(upsertPFPhraseEdit).mockResolvedValue(undefined);
 });
 
 describe("POST /api/library/push (WCT)", () => {
@@ -89,7 +89,7 @@ describe("POST /api/library/push (WCT)", () => {
     expect(done.updated).toBe(0);
   });
 
-  it("calls markWCTPushed when at least one product was updated", async () => {
+  it("calls upsertWCTEdit when at least one product was updated", async () => {
     const oldFormatted = "<strong>Old</strong> sub";
     vi.mocked(getLibraryEdits).mockResolvedValue({
       ...emptyEdits,
@@ -102,7 +102,7 @@ describe("POST /api/library/push (WCT)", () => {
       headers: { "content-type": "application/json" },
     });
     await POST(req).then(collectSSE);
-    expect(markWCTPushed).toHaveBeenCalled();
+    expect(upsertWCTEdit).toHaveBeenCalled();
   });
 
   it("done event totals are correct", async () => {
@@ -162,7 +162,7 @@ describe("POST /api/library/push (PF)", () => {
     const events = await collectSSE(res) as Array<{ type: string; status?: string }>;
     const progress = events.filter((e) => e.type === "progress");
     expect(progress[0].status).toBe("updated");
-    expect(markPFPhrasePushed).toHaveBeenCalled();
+    expect(upsertPFPhraseEdit).toHaveBeenCalled();
   });
 
   it("sends done with zeros when PF phrase has no searchPhrase (new phrase)", async () => {

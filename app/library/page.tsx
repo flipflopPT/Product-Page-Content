@@ -105,29 +105,39 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
       return true;
     }
 
+    // Unchanged — nothing to commit or push.
+    if (!textChanged) { setSaving(false); onClose(); return true; }
+
+    // Text/subtext changed: don't commit yet. Find the affected products first —
+    // the change is only persisted once they're updated (or the user explicitly
+    // chooses not to update them), via handleUpdate/commitWithoutPush below.
+    setSaving(false);
+    await handleFind();
+    return true;
+  }
+
+  async function commitWithoutPush() {
+    if (!entry || !textChanged) return;
     const res = await fetch("/api/library/entry", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         type: "wct",
         entry: {
-          id: entry!.id,
-          productType: entry!.productType,
-          productStyle: entry!.productStyle,
-          category: entry!.category,
+          id: entry.id,
+          productType: entry.productType,
+          productStyle: entry.productStyle,
+          category: entry.category,
           text, subtext,
-          searchFormatted: entry?._edit?.searchFormatted ?? "",
+          searchFormatted: entry._edit?.searchFormatted ?? "",
         },
       }),
     });
-    setSaving(false);
-    if (!res.ok) { setSaveError("Save failed"); return false; }
-    onSaved({ id: entry!.id, text, subtext });
+    if (!res.ok) { setSaveError("Save failed"); return; }
+    onSaved({ id: entry.id, text, subtext });
     setJustSaved(true);
     setSavedConfirm(true);
     setTimeout(() => setSavedConfirm(false), 2000);
-    if (textChanged) handleFind();
-    return true;
   }
 
   async function handleFind() {
@@ -137,7 +147,7 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
     try {
       const res = await fetch("/api/library/find", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "wct", id: entry.id }),
+        body: JSON.stringify({ type: "wct", id: entry.id, pendingText: text, pendingSubtext: subtext }),
       });
       const data = res.ok ? await res.json() : { products: [] };
       setFoundProducts(data.products ?? []);
@@ -147,9 +157,7 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
 
   async function handleFindClick() {
     if (!entry) return;
-    const ok = await handleSave();
-    if (!ok) return;
-    if (!textChanged) handleFind();
+    await handleFind();
   }
 
   function runPushCascade(
@@ -169,7 +177,7 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
 
     const newUpdated: { id: string; title: string }[] = [];
     const newFailed: { id: string; title: string }[] = [];
-    const { receivedDone } = await runPushCascade({ type: "wct", id: entry.id }, (ev) => {
+    const { receivedDone } = await runPushCascade({ type: "wct", id: entry.id, pendingText: text, pendingSubtext: subtext }, (ev) => {
       setUpdateLog((prev) => [...prev, { title: ev.title, status: ev.status }]);
       if (!ev.id) return;
       (ev.status === "updated" ? newUpdated : newFailed).push({ id: ev.id, title: ev.title });
@@ -191,8 +199,8 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
     const newUpdated: { id: string; title: string }[] = [];
     const stillFailed: { id: string; title: string }[] = [];
     const body = pushReverting
-      ? { type: "wct", id: entry.id, revertIds: failedIds.map((p) => p.id) }
-      : { type: "wct", id: entry.id, retryIds: failedIds.map((p) => p.id) };
+      ? { type: "wct", id: entry.id, revertIds: failedIds.map((p) => p.id), pendingText: text, pendingSubtext: subtext }
+      : { type: "wct", id: entry.id, retryIds: failedIds.map((p) => p.id), pendingText: text, pendingSubtext: subtext };
     await runPushCascade(body, (ev) => {
       setUpdateLog((prev) => [...prev, { title: ev.title, status: ev.status }]);
       if (!ev.id) return;
@@ -215,7 +223,7 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
     setUpdateLog([]);
 
     const stillFailed: { id: string; title: string }[] = [];
-    await runPushCascade({ type: "wct", id: entry.id, revertIds: updatedIds.map((p) => p.id) }, (ev) => {
+    await runPushCascade({ type: "wct", id: entry.id, revertIds: updatedIds.map((p) => p.id), pendingText: text, pendingSubtext: subtext }, (ev) => {
       setUpdateLog((prev) => [...prev, { title: ev.title, status: ev.status }]);
       if (ev.id && ev.status === "error") stillFailed.push({ id: ev.id, title: ev.title });
     });
@@ -320,6 +328,9 @@ function WCTEditModal({ entry, onClose, onSaved, taxonomy }: WCTEditModalProps) 
           canUpdate={textChanged}
           onUpdate={handleUpdate}
           onDismiss={() => {
+            // "Do Not Update Products" — the change is still committed to the
+            // library, just without pushing it out to currently-live products.
+            if (findPhase === "found" && textChanged) commitWithoutPush();
             setFindPhase("idle"); setFoundProducts([]); setUpdateLog([]); setUpdateResult(null);
             setUpdatedIds([]); setFailedIds([]); setPushReverting(false);
           }}
@@ -724,7 +735,18 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
       return true;
     }
 
-    // Edit existing phrase
+    // Edit existing phrase: changing the phrase text affects live product bullets,
+    // so don't commit yet — find affected products first. The change (and any other
+    // field edited alongside it) is only persisted once those products are updated,
+    // or the user explicitly chooses not to update them (commitWithoutPush below).
+    if (phraseChangedSinceOpen) {
+      setSaving(false);
+      await handleFind();
+      return true;
+    }
+
+    // No phrase change — safe to commit immediately (icon changes already commit
+    // on selection via handleIconSelect; this covers category/price/etc.).
     const res = await fetch("/api/library/entry", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -745,14 +767,40 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
     });
     setSaving(false);
     if (!res.ok) { setSaveError("Save failed"); return false; }
-    const previousPhrase = entry!._edit?.searchPhrase ?? entry!.phrase;
-    if (phrase.trim() !== previousPhrase) setJustSaved(true);
     setSavedConfirm(true);
     setTimeout(() => setSavedConfirm(false), 2000);
     if (filterByInterest && !originalFilterByInterest) setShowKeywordsReminder(true);
-    if (phraseChangedSinceOpen || iconChangedSinceOpen) handleFind();
+    if (iconChangedSinceOpen) handleFind();
     onSaved();
     return true;
+  }
+
+  async function commitWithoutPush() {
+    if (!entry || !phraseChangedSinceOpen) return;
+    const res = await fetch("/api/library/entry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "pf",
+        entry: {
+          id: entry.id,
+          phrase,
+          icon: currentIcon,
+          category,
+          timeSensitive,
+          filterByInterest,
+          minPrice: minPrice !== "" ? parseFloat(minPrice) : null,
+          maxPrice: maxPrice !== "" ? parseFloat(maxPrice) : null,
+          searchPhrase: entry._edit?.searchPhrase ?? entry.phrase,
+        },
+      }),
+    });
+    if (!res.ok) { setSaveError("Save failed"); return; }
+    setJustSaved(true);
+    setSavedConfirm(true);
+    setTimeout(() => setSavedConfirm(false), 2000);
+    if (filterByInterest && !originalFilterByInterest) setShowKeywordsReminder(true);
+    onSaved();
   }
 
   async function handleIconSelect(icon: string) {
@@ -801,7 +849,7 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
     try {
       const res = await fetch("/api/library/find", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "pf", id: entry.id }),
+        body: JSON.stringify({ type: "pf", id: entry.id, pendingPhrase: phrase }),
       });
       const data = res.ok ? await res.json() : { products: [] };
       setFoundProducts(data.products ?? []);
@@ -811,9 +859,7 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
 
   async function handleFindClick() {
     if (!entry) return;
-    const ok = await handleSave();
-    if (!ok) return;
-    if (!phraseChangedSinceOpen && !iconChangedSinceOpen) handleFind();
+    await handleFind();
   }
 
   function runPushCascade(
@@ -833,7 +879,7 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
 
     const newUpdated: { id: string; title: string; originalIcon?: string }[] = [];
     const newFailed: { id: string; title: string; originalIcon?: string }[] = [];
-    const { receivedDone } = await runPushCascade({ type: "pf", id: entry.id }, (ev) => {
+    const { receivedDone } = await runPushCascade({ type: "pf", id: entry.id, pendingPhrase: phrase }, (ev) => {
       setUpdateLog((prev) => [...prev, { title: ev.title, status: ev.status }]);
       if (!ev.id) return;
       const item = { id: ev.id, title: ev.title, originalIcon: ev.originalIcon as string | undefined };
@@ -857,12 +903,12 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
     const stillFailed: { id: string; title: string; originalIcon?: string }[] = [];
     const body = pushReverting
       ? {
-          type: "pf", id: entry.id, revertIds: failedIds.map((p) => p.id),
+          type: "pf", id: entry.id, revertIds: failedIds.map((p) => p.id), pendingPhrase: phrase,
           revertIcons: Object.fromEntries(
             failedIds.filter((p) => p.originalIcon !== undefined).map((p) => [p.id, p.originalIcon])
           ),
         }
-      : { type: "pf", id: entry.id, retryIds: failedIds.map((p) => p.id) };
+      : { type: "pf", id: entry.id, retryIds: failedIds.map((p) => p.id), pendingPhrase: phrase };
     await runPushCascade(body, (ev) => {
       setUpdateLog((prev) => [...prev, { title: ev.title, status: ev.status }]);
       if (!ev.id) return;
@@ -889,7 +935,7 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
     const revertIcons = Object.fromEntries(
       updatedIds.filter((p) => p.originalIcon !== undefined).map((p) => [p.id, p.originalIcon])
     );
-    await runPushCascade({ type: "pf", id: entry.id, revertIds: updatedIds.map((p) => p.id), revertIcons }, (ev) => {
+    await runPushCascade({ type: "pf", id: entry.id, revertIds: updatedIds.map((p) => p.id), revertIcons, pendingPhrase: phrase }, (ev) => {
       setUpdateLog((prev) => [...prev, { title: ev.title, status: ev.status }]);
       if (ev.id && ev.status === "error") {
         const original = updatedIds.find((p) => p.id === ev.id);
@@ -1150,6 +1196,9 @@ function PFEditModal({ entry, onClose, onSaved, taxonomy }: PFEditModalProps) {
           canUpdate={phraseChangedSinceOpen || iconChangedSinceOpen}
           onUpdate={handleUpdate}
           onDismiss={() => {
+            // "Do Not Update Products" — the phrase change is still committed to
+            // the library, just without pushing it out to currently-live products.
+            if (findPhase === "found" && phraseChangedSinceOpen) commitWithoutPush();
             setFindPhase("idle"); setFoundProducts([]); setUpdateLog([]); setUpdateResult(null);
             setUpdatedIds([]); setFailedIds([]); setPushReverting(false);
           }}
@@ -1363,8 +1412,8 @@ function WctTable({ entries, loading, onEdit }: { entries: WCTRow[]; loading: bo
     <table className="w-full text-sm">
       <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
         <tr>
-          <th className="px-4 py-3 text-left font-medium text-gray-600 text-xs uppercase tracking-wide">Type</th>
-          <th className="px-4 py-3 text-left font-medium text-gray-600 text-xs uppercase tracking-wide">Style</th>
+          <th className="px-4 py-3 text-left font-medium text-gray-600 text-xs uppercase tracking-wide w-48">Type</th>
+          <th className="px-4 py-3 text-left font-medium text-gray-600 text-xs uppercase tracking-wide w-48">Style</th>
           <th className="px-4 py-3 text-left font-medium text-gray-600 text-xs uppercase tracking-wide w-40">Category</th>
           <th className="px-4 py-3 text-left font-medium text-gray-600 text-xs uppercase tracking-wide">Text</th>
           <th className="px-4 py-3 text-left font-medium text-gray-600 text-xs uppercase tracking-wide">Subtext</th>
@@ -1376,8 +1425,8 @@ function WctTable({ entries, loading, onEdit }: { entries: WCTRow[]; loading: bo
         {!loading && entries.length === 0 && <tr><td colSpan={6} className="px-4 py-10 text-center text-gray-400">No entries found</td></tr>}
         {entries.map((e) => (
           <tr key={e.id} onClick={() => onEdit(e)} className="group cursor-pointer hover:bg-gray-50">
-            <td className="px-4 py-3 text-gray-500">{e.productType}</td>
-            <td className="px-4 py-3 text-gray-500">{e.productStyle}</td>
+            <td className="px-4 py-3 text-gray-500 w-48 whitespace-nowrap">{e.productType}</td>
+            <td className="px-4 py-3 text-gray-500 w-48 whitespace-nowrap">{e.productStyle}</td>
             <td className="px-4 py-3 w-40"><span className="px-2 py-0.5 rounded-full text-sm bg-blue-50 text-blue-700 whitespace-nowrap">{e.category}</span></td>
             <td className="px-4 py-3 font-medium text-gray-900">{e.text}</td>
             <td className="px-4 py-3 text-gray-500">{e.subtext}</td>
