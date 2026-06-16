@@ -48,10 +48,17 @@ describe("POST /api/library/entry (WCT)", () => {
     expect(upsertWCTEdit).toHaveBeenCalled();
   });
 
-  it("updates existing base WCT entry preserving searchFormatted from base library", async () => {
-    const baseWCT = await import("@/data/why-choose-this.json");
-    const firstId = (baseWCT.default as Array<{ id: string; text: string; subtext: string }>)[0]?.id;
-    if (!firstId) return;
+  it("updates existing WCT entry preserving searchFormatted from the stored edit", async () => {
+    const firstId = "wct-001";
+    vi.mocked(getLibraryEdits).mockResolvedValue({
+      ...emptyEdits,
+      wct: {
+        [firstId]: {
+          id: firstId, productType: "Home", productStyle: "Minimal", category: "Stands Out",
+          text: "Old text", subtext: "old sub", searchFormatted: "<strong>Old text</strong> old sub", isNew: false,
+        },
+      },
+    } as never);
 
     const req = new NextRequest("http://localhost/api/library/entry", {
       method: "POST",

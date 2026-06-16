@@ -1,1052 +1,1055 @@
-[
-  {
-    "id": "pf-001",
-    "phraseId": "phrase-001",
-    "productType": "Bags & Purses",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-002",
-    "phraseId": "phrase-002",
-    "productType": "Bags & Purses",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-003",
-    "phraseId": "phrase-003",
-    "productType": "Bags & Purses",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-004",
-    "phraseId": "phrase-004",
-    "productType": "Bags & Purses",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-005",
-    "phraseId": "phrase-005",
-    "productType": "Bags & Purses",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-006",
-    "phraseId": "phrase-006",
-    "productType": "Bags & Purses",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-007",
-    "phraseId": "phrase-007",
-    "productType": "Bags & Purses",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-008",
-    "phraseId": "phrase-008",
-    "productType": "Bags & Purses",
-    "productStyle": "Bold/Colourful",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-009",
-    "phraseId": "phrase-009",
-    "productType": "Bags & Purses",
-    "productStyle": "Bold/Colourful",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-010",
-    "phraseId": "phrase-010",
-    "productType": "Bags & Purses",
-    "productStyle": "Elegant",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-011",
-    "phraseId": "phrase-011",
-    "productType": "Bags & Purses",
-    "productStyle": "Elegant",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-012",
-    "phraseId": "phrase-010",
-    "productType": "Bags & Purses",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-013",
-    "phraseId": "phrase-011",
-    "productType": "Bags & Purses",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-014",
-    "phraseId": "phrase-012",
-    "productType": "Bags & Purses",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-015",
-    "phraseId": "phrase-012",
-    "productType": "Bags & Purses",
-    "productStyle": "Practical",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-016",
-    "phraseId": "phrase-001",
-    "productType": "Books & Stationery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-017",
-    "phraseId": "phrase-013",
-    "productType": "Books & Stationery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-018",
-    "phraseId": "phrase-014",
-    "productType": "Books & Stationery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-019",
-    "phraseId": "phrase-006",
-    "productType": "Books & Stationery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-020",
-    "phraseId": "phrase-015",
-    "productType": "Books & Stationery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-021",
-    "phraseId": "phrase-012",
-    "productType": "Books & Stationery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-022",
-    "phraseId": "phrase-016",
-    "productType": "Books & Stationery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-023",
-    "phraseId": "phrase-001",
-    "productType": "Candles / Diffusers",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-024",
-    "phraseId": "phrase-013",
-    "productType": "Candles / Diffusers",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-025",
-    "phraseId": "phrase-003",
-    "productType": "Candles / Diffusers",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-026",
-    "phraseId": "phrase-006",
-    "productType": "Candles / Diffusers",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-027",
-    "phraseId": "phrase-015",
-    "productType": "Candles / Diffusers",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-028",
-    "phraseId": "phrase-017",
-    "productType": "Candles / Diffusers",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-029",
-    "phraseId": "phrase-016",
-    "productType": "Candles / Diffusers",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-030",
-    "phraseId": "phrase-018",
-    "productType": "Children",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-031",
-    "phraseId": "phrase-001",
-    "productType": "Children",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-032",
-    "phraseId": "phrase-019",
-    "productType": "Children",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-033",
-    "phraseId": "phrase-020",
-    "productType": "Children",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-034",
-    "phraseId": "phrase-021",
-    "productType": "Children",
-    "productStyle": "Classic/Timeless",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-035",
-    "phraseId": "phrase-022",
-    "productType": "Children",
-    "productStyle": "Classic/Timeless",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-036",
-    "phraseId": "phrase-023",
-    "productType": "Children",
-    "productStyle": "Creative",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-037",
-    "phraseId": "phrase-024",
-    "productType": "Children",
-    "productStyle": "Creative",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-038",
-    "phraseId": "phrase-025",
-    "productType": "Children",
-    "productStyle": "Playful",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-039",
-    "phraseId": "phrase-018",
-    "productType": "Children's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-040",
-    "phraseId": "phrase-001",
-    "productType": "Children's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-041",
-    "phraseId": "phrase-019",
-    "productType": "Children's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-042",
-    "phraseId": "phrase-026",
-    "productType": "Children's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-043",
-    "phraseId": "phrase-027",
-    "productType": "Children's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-044",
-    "phraseId": "phrase-020",
-    "productType": "Children's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-045",
-    "phraseId": "phrase-028",
-    "productType": "Children's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-046",
-    "phraseId": "phrase-029",
-    "productType": "Children's Jewellery",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-047",
-    "phraseId": "phrase-030",
-    "productType": "Children's Jewellery",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-048",
-    "phraseId": "phrase-031",
-    "productType": "Children's Jewellery",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-049",
-    "phraseId": "phrase-032",
-    "productType": "Children's Jewellery",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-050",
-    "phraseId": "phrase-033",
-    "productType": "Children's jewellery",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-054",
-    "phraseId": "phrase-006",
-    "productType": "Fairy Lights",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-055",
-    "phraseId": "phrase-017",
-    "productType": "Fairy Lights",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-056",
-    "phraseId": "phrase-034",
-    "productType": "Furniture & Lighting",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-057",
-    "phraseId": "phrase-035",
-    "productType": "Furniture & Lighting",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-058",
-    "phraseId": "phrase-010",
-    "productType": "Furniture & Lighting",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-059",
-    "phraseId": "phrase-036",
-    "productType": "Furniture & Lighting",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-060",
-    "phraseId": "phrase-037",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Minimal",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-061",
-    "phraseId": "phrase-038",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Statement",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-062",
-    "phraseId": "phrase-016",
-    "productType": "Greetings Cards",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-063",
-    "phraseId": "phrase-001",
-    "productType": "Greetings Cards",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-064",
-    "phraseId": "phrase-013",
-    "productType": "Greetings Cards",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-065",
-    "phraseId": "phrase-004",
-    "productType": "Greetings Cards",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-066",
-    "phraseId": "phrase-039",
-    "productType": "Greetings Cards",
-    "productStyle": "Nature",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-067",
-    "phraseId": "phrase-040",
-    "productType": "Greetings Cards",
-    "productStyle": "Novelty/Humorous",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-068",
-    "phraseId": "phrase-041",
-    "productType": "Greetings Cards",
-    "productStyle": "Novelty/Humorous",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-069",
-    "phraseId": "phrase-034",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-070",
-    "phraseId": "phrase-042",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-071",
-    "phraseId": "phrase-016",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-072",
-    "phraseId": "phrase-001",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-073",
-    "phraseId": "phrase-013",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-074",
-    "phraseId": "phrase-003",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-075",
-    "phraseId": "phrase-004",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-076",
-    "phraseId": "phrase-043",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-077",
-    "phraseId": "phrase-010",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-078",
-    "phraseId": "phrase-005",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-079",
-    "phraseId": "phrase-044",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-080",
-    "phraseId": "phrase-045",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-081",
-    "phraseId": "phrase-006",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-082",
-    "phraseId": "phrase-046",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-083",
-    "phraseId": "phrase-015",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-084",
-    "phraseId": "phrase-012",
-    "productType": "Home",
-    "productStyle": "ALL",
-    "applicabilityCount": 6
-  },
-  {
-    "id": "pf-085",
-    "phraseId": "phrase-047",
-    "productType": "Home",
-    "productStyle": "Bold/Colourful",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-087",
-    "phraseId": "phrase-048",
-    "productType": "Home",
-    "productStyle": "Bold/Colourful",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-088",
-    "phraseId": "phrase-049",
-    "productType": "Home",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-089",
-    "phraseId": "phrase-050",
-    "productType": "Home",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-090",
-    "phraseId": "phrase-051",
-    "productType": "Home",
-    "productStyle": "Classic/Timeless",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-091",
-    "phraseId": "phrase-052",
-    "productType": "Home",
-    "productStyle": "Classic/Timeless",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-092",
-    "phraseId": "phrase-053",
-    "productType": "Home",
-    "productStyle": "Classic/Timeless",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-093",
-    "phraseId": "phrase-039",
-    "productType": "Home",
-    "productStyle": "Earthy/Natural",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-094",
-    "phraseId": "phrase-054",
-    "productType": "Home",
-    "productStyle": "EcoFriendly",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-095",
-    "phraseId": "phrase-037",
-    "productType": "Home",
-    "productStyle": "Minimal",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-096",
-    "phraseId": "phrase-040",
-    "productType": "Home",
-    "productStyle": "Playful",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-097",
-    "phraseId": "phrase-023",
-    "productType": "Home",
-    "productStyle": "Playful",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-098",
-    "phraseId": "phrase-001",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-099",
-    "phraseId": "phrase-055",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-100",
-    "phraseId": "phrase-002",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-101",
-    "phraseId": "phrase-013",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-102",
-    "phraseId": "phrase-029",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-103",
-    "phraseId": "phrase-056",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-104",
-    "phraseId": "phrase-057",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-105",
-    "phraseId": "phrase-058",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-106",
-    "phraseId": "phrase-007",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-107",
-    "phraseId": "phrase-059",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-108",
-    "phraseId": "phrase-060",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-109",
-    "phraseId": "phrase-061",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-110",
-    "phraseId": "phrase-062",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-111",
-    "phraseId": "phrase-063",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Modern",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-112",
-    "phraseId": "phrase-017",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Modern",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-113",
-    "phraseId": "phrase-038",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-114",
-    "phraseId": "phrase-033",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-115",
-    "phraseId": "phrase-064",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-116",
-    "phraseId": "phrase-061",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-117",
-    "phraseId": "phrase-062",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-118",
-    "phraseId": "phrase-017",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-119",
-    "phraseId": "phrase-065",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 3
-  },
-  {
-    "id": "pf-120",
-    "phraseId": "phrase-001",
-    "productType": "Personalised Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-121",
-    "phraseId": "phrase-030",
-    "productType": "Personalised Accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 2
-  },
-  {
-    "id": "pf-122",
-    "phraseId": "phrase-043",
-    "productType": "Personalised accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 0
-  },
-  {
-    "id": "pf-123",
-    "phraseId": "phrase-006",
-    "productType": "Personalised accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 0
-  },
-  {
-    "id": "pf-124",
-    "phraseId": "phrase-015",
-    "productType": "Personalised accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 0
-  },
-  {
-    "id": "pf-125",
-    "phraseId": "phrase-066",
-    "productType": "Personalised accessories",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-126",
-    "phraseId": "phrase-049",
-    "productType": "Personalised accessories",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-127",
-    "phraseId": "phrase-067",
-    "productType": "Personalised accessories",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-128",
-    "phraseId": "phrase-068",
-    "productType": "Personalised Accessories",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-129",
-    "phraseId": "phrase-044",
-    "productType": "Personalised accessories",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-130",
-    "phraseId": "phrase-050",
-    "productType": "Personalised Accessories",
-    "productStyle": "Classic",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-131",
-    "phraseId": "phrase-066",
-    "productType": "Personalised accessories",
-    "productStyle": "Novelty",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-132",
-    "phraseId": "phrase-067",
-    "productType": "Personalised accessories",
-    "productStyle": "Novelty",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-133",
-    "phraseId": "phrase-044",
-    "productType": "Personalised accessories",
-    "productStyle": "Novelty",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-134",
-    "phraseId": "phrase-065",
-    "productType": "Personalised accessories",
-    "productStyle": "ALL",
-    "applicabilityCount": 0
-  },
-  {
-    "id": "pf-135",
-    "phraseId": "phrase-016",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-136",
-    "phraseId": "phrase-051",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-137",
-    "phraseId": "phrase-001",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-138",
-    "phraseId": "phrase-002",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-139",
-    "phraseId": "phrase-013",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-140",
-    "phraseId": "phrase-029",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-141",
-    "phraseId": "phrase-003",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-142",
-    "phraseId": "phrase-010",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-143",
-    "phraseId": "phrase-011",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-144",
-    "phraseId": "phrase-006",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-145",
-    "phraseId": "phrase-017",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-146",
-    "phraseId": "phrase-007",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  },
-  {
-    "id": "pf-147",
-    "phraseId": "phrase-011",
-    "productType": "Women's Jewellery",
-    "productStyle": "Dainty",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-148",
-    "phraseId": "phrase-037",
-    "productType": "Women's Jewellery",
-    "productStyle": "Minimal",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-149",
-    "phraseId": "phrase-018",
-    "productType": "Women's Jewellery",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-150",
-    "phraseId": "phrase-068",
-    "productType": "Women's Jewellery",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-151",
-    "phraseId": "phrase-033",
-    "productType": "Women's Jewellery",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-152",
-    "phraseId": "phrase-043",
-    "productType": "Women's Jewellery",
-    "productStyle": "Personalised",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-153",
-    "phraseId": "phrase-038",
-    "productType": "Women's Jewellery",
-    "productStyle": "Statement",
-    "applicabilityCount": 1
-  },
-  {
-    "id": "pf-154",
-    "phraseId": "phrase-065",
-    "productType": "Women's Jewellery",
-    "productStyle": "ALL",
-    "applicabilityCount": 4
-  }
-]
+{
+  "_comment": "DEPRECATED: no longer read at runtime. Base library data was migrated into the pdp_library_edits Shopify metaobject (see plans/migrate-library-to-metaobject.md and scripts/migrate-library-to-metaobject.mjs). Kept here for historical reference only.",
+  "data": [
+    {
+      "id": "pf-001",
+      "phraseId": "phrase-001",
+      "productType": "Bags & Purses",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-002",
+      "phraseId": "phrase-002",
+      "productType": "Bags & Purses",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-003",
+      "phraseId": "phrase-003",
+      "productType": "Bags & Purses",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-004",
+      "phraseId": "phrase-004",
+      "productType": "Bags & Purses",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-005",
+      "phraseId": "phrase-005",
+      "productType": "Bags & Purses",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-006",
+      "phraseId": "phrase-006",
+      "productType": "Bags & Purses",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-007",
+      "phraseId": "phrase-007",
+      "productType": "Bags & Purses",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-008",
+      "phraseId": "phrase-008",
+      "productType": "Bags & Purses",
+      "productStyle": "Bold/Colourful",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-009",
+      "phraseId": "phrase-009",
+      "productType": "Bags & Purses",
+      "productStyle": "Bold/Colourful",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-010",
+      "phraseId": "phrase-010",
+      "productType": "Bags & Purses",
+      "productStyle": "Elegant",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-011",
+      "phraseId": "phrase-011",
+      "productType": "Bags & Purses",
+      "productStyle": "Elegant",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-012",
+      "phraseId": "phrase-010",
+      "productType": "Bags & Purses",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-013",
+      "phraseId": "phrase-011",
+      "productType": "Bags & Purses",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-014",
+      "phraseId": "phrase-012",
+      "productType": "Bags & Purses",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-015",
+      "phraseId": "phrase-012",
+      "productType": "Bags & Purses",
+      "productStyle": "Practical",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-016",
+      "phraseId": "phrase-001",
+      "productType": "Books & Stationery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-017",
+      "phraseId": "phrase-013",
+      "productType": "Books & Stationery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-018",
+      "phraseId": "phrase-014",
+      "productType": "Books & Stationery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-019",
+      "phraseId": "phrase-006",
+      "productType": "Books & Stationery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-020",
+      "phraseId": "phrase-015",
+      "productType": "Books & Stationery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-021",
+      "phraseId": "phrase-012",
+      "productType": "Books & Stationery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-022",
+      "phraseId": "phrase-016",
+      "productType": "Books & Stationery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-023",
+      "phraseId": "phrase-001",
+      "productType": "Candles / Diffusers",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-024",
+      "phraseId": "phrase-013",
+      "productType": "Candles / Diffusers",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-025",
+      "phraseId": "phrase-003",
+      "productType": "Candles / Diffusers",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-026",
+      "phraseId": "phrase-006",
+      "productType": "Candles / Diffusers",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-027",
+      "phraseId": "phrase-015",
+      "productType": "Candles / Diffusers",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-028",
+      "phraseId": "phrase-017",
+      "productType": "Candles / Diffusers",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-029",
+      "phraseId": "phrase-016",
+      "productType": "Candles / Diffusers",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-030",
+      "phraseId": "phrase-018",
+      "productType": "Children",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-031",
+      "phraseId": "phrase-001",
+      "productType": "Children",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-032",
+      "phraseId": "phrase-019",
+      "productType": "Children",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-033",
+      "phraseId": "phrase-020",
+      "productType": "Children",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-034",
+      "phraseId": "phrase-021",
+      "productType": "Children",
+      "productStyle": "Classic/Timeless",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-035",
+      "phraseId": "phrase-022",
+      "productType": "Children",
+      "productStyle": "Classic/Timeless",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-036",
+      "phraseId": "phrase-023",
+      "productType": "Children",
+      "productStyle": "Creative",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-037",
+      "phraseId": "phrase-024",
+      "productType": "Children",
+      "productStyle": "Creative",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-038",
+      "phraseId": "phrase-025",
+      "productType": "Children",
+      "productStyle": "Playful",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-039",
+      "phraseId": "phrase-018",
+      "productType": "Children's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-040",
+      "phraseId": "phrase-001",
+      "productType": "Children's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-041",
+      "phraseId": "phrase-019",
+      "productType": "Children's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-042",
+      "phraseId": "phrase-026",
+      "productType": "Children's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-043",
+      "phraseId": "phrase-027",
+      "productType": "Children's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-044",
+      "phraseId": "phrase-020",
+      "productType": "Children's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-045",
+      "phraseId": "phrase-028",
+      "productType": "Children's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-046",
+      "phraseId": "phrase-029",
+      "productType": "Children's Jewellery",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-047",
+      "phraseId": "phrase-030",
+      "productType": "Children's Jewellery",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-048",
+      "phraseId": "phrase-031",
+      "productType": "Children's Jewellery",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-049",
+      "phraseId": "phrase-032",
+      "productType": "Children's Jewellery",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-050",
+      "phraseId": "phrase-033",
+      "productType": "Children's jewellery",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-054",
+      "phraseId": "phrase-006",
+      "productType": "Fairy Lights",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-055",
+      "phraseId": "phrase-017",
+      "productType": "Fairy Lights",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-056",
+      "phraseId": "phrase-034",
+      "productType": "Furniture & Lighting",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-057",
+      "phraseId": "phrase-035",
+      "productType": "Furniture & Lighting",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-058",
+      "phraseId": "phrase-010",
+      "productType": "Furniture & Lighting",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-059",
+      "phraseId": "phrase-036",
+      "productType": "Furniture & Lighting",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-060",
+      "phraseId": "phrase-037",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Minimal",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-061",
+      "phraseId": "phrase-038",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Statement",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-062",
+      "phraseId": "phrase-016",
+      "productType": "Greetings Cards",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-063",
+      "phraseId": "phrase-001",
+      "productType": "Greetings Cards",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-064",
+      "phraseId": "phrase-013",
+      "productType": "Greetings Cards",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-065",
+      "phraseId": "phrase-004",
+      "productType": "Greetings Cards",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-066",
+      "phraseId": "phrase-039",
+      "productType": "Greetings Cards",
+      "productStyle": "Nature",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-067",
+      "phraseId": "phrase-040",
+      "productType": "Greetings Cards",
+      "productStyle": "Novelty/Humorous",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-068",
+      "phraseId": "phrase-041",
+      "productType": "Greetings Cards",
+      "productStyle": "Novelty/Humorous",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-069",
+      "phraseId": "phrase-034",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-070",
+      "phraseId": "phrase-042",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-071",
+      "phraseId": "phrase-016",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-072",
+      "phraseId": "phrase-001",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-073",
+      "phraseId": "phrase-013",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-074",
+      "phraseId": "phrase-003",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-075",
+      "phraseId": "phrase-004",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-076",
+      "phraseId": "phrase-043",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-077",
+      "phraseId": "phrase-010",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-078",
+      "phraseId": "phrase-005",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-079",
+      "phraseId": "phrase-044",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-080",
+      "phraseId": "phrase-045",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-081",
+      "phraseId": "phrase-006",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-082",
+      "phraseId": "phrase-046",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-083",
+      "phraseId": "phrase-015",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-084",
+      "phraseId": "phrase-012",
+      "productType": "Home",
+      "productStyle": "ALL",
+      "applicabilityCount": 6
+    },
+    {
+      "id": "pf-085",
+      "phraseId": "phrase-047",
+      "productType": "Home",
+      "productStyle": "Bold/Colourful",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-087",
+      "phraseId": "phrase-048",
+      "productType": "Home",
+      "productStyle": "Bold/Colourful",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-088",
+      "phraseId": "phrase-049",
+      "productType": "Home",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-089",
+      "phraseId": "phrase-050",
+      "productType": "Home",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-090",
+      "phraseId": "phrase-051",
+      "productType": "Home",
+      "productStyle": "Classic/Timeless",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-091",
+      "phraseId": "phrase-052",
+      "productType": "Home",
+      "productStyle": "Classic/Timeless",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-092",
+      "phraseId": "phrase-053",
+      "productType": "Home",
+      "productStyle": "Classic/Timeless",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-093",
+      "phraseId": "phrase-039",
+      "productType": "Home",
+      "productStyle": "Earthy/Natural",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-094",
+      "phraseId": "phrase-054",
+      "productType": "Home",
+      "productStyle": "EcoFriendly",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-095",
+      "phraseId": "phrase-037",
+      "productType": "Home",
+      "productStyle": "Minimal",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-096",
+      "phraseId": "phrase-040",
+      "productType": "Home",
+      "productStyle": "Playful",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-097",
+      "phraseId": "phrase-023",
+      "productType": "Home",
+      "productStyle": "Playful",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-098",
+      "phraseId": "phrase-001",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-099",
+      "phraseId": "phrase-055",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-100",
+      "phraseId": "phrase-002",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-101",
+      "phraseId": "phrase-013",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-102",
+      "phraseId": "phrase-029",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-103",
+      "phraseId": "phrase-056",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-104",
+      "phraseId": "phrase-057",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-105",
+      "phraseId": "phrase-058",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-106",
+      "phraseId": "phrase-007",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-107",
+      "phraseId": "phrase-059",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-108",
+      "phraseId": "phrase-060",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-109",
+      "phraseId": "phrase-061",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-110",
+      "phraseId": "phrase-062",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-111",
+      "phraseId": "phrase-063",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Modern",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-112",
+      "phraseId": "phrase-017",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Modern",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-113",
+      "phraseId": "phrase-038",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-114",
+      "phraseId": "phrase-033",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-115",
+      "phraseId": "phrase-064",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-116",
+      "phraseId": "phrase-061",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-117",
+      "phraseId": "phrase-062",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-118",
+      "phraseId": "phrase-017",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-119",
+      "phraseId": "phrase-065",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 3
+    },
+    {
+      "id": "pf-120",
+      "phraseId": "phrase-001",
+      "productType": "Personalised Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-121",
+      "phraseId": "phrase-030",
+      "productType": "Personalised Accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 2
+    },
+    {
+      "id": "pf-122",
+      "phraseId": "phrase-043",
+      "productType": "Personalised accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 0
+    },
+    {
+      "id": "pf-123",
+      "phraseId": "phrase-006",
+      "productType": "Personalised accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 0
+    },
+    {
+      "id": "pf-124",
+      "phraseId": "phrase-015",
+      "productType": "Personalised accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 0
+    },
+    {
+      "id": "pf-125",
+      "phraseId": "phrase-066",
+      "productType": "Personalised accessories",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-126",
+      "phraseId": "phrase-049",
+      "productType": "Personalised accessories",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-127",
+      "phraseId": "phrase-067",
+      "productType": "Personalised accessories",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-128",
+      "phraseId": "phrase-068",
+      "productType": "Personalised Accessories",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-129",
+      "phraseId": "phrase-044",
+      "productType": "Personalised accessories",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-130",
+      "phraseId": "phrase-050",
+      "productType": "Personalised Accessories",
+      "productStyle": "Classic",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-131",
+      "phraseId": "phrase-066",
+      "productType": "Personalised accessories",
+      "productStyle": "Novelty",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-132",
+      "phraseId": "phrase-067",
+      "productType": "Personalised accessories",
+      "productStyle": "Novelty",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-133",
+      "phraseId": "phrase-044",
+      "productType": "Personalised accessories",
+      "productStyle": "Novelty",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-134",
+      "phraseId": "phrase-065",
+      "productType": "Personalised accessories",
+      "productStyle": "ALL",
+      "applicabilityCount": 0
+    },
+    {
+      "id": "pf-135",
+      "phraseId": "phrase-016",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-136",
+      "phraseId": "phrase-051",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-137",
+      "phraseId": "phrase-001",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-138",
+      "phraseId": "phrase-002",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-139",
+      "phraseId": "phrase-013",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-140",
+      "phraseId": "phrase-029",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-141",
+      "phraseId": "phrase-003",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-142",
+      "phraseId": "phrase-010",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-143",
+      "phraseId": "phrase-011",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-144",
+      "phraseId": "phrase-006",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-145",
+      "phraseId": "phrase-017",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-146",
+      "phraseId": "phrase-007",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    },
+    {
+      "id": "pf-147",
+      "phraseId": "phrase-011",
+      "productType": "Women's Jewellery",
+      "productStyle": "Dainty",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-148",
+      "phraseId": "phrase-037",
+      "productType": "Women's Jewellery",
+      "productStyle": "Minimal",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-149",
+      "phraseId": "phrase-018",
+      "productType": "Women's Jewellery",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-150",
+      "phraseId": "phrase-068",
+      "productType": "Women's Jewellery",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-151",
+      "phraseId": "phrase-033",
+      "productType": "Women's Jewellery",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-152",
+      "phraseId": "phrase-043",
+      "productType": "Women's Jewellery",
+      "productStyle": "Personalised",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-153",
+      "phraseId": "phrase-038",
+      "productType": "Women's Jewellery",
+      "productStyle": "Statement",
+      "applicabilityCount": 1
+    },
+    {
+      "id": "pf-154",
+      "phraseId": "phrase-065",
+      "productType": "Women's Jewellery",
+      "productStyle": "ALL",
+      "applicabilityCount": 4
+    }
+  ]
+}

@@ -1,11 +1,10 @@
 import fs from "fs/promises";
 import path from "path";
 import { shopifyGraphQL } from "./shopify";
-import wctBaseData from "@/data/why-choose-this.json";
-import pfApplicabilityBaseData from "@/data/pf-applicability.json";
 
 const TYPE = "pdp_library_edits";
-const FIELD_KEY = "edits_json";
+const WCT_FIELD_KEY = "edits_json";
+const PF_FIELD_KEY = "pf_json";
 const EDITS_PATH = path.join(process.cwd(), "data", "library-edits.json");
 
 const QUERY = `
@@ -39,7 +38,10 @@ const CREATE_DEF = `
     metaobjectDefinitionCreate(definition: {
       type: "${TYPE}",
       name: "PDP Library Edits",
-      fieldDefinitions: [{ name: "Edits JSON", key: "${FIELD_KEY}", type: "multi_line_text_field" }]
+      fieldDefinitions: [
+        { name: "Edits JSON", key: "${WCT_FIELD_KEY}", type: "multi_line_text_field" },
+        { name: "PF JSON", key: "${PF_FIELD_KEY}", type: "multi_line_text_field" }
+      ]
     }) {
       metaobjectDefinition { id }
       userErrors { field message }
@@ -101,12 +103,12 @@ let _editsCache: LibraryEdits | null = null;
 let _nodeId: string | null = null;
 let _cacheExpiry = 0;
 
-function normalise(parsed: Partial<LibraryEdits>): LibraryEdits {
+function normalise(wctParsed: Partial<LibraryEdits>, pfParsed: Partial<LibraryEdits>): LibraryEdits {
   return {
-    wct: parsed.wct ?? {},
-    pfPhrases: parsed.pfPhrases ?? {},
-    pfApplicability: parsed.pfApplicability ?? {},
-    uploadedIcons: parsed.uploadedIcons ?? [],
+    wct: wctParsed.wct ?? {},
+    pfPhrases: pfParsed.pfPhrases ?? {},
+    pfApplicability: pfParsed.pfApplicability ?? {},
+    uploadedIcons: pfParsed.uploadedIcons ?? [],
   };
 }
 
@@ -119,15 +121,16 @@ export async function getLibraryEdits(): Promise<LibraryEdits> {
     const node = data.metaobjects.nodes[0] ?? null;
     if (node) {
       _nodeId = node.id;
-      const field = node.fields.find((f) => f.key === FIELD_KEY);
-      if (field?.value) {
-        try {
-          _editsCache = normalise(JSON.parse(field.value) as Partial<LibraryEdits>);
-          _cacheExpiry = Date.now() + CACHE_TTL_MS;
-          return _editsCache;
-        } catch {}
-      }
-      // Node exists but field is empty — treat as blank store
+      const wctField = node.fields.find((f) => f.key === WCT_FIELD_KEY);
+      const pfField = node.fields.find((f) => f.key === PF_FIELD_KEY);
+      try {
+        const wctParsed = wctField?.value ? (JSON.parse(wctField.value) as Partial<LibraryEdits>) : {};
+        const pfParsed = pfField?.value ? (JSON.parse(pfField.value) as Partial<LibraryEdits>) : {};
+        _editsCache = normalise(wctParsed, pfParsed);
+        _cacheExpiry = Date.now() + CACHE_TTL_MS;
+        return _editsCache;
+      } catch {}
+      // Node exists but fields are empty/unparseable — treat as blank store
       _editsCache = { wct: {}, pfPhrases: {}, pfApplicability: {}, uploadedIcons: [] };
       _cacheExpiry = Date.now() + CACHE_TTL_MS;
       return _editsCache;
@@ -137,7 +140,8 @@ export async function getLibraryEdits(): Promise<LibraryEdits> {
   // Fallback: static file seed (used on first deploy before metaobject is created)
   try {
     const raw = await fs.readFile(EDITS_PATH, "utf-8");
-    _editsCache = normalise(JSON.parse(raw) as Partial<LibraryEdits>);
+    const parsed = JSON.parse(raw) as Partial<LibraryEdits>;
+    _editsCache = normalise(parsed, parsed);
   } catch {
     _editsCache = { wct: {}, pfPhrases: {}, pfApplicability: {}, uploadedIcons: [] };
   }
@@ -148,7 +152,10 @@ export async function getLibraryEdits(): Promise<LibraryEdits> {
 async function persist(edits: LibraryEdits): Promise<void> {
   _editsCache = edits; // keep cache in sync before any await
   _cacheExpiry = Date.now() + CACHE_TTL_MS;
-  const f = [{ key: FIELD_KEY, value: JSON.stringify(edits) }];
+  const f = [
+    { key: WCT_FIELD_KEY, value: JSON.stringify({ wct: edits.wct }) },
+    { key: PF_FIELD_KEY, value: JSON.stringify({ pfPhrases: edits.pfPhrases, pfApplicability: edits.pfApplicability, uploadedIcons: edits.uploadedIcons }) },
+  ];
 
   if (_nodeId) {
     const res = await shopifyGraphQL<{
@@ -297,7 +304,6 @@ export function renameStyleInLibrary(
     let wctUpdated = 0;
     let pfUpdated = 0;
 
-    // Update custom WCT entries
     for (const entry of Object.values(edits.wct)) {
       if (entry.productType === productType && entry.productStyle === oldStyle) {
         entry.productStyle = newStyle;
@@ -305,43 +311,9 @@ export function renameStyleInLibrary(
       }
     }
 
-    // Create overrides for base WCT entries with the old style
-    for (const base of wctBaseData as Array<{ id: string; productType: string; productStyle: string; category: string; text: string; subtext: string }>) {
-      if (base.productType === productType && base.productStyle === oldStyle) {
-        const existing = edits.wct[base.id];
-        edits.wct[base.id] = {
-          id: base.id,
-          productType,
-          productStyle: newStyle,
-          category: existing?.category ?? base.category,
-          text: existing?.text ?? base.text,
-          subtext: existing?.subtext ?? base.subtext,
-          searchFormatted: existing?.searchFormatted ?? "",
-          isNew: false,
-        };
-        wctUpdated++;
-      }
-    }
-
-    // Update custom PF applicability entries
     for (const entry of Object.values(edits.pfApplicability)) {
       if (entry.productType === productType && entry.productStyle === oldStyle) {
         entry.productStyle = newStyle;
-        pfUpdated++;
-      }
-    }
-
-    // Create overrides for base PF applicability entries with the old style
-    for (const base of pfApplicabilityBaseData as Array<{ id: string; phraseId: string; productType: string; productStyle: string; applicabilityCount: number }>) {
-      if (base.productType === productType && base.productStyle === oldStyle && !edits.pfApplicability[base.id]) {
-        edits.pfApplicability[base.id] = {
-          id: base.id,
-          phraseId: base.phraseId,
-          productType,
-          productStyle: newStyle,
-          applicabilityCount: base.applicabilityCount,
-          isNew: false,
-        };
         pfUpdated++;
       }
     }

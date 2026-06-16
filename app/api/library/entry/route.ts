@@ -8,14 +8,7 @@ import {
   createPhrase, savePhraseEdit, addApplicability, removeApplicability, deletePhrase,
   findPhraseForEntry,
 } from "@/lib/pf-store";
-import wctData from "@/data/why-choose-this.json";
-import type { WhyChooseThisEntry, PFPhrase } from "@/lib/types";
-
-const wctLibrary = wctData as WhyChooseThisEntry[];
-
-function formatWCT(text: string, subtext: string) {
-  return `<strong>${text}</strong> ${subtext}`;
-}
+import type { PFPhrase } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   const authError = await requireAuth(req);
@@ -55,11 +48,9 @@ export async function POST(req: NextRequest) {
       let searchFormatted = "";
       if (!isNew) {
         const existingEdits = await getLibraryEdits();
-        const existingEdit = existingEdits.wct[entryId];
-        const base = wctLibrary.find((e) => e.id === entryId);
         searchFormatted = (body.entry as WCTEdit).searchFormatted
-          || existingEdit?.searchFormatted
-          || (base ? formatWCT(base.text, base.subtext) : "");
+          || existingEdits.wct[entryId]?.searchFormatted
+          || "";
       }
 
       await upsertWCTEdit({ id: entryId, productType: productType!, productStyle: productStyle!, category: category!, text: text!, subtext: subtext!, searchFormatted, isNew: !!isNew });

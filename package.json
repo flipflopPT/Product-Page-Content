@@ -16,6 +16,8 @@
     "clear-wct": "npx tsx --env-file .env.local scripts/clear-wct-content.ts",
     "clear-pf": "npx tsx --env-file .env.local scripts/clear-pf-content.ts",
     "approve-complete": "npx tsx --env-file .env.local scripts/approve-complete-products.ts",
+    "migrate-library": "node scripts/migrate-library-to-metaobject.mjs",
+    "migrate-library:dry-run": "node scripts/migrate-library-to-metaobject.mjs --dry-run",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"

@@ -68,7 +68,7 @@ describe("GET /api/library (type=why)", () => {
   it("includes edits — overrides existing entry text", async () => {
     // Find the first WCT entry from the base library to edit
     const baseWCT = await import("@/data/why-choose-this.json");
-    const firstId = (baseWCT.default as Array<{ id: string; text: string; subtext: string }>)[0]?.id;
+    const firstId = (baseWCT.default.data as Array<{ id: string; text: string; subtext: string }>)[0]?.id;
     if (!firstId) return;
 
     vi.mocked(getLibraryEdits).mockResolvedValueOnce({

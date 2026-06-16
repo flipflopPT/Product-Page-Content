@@ -1,1250 +1,1253 @@
-[
-  {
-    "id": "wct-001",
-    "productType": "Bags & Purses",
-    "productStyle": "Elegant",
-    "category": "Gift Impact",
-    "text": "The perfect finishing touch",
-    "subtext": "For weddings and special events"
-  },
-  {
-    "id": "wct-002",
-    "productType": "Bags & Purses",
-    "productStyle": "Elegant",
-    "category": "Stands Out",
-    "text": "Classic styling",
-    "subtext": "For an effortless touch"
-  },
-  {
-    "id": "wct-003",
-    "productType": "Bags & Purses",
-    "productStyle": "Elegant",
-    "category": "Trusted Pick",
-    "text": "Easy to Gift",
-    "subtext": "A Safe choice that still feels personal"
-  },
-  {
-    "id": "wct-004",
-    "productType": "Bags & Purses",
-    "productStyle": "Elegant",
-    "category": "Worth Keeping",
-    "text": "Designed for every day use",
-    "subtext": "Something they will use constantly"
-  },
-  {
-    "id": "wct-005",
-    "productType": "Bags & Purses",
-    "productStyle": "Personalised",
-    "category": "Gift Impact",
-    "text": "Made uniquely theirs",
-    "subtext": "With thoughtful detail that feels personal"
-  },
-  {
-    "id": "wct-006",
-    "productType": "Bags & Purses",
-    "productStyle": "Personalised",
-    "category": "Stands Out",
-    "text": "Personalised with purpose",
-    "subtext": "Finished with their initials"
-  },
-  {
-    "id": "wct-007",
-    "productType": "Bags & Purses",
-    "productStyle": "Personalised",
-    "category": "Trusted Pick",
-    "text": "Feel personal without being risky",
-    "subtext": "Useful as well as meaningful"
-  },
-  {
-    "id": "wct-008",
-    "productType": "Bags & Purses",
-    "productStyle": "Personalised",
-    "category": "Worth Keeping",
-    "text": "Made to be use daily",
-    "subtext": "A gift that won't sit in a drawer"
-  },
-  {
-    "id": "wct-009",
-    "productType": "Bags & Purses",
-    "productStyle": "Practical",
-    "category": "Gift Impact",
-    "text": "Makes everyday life easier",
-    "subtext": "A gift they'll reach for constantly"
-  },
-  {
-    "id": "wct-010",
-    "productType": "Bags & Purses",
-    "productStyle": "Practical",
-    "category": "Stands Out",
-    "text": "Clever design",
-    "subtext": "Without feeling plain"
-  },
-  {
-    "id": "wct-011",
-    "productType": "Bags & Purses",
-    "productStyle": "Practical",
-    "category": "Trusted Pick",
-    "text": "Easy to get right",
-    "subtext": "Useful and stylish"
-  },
-  {
-    "id": "wct-012",
-    "productType": "Bags & Purses",
-    "productStyle": "Practical",
-    "category": "Worth Keeping",
-    "text": "Built to last",
-    "subtext": "Withstands daily life while looking good"
-  },
-  {
-    "id": "wct-013",
-    "productType": "Bags & Purses",
-    "productStyle": "Bold/Colourful",
-    "category": "Gift Impact",
-    "text": "Adds instand personality",
-    "subtext": "Bright and joyful whilst still considered"
-  },
-  {
-    "id": "wct-014",
-    "productType": "Bags & Purses",
-    "productStyle": "Bold/Colourful",
-    "category": "Stands Out",
-    "text": "Bold by design",
-    "subtext": "Eye-catching colours and distinctive details"
-  },
-  {
-    "id": "wct-015",
-    "productType": "Bags & Purses",
-    "productStyle": "Bold/Colourful",
-    "category": "Trusted Pick",
-    "text": "A fun but useful gift",
-    "subtext": "Made to be both useful and admired"
-  },
-  {
-    "id": "wct-016",
-    "productType": "Bags & Purses",
-    "productStyle": "Bold/Colourful",
-    "category": "Worth Keeping",
-    "text": "Made to become a favourite",
-    "subtext": "A piece they’ll keep coming back to"
-  },
-  {
-    "id": "wct-017",
-    "productType": "Children",
-    "productStyle": "Classic/Timeless",
-    "category": "Gift Impact",
-    "text": "A gift that lasts",
-    "subtext": "Not quickly outgrown"
-  },
-  {
-    "id": "wct-018",
-    "productType": "Children",
-    "productStyle": "Classic/Timeless",
-    "category": "Stands Out",
-    "text": "A proper little classic",
-    "subtext": "Traditional but not old fashioned"
-  },
-  {
-    "id": "wct-019",
-    "productType": "Children",
-    "productStyle": "Classic/Timeless",
-    "category": "Trusted Pick",
-    "text": "Easy to give with confidence",
-    "subtext": "A safe choice"
-  },
-  {
-    "id": "wct-020",
-    "productType": "Children",
-    "productStyle": "Classic/Timeless",
-    "category": "Worth Keeping",
-    "text": "Made to be kept",
-    "subtext": "The kind of gift that becomes part of their story"
-  },
-  {
-    "id": "wct-021",
-    "productType": "Children",
-    "productStyle": "Playful",
-    "category": "Gift Impact",
-    "text": "Guaranteed to raise a smile",
-    "subtext": "Bright, cheerful and fun to give"
-  },
-  {
-    "id": "wct-022",
-    "productType": "Children",
-    "productStyle": "Playful",
-    "category": "Stands Out",
-    "text": "Full of personality",
-    "subtext": "Designed to be joyful"
-  },
-  {
-    "id": "wct-023",
-    "productType": "Children",
-    "productStyle": "Playful",
-    "category": "Trusted Pick",
-    "text": "Always popular with children",
-    "subtext": "Easy gifting for birthdays and celebrations"
-  },
-  {
-    "id": "wct-024",
-    "productType": "Children",
-    "productStyle": "Playful",
-    "category": "Worth Keeping",
-    "text": "Chosen for everyday enjoyment",
-    "subtext": "The sort of thing they keep coming back to"
-  },
-  {
-    "id": "wct-025",
-    "productType": "Children",
-    "productStyle": "Creative",
-    "category": "Gift Impact",
-    "text": "Keeps little hands busy",
-    "subtext": "Encourages creativity"
-  },
-  {
-    "id": "wct-026",
-    "productType": "Children",
-    "productStyle": "Creative",
-    "category": "Stands Out",
-    "text": "More than just another toy",
-    "subtext": "Designed to spark imagination"
-  },
-  {
-    "id": "wct-027",
-    "productType": "Children",
-    "productStyle": "Creative",
-    "category": "Trusted Pick",
-    "text": "Best selling choice",
-    "subtext": "Loved by kids"
-  },
-  {
-    "id": "wct-028",
-    "productType": "Children",
-    "productStyle": "Creative",
-    "category": "Worth Keeping",
-    "text": "Made for creative moments",
-    "subtext": "A favourite they keep coming back to"
-  },
-  {
-    "id": "wct-029",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Minimal",
-    "category": "Gift Impact",
-    "text": "Clean Styling",
-    "subtext": "Makes a space feel calmer"
-  },
-  {
-    "id": "wct-030",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Minimal",
-    "category": "Stands Out",
-    "text": "Simple but not cold",
-    "subtext": "Quietly distinctive"
-  },
-  {
-    "id": "wct-031",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Minimal",
-    "category": "Trusted Pick",
-    "text": "Easy to style",
-    "subtext": "Works naturally with most interiors"
-  },
-  {
-    "id": "wct-032",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Minimal",
-    "category": "Worth Keeping",
-    "text": "Designed to outlast trends",
-    "subtext": "The kind of peice that always feels current"
-  },
-  {
-    "id": "wct-033",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Scandi",
-    "category": "Gift Impact",
-    "text": "Creates a calm atmosphere",
-    "subtext": "Inspired for easy living"
-  },
-  {
-    "id": "wct-034",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Scandi",
-    "category": "Stands Out",
-    "text": "Warm and understated",
-    "subtext": "Natural and efforless styling"
-  },
-  {
-    "id": "wct-035",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Scandi",
-    "category": "Trusted Pick",
-    "text": "Easy to live with",
-    "subtext": "Works beautifully in everyday spaces"
-  },
-  {
-    "id": "wct-036",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Scandi",
-    "category": "Worth Keeping",
-    "text": "Made for the long term",
-    "subtext": "Timeless style that won't date quickly"
-  },
-  {
-    "id": "wct-037",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Statement",
-    "category": "Gift Impact",
-    "text": "Instantly dynamic",
-    "subtext": "Brings personality into a space"
-  },
-  {
-    "id": "wct-038",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Statement",
-    "category": "Stands Out",
-    "text": "A real conversation piece",
-    "subtext": "Adds bold character"
-  },
-  {
-    "id": "wct-039",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Statement",
-    "category": "Trusted Pick",
-    "text": "For spaces with personality",
-    "subtext": "Makes a space feel individual"
-  },
-  {
-    "id": "wct-040",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Statement",
-    "category": "Worth Keeping",
-    "text": "Designed to stay on display",
-    "subtext": "A piece to enjoy every day"
-  },
-  {
-    "id": "wct-041",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Contemporary Classic",
-    "category": "Gift Impact",
-    "text": "Brings warmth into the home",
-    "subtext": "Classic styling"
-  },
-  {
-    "id": "wct-042",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Contemporary Classic",
-    "category": "Stands Out",
-    "text": "Timeless, not trend-led",
-    "subtext": "Elegant design for easy fit"
-  },
-  {
-    "id": "wct-043",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Contemporary Classic",
-    "category": "Trusted Pick",
-    "text": "Easy to style long-term",
-    "subtext": "Works across any home"
-  },
-  {
-    "id": "wct-044",
-    "productType": "Furniture & Lighting",
-    "productStyle": "Contemporary Classic",
-    "category": "Worth Keeping",
-    "text": "Made to age beautifully",
-    "subtext": "The sort of piece you'll keep for years"
-  },
-  {
-    "id": "wct-045",
-    "productType": "Greetings Cards",
-    "productStyle": "Nature",
-    "category": "Gift Impact",
-    "text": "Naturally heartfelt",
-    "subtext": "A beautiful way to say it"
-  },
-  {
-    "id": "wct-046",
-    "productType": "Greetings Cards",
-    "productStyle": "Nature",
-    "category": "Stands Out",
-    "text": "Beautifully illustrated",
-    "subtext": "Made to feel special"
-  },
-  {
-    "id": "wct-047",
-    "productType": "Greetings Cards",
-    "productStyle": "Nature",
-    "category": "Trusted Pick",
-    "text": "Thoughtfully chosen",
-    "subtext": "Perfect for meaningful moments"
-  },
-  {
-    "id": "wct-048",
-    "productType": "Greetings Cards",
-    "productStyle": "Nature",
-    "category": "Worth Keeping",
-    "text": "Frame-worthy detail",
-    "subtext": "The kind of card they’ll want to keep"
-  },
-  {
-    "id": "wct-049",
-    "productType": "Greetings Cards",
-    "productStyle": "Novelty/Humorous",
-    "category": "Gift Impact",
-    "text": "Sure to raise a smile",
-    "subtext": "Playful humour they’ll love"
-  },
-  {
-    "id": "wct-050",
-    "productType": "Greetings Cards",
-    "productStyle": "Novelty/Humorous",
-    "category": "Stands Out",
-    "text": "Brilliantly witty",
-    "subtext": "A design with plenty of personality"
-  },
-  {
-    "id": "wct-051",
-    "productType": "Greetings Cards",
-    "productStyle": "Novelty/Humorous",
-    "category": "Trusted Pick",
-    "text": "Best selling choice",
-    "subtext": "Always gets a laugh"
-  },
-  {
-    "id": "wct-052",
-    "productType": "Greetings Cards",
-    "productStyle": "Novelty/Humorous",
-    "category": "Worth Keeping",
-    "text": "Memorable and playful",
-    "subtext": "A card to remember"
-  },
-  {
-    "id": "wct-053",
-    "productType": "Home",
-    "productStyle": "Bold/Colourful",
-    "category": "Gift Impact",
-    "text": "Adds instant personality",
-    "subtext": "Brings warmth into the home"
-  },
-  {
-    "id": "wct-054",
-    "productType": "Home",
-    "productStyle": "Bold/Colourful",
-    "category": "Stands Out",
-    "text": "Gets noticed",
-    "subtext": "Designed for homes with character"
-  },
-  {
-    "id": "wct-055",
-    "productType": "Home",
-    "productStyle": "Bold/Colourful",
-    "category": "Trusted Pick",
-    "text": "Perfectly chosen",
-    "subtext": "For friends with confident style"
-  },
-  {
-    "id": "wct-056",
-    "productType": "Home",
-    "productStyle": "Bold/Colourful",
-    "category": "Worth Keeping",
-    "text": "Made to be on display",
-    "subtext": "A piece they’ll genuinely love to show off"
-  },
-  {
-    "id": "wct-057",
-    "productType": "Home",
-    "productStyle": "Classic/Timeless",
-    "category": "Gift Impact",
-    "text": "A best selling classic",
-    "subtext": "Adds a beautiful touch to any room"
-  },
-  {
-    "id": "wct-058",
-    "productType": "Home",
-    "productStyle": "Classic/Timeless",
-    "category": "Stands Out",
-    "text": "Timeless without formality",
-    "subtext": "Elegant design to suit all spaces"
-  },
-  {
-    "id": "wct-059",
-    "productType": "Home",
-    "productStyle": "Classic/Timeless",
-    "category": "Trusted Pick",
-    "text": "Easy to buy with confidence",
-    "subtext": "A safe but thoughtful choice"
-  },
-  {
-    "id": "wct-060",
-    "productType": "Home",
-    "productStyle": "Classic/Timeless",
-    "category": "Worth Keeping",
-    "text": "A lasting favourite",
-    "subtext": "The kind of gift that always finds a place"
-  },
-  {
-    "id": "wct-061",
-    "productType": "Home",
-    "productStyle": "Earthy/Natural",
-    "category": "Gift Impact",
-    "text": "Calm and considered",
-    "subtext": "Inspired by natural living"
-  },
-  {
-    "id": "wct-062",
-    "productType": "Home",
-    "productStyle": "Earthy/Natural",
-    "category": "Stands Out",
-    "text": "Relaxed and easy to live with",
-    "subtext": "Adds warmth"
-  },
-  {
-    "id": "wct-063",
-    "productType": "Home",
-    "productStyle": "Earthy/Natural",
-    "category": "Trusted Pick",
-    "text": "Suits all spaces",
-    "subtext": "An easy gift to get right"
-  },
-  {
-    "id": "wct-064",
-    "productType": "Home",
-    "productStyle": "Earthy/Natural",
-    "category": "Worth Keeping",
-    "text": "Designed for the long-term",
-    "subtext": "Style that feels timeless"
-  },
-  {
-    "id": "wct-065",
-    "productType": "Home",
-    "productStyle": "Minimal",
-    "category": "Gift Impact",
-    "text": "Adds a clean, modern touch",
-    "subtext": "For simple styling"
-  },
-  {
-    "id": "wct-066",
-    "productType": "Home",
-    "productStyle": "Minimal",
-    "category": "Stands Out",
-    "text": "Minimal without feeling cold",
-    "subtext": "Quietly distinctive"
-  },
-  {
-    "id": "wct-067",
-    "productType": "Home",
-    "productStyle": "Minimal",
-    "category": "Trusted Pick",
-    "text": "Easy to style anywhere",
-    "subtext": "Works across any space"
-  },
-  {
-    "id": "wct-068",
-    "productType": "Home",
-    "productStyle": "Minimal",
-    "category": "Worth Keeping",
-    "text": "Outlasts trends",
-    "subtext": "A piece they won't tire of"
-  },
-  {
-    "id": "wct-069",
-    "productType": "Home",
-    "productStyle": "Playful",
-    "category": "Gift Impact",
-    "text": "Guaranteed to raise a smile",
-    "subtext": "Brings joy into the home"
-  },
-  {
-    "id": "wct-070",
-    "productType": "Home",
-    "productStyle": "Playful",
-    "category": "Stands Out",
-    "text": "Full of character",
-    "subtext": "A gift that feels happy"
-  },
-  {
-    "id": "wct-071",
-    "productType": "Home",
-    "productStyle": "Playful",
-    "category": "Trusted Pick",
-    "text": "Easy gifting for people with personality",
-    "subtext": "Something a little different"
-  },
-  {
-    "id": "wct-072",
-    "productType": "Home",
-    "productStyle": "Playful",
-    "category": "Worth Keeping",
-    "text": "Made to brighten every day life",
-    "subtext": "The sort of piece that will become part of the room"
-  },
-  {
-    "id": "wct-073",
-    "productType": "Home",
-    "productStyle": "EcoFriendly",
-    "category": "Gift Impact",
-    "text": "A feel-good choice",
-    "subtext": "Beautiful design with a lighter footprint"
-  },
-  {
-    "id": "wct-074",
-    "productType": "Home",
-    "productStyle": "EcoFriendly",
-    "category": "Stands Out",
-    "text": "Designed with purpose",
-    "subtext": "Feels considered from every angle"
-  },
-  {
-    "id": "wct-075",
-    "productType": "Home",
-    "productStyle": "EcoFriendly",
-    "category": "Trusted Pick",
-    "text": "A great option for conscious gifting",
-    "subtext": "Mindfully chosen"
-  },
-  {
-    "id": "wct-076",
-    "productType": "Home",
-    "productStyle": "EcoFriendly",
-    "category": "Worth Keeping",
-    "text": "Made to last",
-    "subtext": "Designed for using"
-  },
-  {
-    "id": "wct-077",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Classic",
-    "category": "Gift Impact",
-    "text": "Easy to wear",
-    "subtext": "Classic styling"
-  },
-  {
-    "id": "wct-078",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Classic",
-    "category": "Stands Out",
-    "text": "Understated detail",
-    "subtext": "Refined without trying too hard"
-  },
-  {
-    "id": "wct-079",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Classic",
-    "category": "Trusted Pick",
-    "text": "A safe gift that still feels personal",
-    "subtext": "Easy to buy for almost any style"
-  },
-  {
-    "id": "wct-080",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Classic",
-    "category": "Worth Keeping",
-    "text": "Designed for longevity",
-    "subtext": "Made to be worn with love"
-  },
-  {
-    "id": "wct-081",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Modern",
-    "category": "Gift Impact",
-    "text": "Clean contemporary style",
-    "subtext": "Adds a modern edge"
-  },
-  {
-    "id": "wct-082",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Modern",
-    "category": "Stands Out",
-    "text": "Sharp and streamlined",
-    "subtext": "Minimal design with strong detail"
-  },
-  {
-    "id": "wct-083",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Modern",
-    "category": "Trusted Pick",
-    "text": "Easy fit with daily life",
-    "subtext": "Fits effortlessly into everyday wear"
-  },
-  {
-    "id": "wct-084",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Modern",
-    "category": "Worth Keeping",
-    "text": "Designed to stay relevant",
-    "subtext": "Modern style that won't date"
-  },
-  {
-    "id": "wct-085",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Personalised",
-    "category": "Gift Impact",
-    "text": "Marks the occasion",
-    "subtext": "A gift that carries real meaning"
-  },
-  {
-    "id": "wct-086",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Personalised",
-    "category": "Stands Out",
-    "text": "Subtle personalisation",
-    "subtext": "Detailed for a unique touch"
-  },
-  {
-    "id": "wct-087",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Personalised",
-    "category": "Trusted Pick",
-    "text": "A thoughtful but easy choice",
-    "subtext": "Practical and meaningful"
-  },
-  {
-    "id": "wct-088",
-    "productType": "Men's Jewellery & Accessories",
-    "productStyle": "Personalised",
-    "category": "Worth Keeping",
-    "text": "Made to hold significance",
-    "subtext": "Designed to be cherished"
-  },
-  {
-    "id": "wct-089",
-    "productType": "Women's Jewellery",
-    "productStyle": "Dainty",
-    "category": "Gift Impact",
-    "text": "Easy to wear",
-    "subtext": "Finishing touch for every day life"
-  },
-  {
-    "id": "wct-090",
-    "productType": "Women's Jewellery",
-    "productStyle": "Dainty",
-    "category": "Stands Out",
-    "text": "Delicate without disappearing",
-    "subtext": "Simple but still special"
-  },
-  {
-    "id": "wct-091",
-    "productType": "Women's Jewellery",
-    "productStyle": "Dainty",
-    "category": "Trusted Pick",
-    "text": "An easy to give gift",
-    "subtext": "Ageless and versatile"
-  },
-  {
-    "id": "wct-092",
-    "productType": "Women's Jewellery",
-    "productStyle": "Dainty",
-    "category": "Worth Keeping",
-    "text": "A timeless staple",
-    "subtext": "Something they'll keep reaching for"
-  },
-  {
-    "id": "wct-093",
-    "productType": "Women's Jewellery",
-    "productStyle": "Minimal",
-    "category": "Gift Impact",
-    "text": "Effortless styling",
-    "subtext": "For understated daily wear"
-  },
-  {
-    "id": "wct-094",
-    "productType": "Women's Jewellery",
-    "productStyle": "Minimal",
-    "category": "Stands Out",
-    "text": "Clean, modern styling",
-    "subtext": "Quietly distinctive"
-  },
-  {
-    "id": "wct-095",
-    "productType": "Women's Jewellery",
-    "productStyle": "Minimal",
-    "category": "Trusted Pick",
-    "text": "Safe but thoughtful choice",
-    "subtext": "Difficult not to love"
-  },
-  {
-    "id": "wct-096",
-    "productType": "Women's Jewellery",
-    "productStyle": "Minimal",
-    "category": "Worth Keeping",
-    "text": "Designed to be cherished",
-    "subtext": "A piece she won't tire of"
-  },
-  {
-    "id": "wct-097",
-    "productType": "Women's Jewellery",
-    "productStyle": "Personalised",
-    "category": "Gift Impact",
-    "text": "Made uniquely theirs",
-    "subtext": "Adds real meaning"
-  },
-  {
-    "id": "wct-098",
-    "productType": "Women's Jewellery",
-    "productStyle": "Personalised",
-    "category": "Stands Out",
-    "text": "Bespoke detail",
-    "subtext": "Finished with care"
-  },
-  {
-    "id": "wct-099",
-    "productType": "Women's Jewellery",
-    "productStyle": "Personalised",
-    "category": "Trusted Pick",
-    "text": "A meaningful gift made easy",
-    "subtext": "Personal without the risk"
-  },
-  {
-    "id": "wct-100",
-    "productType": "Women's Jewellery",
-    "productStyle": "Personalised",
-    "category": "Worth Keeping",
-    "text": "Made to hold meaning",
-    "subtext": "For precious moments"
-  },
-  {
-    "id": "wct-101",
-    "productType": "Women's Jewellery",
-    "productStyle": "Statement",
-    "category": "Gift Impact",
-    "text": "Confident design",
-    "subtext": "Perfect to elevate her style"
-  },
-  {
-    "id": "wct-102",
-    "productType": "Women's Jewellery",
-    "productStyle": "Statement",
-    "category": "Stands Out",
-    "text": "A talking piece",
-    "subtext": "Bold styling with character"
-  },
-  {
-    "id": "wct-103",
-    "productType": "Women's Jewellery",
-    "productStyle": "Statement",
-    "category": "Trusted Pick",
-    "text": "A thoughtful choice",
-    "subtext": "A gift that feels exciting to receive"
-  },
-  {
-    "id": "wct-104",
-    "productType": "Women's Jewellery",
-    "productStyle": "Statement",
-    "category": "Worth Keeping",
-    "text": "Designed for standout",
-    "subtext": "A piece to build outfits around"
-  },
-  {
-    "id": "wct-105",
-    "productType": "Children's Jewellery",
-    "productStyle": "Dainty",
-    "category": "Gift Impact",
-    "text": "Sweet and delicate",
-    "subtext": "A lovely little keepsake"
-  },
-  {
-    "id": "wct-106",
-    "productType": "Children's Jewellery",
-    "productStyle": "Dainty",
-    "category": "Stands Out",
-    "text": "Beautifully detailed",
-    "subtext": "Made for precious moments"
-  },
-  {
-    "id": "wct-107",
-    "productType": "Children's Jewellery",
-    "productStyle": "Dainty",
-    "category": "Trusted Pick",
-    "text": "Easy gifting for milestone moments",
-    "subtext": "Perfect for all occasions"
-  },
-  {
-    "id": "wct-108",
-    "productType": "Children's Jewellery",
-    "productStyle": "Dainty",
-    "category": "Worth Keeping",
-    "text": "Made to be treasured as they grow",
-    "subtext": "For a heirloom gift"
-  },
-  {
-    "id": "wct-109",
-    "productType": "Children's Jewellery",
-    "productStyle": "Minimal",
-    "category": "Gift Impact",
-    "text": "Simple and stylish",
-    "subtext": "Perfect for everyday wear"
-  },
-  {
-    "id": "wct-110",
-    "productType": "Children's Jewellery",
-    "productStyle": "Minimal",
-    "category": "Stands Out",
-    "text": "Subtle and age appropriate",
-    "subtext": "Easy to style with anything"
-  },
-  {
-    "id": "wct-111",
-    "productType": "Children's Jewellery",
-    "productStyle": "Minimal",
-    "category": "Trusted Pick",
-    "text": "Safe and easy gift choice",
-    "subtext": "Works well across age groups"
-  },
-  {
-    "id": "wct-112",
-    "productType": "Children's Jewellery",
-    "productStyle": "Minimal",
-    "category": "Worth Keeping",
-    "text": "A classic favourite",
-    "subtext": "Style that lasts"
-  },
-  {
-    "id": "wct-113",
-    "productType": "Children's Jewellery",
-    "productStyle": "Personalised",
-    "category": "Gift Impact",
-    "text": "Made just for them",
-    "subtext": "Adds a personal touch"
-  },
-  {
-    "id": "wct-114",
-    "productType": "Children's Jewellery",
-    "productStyle": "Personalised",
-    "category": "Stands Out",
-    "text": "Adds meaning to the moment",
-    "subtext": "Finished with thoughtful detail"
-  },
-  {
-    "id": "wct-115",
-    "productType": "Children's Jewellery",
-    "productStyle": "Personalised",
-    "category": "Trusted Pick",
-    "text": "A heartfelt but easy gift",
-    "subtext": "Personal but not complicated"
-  },
-  {
-    "id": "wct-116",
-    "productType": "Children's Jewellery",
-    "productStyle": "Personalised",
-    "category": "Worth Keeping",
-    "text": "A treasured keepsake",
-    "subtext": "Designed to hold meaning"
-  },
-  {
-    "id": "wct-117",
-    "productType": "Books & Stationery",
-    "productStyle": "Illustrated",
-    "category": "Gift Impact",
-    "text": "A pleasure to pick up",
-    "subtext": "Beautiful detail for that special feel"
-  },
-  {
-    "id": "wct-118",
-    "productType": "Books & Stationery",
-    "productStyle": "Illustrated",
-    "category": "Stands Out",
-    "text": "Great coffee table book",
-    "subtext": "Designed to be admired"
-  },
-  {
-    "id": "wct-119",
-    "productType": "Books & Stationery",
-    "productStyle": "Illustrated",
-    "category": "Trusted Pick",
-    "text": "Easy gift for thoughtful people",
-    "subtext": "A safe choice that still feels personal"
-  },
-  {
-    "id": "wct-120",
-    "productType": "Books & Stationery",
-    "productStyle": "Illustrated",
-    "category": "Worth Keeping",
-    "text": "Made to revisit",
-    "subtext": "A joy to return to"
-  },
-  {
-    "id": "wct-121",
-    "productType": "Books & Stationery",
-    "productStyle": "Inspirational",
-    "category": "Gift Impact",
-    "text": "A thoughtful pause in a busy day",
-    "subtext": "Easy to dip into"
-  },
-  {
-    "id": "wct-122",
-    "productType": "Books & Stationery",
-    "productStyle": "Inspirational",
-    "category": "Stands Out",
-    "text": "Full of great ideas",
-    "subtext": "Feels uplifting"
-  },
-  {
-    "id": "wct-123",
-    "productType": "Books & Stationery",
-    "productStyle": "Inspirational",
-    "category": "Trusted Pick",
-    "text": "A mindful choice",
-    "subtext": "Inspires every day"
-  },
-  {
-    "id": "wct-124",
-    "productType": "Books & Stationery",
-    "productStyle": "Inspirational",
-    "category": "Worth Keeping",
-    "text": "Made to return to",
-    "subtext": "Lasting inspiration"
-  },
-  {
-    "id": "wct-125",
-    "productType": "Books & Stationery",
-    "productStyle": "Practical",
-    "category": "Gift Impact",
-    "text": "Useful but not boring",
-    "subtext": "For bedside reading"
-  },
-  {
-    "id": "wct-126",
-    "productType": "Books & Stationery",
-    "productStyle": "Practical",
-    "category": "Stands Out",
-    "text": "Practical with thoughtful detail",
-    "subtext": "For daily reference"
-  },
-  {
-    "id": "wct-127",
-    "productType": "Books & Stationery",
-    "productStyle": "Practical",
-    "category": "Trusted Pick",
-    "text": "A genuinely useful gift",
-    "subtext": "Easy to buy with confidence"
-  },
-  {
-    "id": "wct-128",
-    "productType": "Books & Stationery",
-    "productStyle": "Practical",
-    "category": "Worth Keeping",
-    "text": "Made for everyday use",
-    "subtext": "A regular reference staple"
-  },
-  {
-    "id": "wct-129",
-    "productType": "Personalised Accessories",
-    "productStyle": "Classic",
-    "category": "Gift Impact",
-    "text": "Adds a personal touch",
-    "subtext": "Classic styling"
-  },
-  {
-    "id": "wct-130",
-    "productType": "Personalised Accessories",
-    "productStyle": "Classic",
-    "category": "Stands Out",
-    "text": "Subtle yet thoughtful detailing",
-    "subtext": "Personalised yet not overdone"
-  },
-  {
-    "id": "wct-131",
-    "productType": "Personalised Accessories",
-    "productStyle": "Classic",
-    "category": "Trusted Pick",
-    "text": "Easy gifting",
-    "subtext": "A safe yet thoughtful choice"
-  },
-  {
-    "id": "wct-132",
-    "productType": "Personalised Accessories",
-    "productStyle": "Classic",
-    "category": "Worth Keeping",
-    "text": "Made to be used",
-    "subtext": "Something they'll keep close by"
-  },
-  {
-    "id": "wct-133",
-    "productType": "Personalised Accessories",
-    "productStyle": "Novelty",
-    "category": "Gift Impact",
-    "text": "Guaranteed to raise a smile",
-    "subtext": "Fun gifting that feels thoughtful"
-  },
-  {
-    "id": "wct-134",
-    "productType": "Personalised Accessories",
-    "productStyle": "Novelty",
-    "category": "Stands Out",
-    "text": "Full of personality",
-    "subtext": "Made to get noticed"
-  },
-  {
-    "id": "wct-135",
-    "productType": "Personalised Accessories",
-    "productStyle": "Novelty",
-    "category": "Trusted Pick",
-    "text": "An easy feel-good gift",
-    "subtext": "Great for little surprises"
-  },
-  {
-    "id": "wct-136",
-    "productType": "Personalised Accessories",
-    "productStyle": "Novelty",
-    "category": "Worth Keeping",
-    "text": "A gift they will remember receiving",
-    "subtext": "Hard not to like"
-  },
-  {
-    "id": "wct-137",
-    "productType": "Fairy Lights",
-    "productStyle": "Minimal",
-    "category": "Gift Impact",
-    "text": "Soft ambient glow",
-    "subtext": "Adds atmosphere instantly"
-  },
-  {
-    "id": "wct-138",
-    "productType": "Fairy Lights",
-    "productStyle": "Minimal",
-    "category": "Stands Out",
-    "text": "Simple lighting with impact",
-    "subtext": "Clean styling without feeling cold"
-  },
-  {
-    "id": "wct-139",
-    "productType": "Fairy Lights",
-    "productStyle": "Minimal",
-    "category": "Trusted Pick",
-    "text": "Easy to style in any room",
-    "subtext": "Works all year round"
-  },
-  {
-    "id": "wct-140",
-    "productType": "Fairy Lights",
-    "productStyle": "Minimal",
-    "category": "Worth Keeping",
-    "text": "For everyday ambience",
-    "subtext": "Style that lasts"
-  },
-  {
-    "id": "wct-141",
-    "productType": "Fairy Lights",
-    "productStyle": "Decorative",
-    "category": "Gift Impact",
-    "text": "Creates instant atmosphere",
-    "subtext": "Gives warmth to the room"
-  },
-  {
-    "id": "wct-142",
-    "productType": "Fairy Lights",
-    "productStyle": "Decorative",
-    "category": "Stands Out",
-    "text": "Adds personality after dark",
-    "subtext": "For stand out appeal"
-  },
-  {
-    "id": "wct-143",
-    "productType": "Fairy Lights",
-    "productStyle": "Decorative",
-    "category": "Trusted Pick",
-    "text": "An easy home gift to get right",
-    "subtext": "Easy to style"
-  },
-  {
-    "id": "wct-144",
-    "productType": "Fairy Lights",
-    "productStyle": "Decorative",
-    "category": "Worth Keeping",
-    "text": "For daily use",
-    "subtext": "Creates a welcoming feel"
-  },
-  {
-    "id": "wct-145",
-    "productType": "Fairy Lights",
-    "productStyle": "Colourful",
-    "category": "Gift Impact",
-    "text": "For instant joy",
-    "subtext": "Lifts the mood"
-  },
-  {
-    "id": "wct-146",
-    "productType": "Fairy Lights",
-    "productStyle": "Colourful",
-    "category": "Stands Out",
-    "text": "Full of personality",
-    "subtext": "Adds impact through colour"
-  },
-  {
-    "id": "wct-147",
-    "productType": "Fairy Lights",
-    "productStyle": "Colourful",
-    "category": "Trusted Pick",
-    "text": "A cheerful choice",
-    "subtext": "Easy to choose for colourful homes"
-  },
-  {
-    "id": "wct-148",
-    "productType": "Fairy Lights",
-    "productStyle": "Colourful",
-    "category": "Worth Keeping",
-    "text": "Made to brighten every day",
-    "subtext": "Bring constant joy"
-  },
-  {
-    "id": "wct-149",
-    "productType": "Candles / Diffusers",
-    "productStyle": "Novelty",
-    "category": "Gift Impact",
-    "text": "Sure to raise a smile",
-    "subtext": "Fun gifting"
-  },
-  {
-    "id": "wct-150",
-    "productType": "Candles / Diffusers",
-    "productStyle": "Novelty",
-    "category": "Stands Out",
-    "text": "Full of character",
-    "subtext": "Designed to amuse"
-  },
-  {
-    "id": "wct-151",
-    "productType": "Candles / Diffusers",
-    "productStyle": "Novelty",
-    "category": "Trusted Pick",
-    "text": "An easy little gift win",
-    "subtext": "Perfect pick-me-up"
-  },
-  {
-    "id": "wct-152",
-    "productType": "Candles / Diffusers",
-    "productStyle": "Novelty",
-    "category": "Worth Keeping",
-    "text": "Memorable and fun",
-    "subtext": "Always a talking point"
-  },
-  {
-    "id": "wct-153",
-    "productType": "Candles / Diffusers",
-    "productStyle": "Premium",
-    "category": "Gift Impact",
-    "text": "Luxurious gifting",
-    "subtext": "Elevates any space"
-  },
-  {
-    "id": "wct-154",
-    "productType": "Candles / Diffusers",
-    "productStyle": "Premium",
-    "category": "Stands Out",
-    "text": "For instant use",
-    "subtext": "Calming and thoughtful"
-  },
-  {
-    "id": "wct-155",
-    "productType": "Candles / Diffusers",
-    "productStyle": "Premium",
-    "category": "Trusted Pick",
-    "text": "A reliable gifting favourite",
-    "subtext": "Easy to give"
-  },
-  {
-    "id": "wct-156",
-    "productType": "Candles / Diffusers",
-    "productStyle": "Premium",
-    "category": "Worth Keeping",
-    "text": "A constant favourite",
-    "subtext": "Scent that stays with you"
-  }
-]
+{
+  "_comment": "DEPRECATED: no longer read at runtime. Base library data was migrated into the pdp_library_edits Shopify metaobject (see plans/migrate-library-to-metaobject.md and scripts/migrate-library-to-metaobject.mjs). Kept here for historical reference only.",
+  "data": [
+    {
+      "id": "wct-001",
+      "productType": "Bags & Purses",
+      "productStyle": "Elegant",
+      "category": "Gift Impact",
+      "text": "The perfect finishing touch",
+      "subtext": "For weddings and special events"
+    },
+    {
+      "id": "wct-002",
+      "productType": "Bags & Purses",
+      "productStyle": "Elegant",
+      "category": "Stands Out",
+      "text": "Classic styling",
+      "subtext": "For an effortless touch"
+    },
+    {
+      "id": "wct-003",
+      "productType": "Bags & Purses",
+      "productStyle": "Elegant",
+      "category": "Trusted Pick",
+      "text": "Easy to Gift",
+      "subtext": "A Safe choice that still feels personal"
+    },
+    {
+      "id": "wct-004",
+      "productType": "Bags & Purses",
+      "productStyle": "Elegant",
+      "category": "Worth Keeping",
+      "text": "Designed for every day use",
+      "subtext": "Something they will use constantly"
+    },
+    {
+      "id": "wct-005",
+      "productType": "Bags & Purses",
+      "productStyle": "Personalised",
+      "category": "Gift Impact",
+      "text": "Made uniquely theirs",
+      "subtext": "With thoughtful detail that feels personal"
+    },
+    {
+      "id": "wct-006",
+      "productType": "Bags & Purses",
+      "productStyle": "Personalised",
+      "category": "Stands Out",
+      "text": "Personalised with purpose",
+      "subtext": "Finished with their initials"
+    },
+    {
+      "id": "wct-007",
+      "productType": "Bags & Purses",
+      "productStyle": "Personalised",
+      "category": "Trusted Pick",
+      "text": "Feel personal without being risky",
+      "subtext": "Useful as well as meaningful"
+    },
+    {
+      "id": "wct-008",
+      "productType": "Bags & Purses",
+      "productStyle": "Personalised",
+      "category": "Worth Keeping",
+      "text": "Made to be use daily",
+      "subtext": "A gift that won't sit in a drawer"
+    },
+    {
+      "id": "wct-009",
+      "productType": "Bags & Purses",
+      "productStyle": "Practical",
+      "category": "Gift Impact",
+      "text": "Makes everyday life easier",
+      "subtext": "A gift they'll reach for constantly"
+    },
+    {
+      "id": "wct-010",
+      "productType": "Bags & Purses",
+      "productStyle": "Practical",
+      "category": "Stands Out",
+      "text": "Clever design",
+      "subtext": "Without feeling plain"
+    },
+    {
+      "id": "wct-011",
+      "productType": "Bags & Purses",
+      "productStyle": "Practical",
+      "category": "Trusted Pick",
+      "text": "Easy to get right",
+      "subtext": "Useful and stylish"
+    },
+    {
+      "id": "wct-012",
+      "productType": "Bags & Purses",
+      "productStyle": "Practical",
+      "category": "Worth Keeping",
+      "text": "Built to last",
+      "subtext": "Withstands daily life while looking good"
+    },
+    {
+      "id": "wct-013",
+      "productType": "Bags & Purses",
+      "productStyle": "Bold/Colourful",
+      "category": "Gift Impact",
+      "text": "Adds instand personality",
+      "subtext": "Bright and joyful whilst still considered"
+    },
+    {
+      "id": "wct-014",
+      "productType": "Bags & Purses",
+      "productStyle": "Bold/Colourful",
+      "category": "Stands Out",
+      "text": "Bold by design",
+      "subtext": "Eye-catching colours and distinctive details"
+    },
+    {
+      "id": "wct-015",
+      "productType": "Bags & Purses",
+      "productStyle": "Bold/Colourful",
+      "category": "Trusted Pick",
+      "text": "A fun but useful gift",
+      "subtext": "Made to be both useful and admired"
+    },
+    {
+      "id": "wct-016",
+      "productType": "Bags & Purses",
+      "productStyle": "Bold/Colourful",
+      "category": "Worth Keeping",
+      "text": "Made to become a favourite",
+      "subtext": "A piece they\u2019ll keep coming back to"
+    },
+    {
+      "id": "wct-017",
+      "productType": "Children",
+      "productStyle": "Classic/Timeless",
+      "category": "Gift Impact",
+      "text": "A gift that lasts",
+      "subtext": "Not quickly outgrown"
+    },
+    {
+      "id": "wct-018",
+      "productType": "Children",
+      "productStyle": "Classic/Timeless",
+      "category": "Stands Out",
+      "text": "A proper little classic",
+      "subtext": "Traditional but not old fashioned"
+    },
+    {
+      "id": "wct-019",
+      "productType": "Children",
+      "productStyle": "Classic/Timeless",
+      "category": "Trusted Pick",
+      "text": "Easy to give with confidence",
+      "subtext": "A safe choice"
+    },
+    {
+      "id": "wct-020",
+      "productType": "Children",
+      "productStyle": "Classic/Timeless",
+      "category": "Worth Keeping",
+      "text": "Made to be kept",
+      "subtext": "The kind of gift that becomes part of their story"
+    },
+    {
+      "id": "wct-021",
+      "productType": "Children",
+      "productStyle": "Playful",
+      "category": "Gift Impact",
+      "text": "Guaranteed to raise a smile",
+      "subtext": "Bright, cheerful and fun to give"
+    },
+    {
+      "id": "wct-022",
+      "productType": "Children",
+      "productStyle": "Playful",
+      "category": "Stands Out",
+      "text": "Full of personality",
+      "subtext": "Designed to be joyful"
+    },
+    {
+      "id": "wct-023",
+      "productType": "Children",
+      "productStyle": "Playful",
+      "category": "Trusted Pick",
+      "text": "Always popular with children",
+      "subtext": "Easy gifting for birthdays and celebrations"
+    },
+    {
+      "id": "wct-024",
+      "productType": "Children",
+      "productStyle": "Playful",
+      "category": "Worth Keeping",
+      "text": "Chosen for everyday enjoyment",
+      "subtext": "The sort of thing they keep coming back to"
+    },
+    {
+      "id": "wct-025",
+      "productType": "Children",
+      "productStyle": "Creative",
+      "category": "Gift Impact",
+      "text": "Keeps little hands busy",
+      "subtext": "Encourages creativity"
+    },
+    {
+      "id": "wct-026",
+      "productType": "Children",
+      "productStyle": "Creative",
+      "category": "Stands Out",
+      "text": "More than just another toy",
+      "subtext": "Designed to spark imagination"
+    },
+    {
+      "id": "wct-027",
+      "productType": "Children",
+      "productStyle": "Creative",
+      "category": "Trusted Pick",
+      "text": "Best selling choice",
+      "subtext": "Loved by kids"
+    },
+    {
+      "id": "wct-028",
+      "productType": "Children",
+      "productStyle": "Creative",
+      "category": "Worth Keeping",
+      "text": "Made for creative moments",
+      "subtext": "A favourite they keep coming back to"
+    },
+    {
+      "id": "wct-029",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Minimal",
+      "category": "Gift Impact",
+      "text": "Clean Styling",
+      "subtext": "Makes a space feel calmer"
+    },
+    {
+      "id": "wct-030",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Minimal",
+      "category": "Stands Out",
+      "text": "Simple but not cold",
+      "subtext": "Quietly distinctive"
+    },
+    {
+      "id": "wct-031",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Minimal",
+      "category": "Trusted Pick",
+      "text": "Easy to style",
+      "subtext": "Works naturally with most interiors"
+    },
+    {
+      "id": "wct-032",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Minimal",
+      "category": "Worth Keeping",
+      "text": "Designed to outlast trends",
+      "subtext": "The kind of peice that always feels current"
+    },
+    {
+      "id": "wct-033",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Scandi",
+      "category": "Gift Impact",
+      "text": "Creates a calm atmosphere",
+      "subtext": "Inspired for easy living"
+    },
+    {
+      "id": "wct-034",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Scandi",
+      "category": "Stands Out",
+      "text": "Warm and understated",
+      "subtext": "Natural and efforless styling"
+    },
+    {
+      "id": "wct-035",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Scandi",
+      "category": "Trusted Pick",
+      "text": "Easy to live with",
+      "subtext": "Works beautifully in everyday spaces"
+    },
+    {
+      "id": "wct-036",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Scandi",
+      "category": "Worth Keeping",
+      "text": "Made for the long term",
+      "subtext": "Timeless style that won't date quickly"
+    },
+    {
+      "id": "wct-037",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Statement",
+      "category": "Gift Impact",
+      "text": "Instantly dynamic",
+      "subtext": "Brings personality into a space"
+    },
+    {
+      "id": "wct-038",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Statement",
+      "category": "Stands Out",
+      "text": "A real conversation piece",
+      "subtext": "Adds bold character"
+    },
+    {
+      "id": "wct-039",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Statement",
+      "category": "Trusted Pick",
+      "text": "For spaces with personality",
+      "subtext": "Makes a space feel individual"
+    },
+    {
+      "id": "wct-040",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Statement",
+      "category": "Worth Keeping",
+      "text": "Designed to stay on display",
+      "subtext": "A piece to enjoy every day"
+    },
+    {
+      "id": "wct-041",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Contemporary Classic",
+      "category": "Gift Impact",
+      "text": "Brings warmth into the home",
+      "subtext": "Classic styling"
+    },
+    {
+      "id": "wct-042",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Contemporary Classic",
+      "category": "Stands Out",
+      "text": "Timeless, not trend-led",
+      "subtext": "Elegant design for easy fit"
+    },
+    {
+      "id": "wct-043",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Contemporary Classic",
+      "category": "Trusted Pick",
+      "text": "Easy to style long-term",
+      "subtext": "Works across any home"
+    },
+    {
+      "id": "wct-044",
+      "productType": "Furniture & Lighting",
+      "productStyle": "Contemporary Classic",
+      "category": "Worth Keeping",
+      "text": "Made to age beautifully",
+      "subtext": "The sort of piece you'll keep for years"
+    },
+    {
+      "id": "wct-045",
+      "productType": "Greetings Cards",
+      "productStyle": "Nature",
+      "category": "Gift Impact",
+      "text": "Naturally heartfelt",
+      "subtext": "A beautiful way to say it"
+    },
+    {
+      "id": "wct-046",
+      "productType": "Greetings Cards",
+      "productStyle": "Nature",
+      "category": "Stands Out",
+      "text": "Beautifully illustrated",
+      "subtext": "Made to feel special"
+    },
+    {
+      "id": "wct-047",
+      "productType": "Greetings Cards",
+      "productStyle": "Nature",
+      "category": "Trusted Pick",
+      "text": "Thoughtfully chosen",
+      "subtext": "Perfect for meaningful moments"
+    },
+    {
+      "id": "wct-048",
+      "productType": "Greetings Cards",
+      "productStyle": "Nature",
+      "category": "Worth Keeping",
+      "text": "Frame-worthy detail",
+      "subtext": "The kind of card they\u2019ll want to keep"
+    },
+    {
+      "id": "wct-049",
+      "productType": "Greetings Cards",
+      "productStyle": "Novelty/Humorous",
+      "category": "Gift Impact",
+      "text": "Sure to raise a smile",
+      "subtext": "Playful humour they\u2019ll love"
+    },
+    {
+      "id": "wct-050",
+      "productType": "Greetings Cards",
+      "productStyle": "Novelty/Humorous",
+      "category": "Stands Out",
+      "text": "Brilliantly witty",
+      "subtext": "A design with plenty of personality"
+    },
+    {
+      "id": "wct-051",
+      "productType": "Greetings Cards",
+      "productStyle": "Novelty/Humorous",
+      "category": "Trusted Pick",
+      "text": "Best selling choice",
+      "subtext": "Always gets a laugh"
+    },
+    {
+      "id": "wct-052",
+      "productType": "Greetings Cards",
+      "productStyle": "Novelty/Humorous",
+      "category": "Worth Keeping",
+      "text": "Memorable and playful",
+      "subtext": "A card to remember"
+    },
+    {
+      "id": "wct-053",
+      "productType": "Home",
+      "productStyle": "Bold/Colourful",
+      "category": "Gift Impact",
+      "text": "Adds instant personality",
+      "subtext": "Brings warmth into the home"
+    },
+    {
+      "id": "wct-054",
+      "productType": "Home",
+      "productStyle": "Bold/Colourful",
+      "category": "Stands Out",
+      "text": "Gets noticed",
+      "subtext": "Designed for homes with character"
+    },
+    {
+      "id": "wct-055",
+      "productType": "Home",
+      "productStyle": "Bold/Colourful",
+      "category": "Trusted Pick",
+      "text": "Perfectly chosen",
+      "subtext": "For friends with confident style"
+    },
+    {
+      "id": "wct-056",
+      "productType": "Home",
+      "productStyle": "Bold/Colourful",
+      "category": "Worth Keeping",
+      "text": "Made to be on display",
+      "subtext": "A piece they\u2019ll genuinely love to show off"
+    },
+    {
+      "id": "wct-057",
+      "productType": "Home",
+      "productStyle": "Classic/Timeless",
+      "category": "Gift Impact",
+      "text": "A best selling classic",
+      "subtext": "Adds a beautiful touch to any room"
+    },
+    {
+      "id": "wct-058",
+      "productType": "Home",
+      "productStyle": "Classic/Timeless",
+      "category": "Stands Out",
+      "text": "Timeless without formality",
+      "subtext": "Elegant design to suit all spaces"
+    },
+    {
+      "id": "wct-059",
+      "productType": "Home",
+      "productStyle": "Classic/Timeless",
+      "category": "Trusted Pick",
+      "text": "Easy to buy with confidence",
+      "subtext": "A safe but thoughtful choice"
+    },
+    {
+      "id": "wct-060",
+      "productType": "Home",
+      "productStyle": "Classic/Timeless",
+      "category": "Worth Keeping",
+      "text": "A lasting favourite",
+      "subtext": "The kind of gift that always finds a place"
+    },
+    {
+      "id": "wct-061",
+      "productType": "Home",
+      "productStyle": "Earthy/Natural",
+      "category": "Gift Impact",
+      "text": "Calm and considered",
+      "subtext": "Inspired by natural living"
+    },
+    {
+      "id": "wct-062",
+      "productType": "Home",
+      "productStyle": "Earthy/Natural",
+      "category": "Stands Out",
+      "text": "Relaxed and easy to live with",
+      "subtext": "Adds warmth"
+    },
+    {
+      "id": "wct-063",
+      "productType": "Home",
+      "productStyle": "Earthy/Natural",
+      "category": "Trusted Pick",
+      "text": "Suits all spaces",
+      "subtext": "An easy gift to get right"
+    },
+    {
+      "id": "wct-064",
+      "productType": "Home",
+      "productStyle": "Earthy/Natural",
+      "category": "Worth Keeping",
+      "text": "Designed for the long-term",
+      "subtext": "Style that feels timeless"
+    },
+    {
+      "id": "wct-065",
+      "productType": "Home",
+      "productStyle": "Minimal",
+      "category": "Gift Impact",
+      "text": "Adds a clean, modern touch",
+      "subtext": "For simple styling"
+    },
+    {
+      "id": "wct-066",
+      "productType": "Home",
+      "productStyle": "Minimal",
+      "category": "Stands Out",
+      "text": "Minimal without feeling cold",
+      "subtext": "Quietly distinctive"
+    },
+    {
+      "id": "wct-067",
+      "productType": "Home",
+      "productStyle": "Minimal",
+      "category": "Trusted Pick",
+      "text": "Easy to style anywhere",
+      "subtext": "Works across any space"
+    },
+    {
+      "id": "wct-068",
+      "productType": "Home",
+      "productStyle": "Minimal",
+      "category": "Worth Keeping",
+      "text": "Outlasts trends",
+      "subtext": "A piece they won't tire of"
+    },
+    {
+      "id": "wct-069",
+      "productType": "Home",
+      "productStyle": "Playful",
+      "category": "Gift Impact",
+      "text": "Guaranteed to raise a smile",
+      "subtext": "Brings joy into the home"
+    },
+    {
+      "id": "wct-070",
+      "productType": "Home",
+      "productStyle": "Playful",
+      "category": "Stands Out",
+      "text": "Full of character",
+      "subtext": "A gift that feels happy"
+    },
+    {
+      "id": "wct-071",
+      "productType": "Home",
+      "productStyle": "Playful",
+      "category": "Trusted Pick",
+      "text": "Easy gifting for people with personality",
+      "subtext": "Something a little different"
+    },
+    {
+      "id": "wct-072",
+      "productType": "Home",
+      "productStyle": "Playful",
+      "category": "Worth Keeping",
+      "text": "Made to brighten every day life",
+      "subtext": "The sort of piece that will become part of the room"
+    },
+    {
+      "id": "wct-073",
+      "productType": "Home",
+      "productStyle": "EcoFriendly",
+      "category": "Gift Impact",
+      "text": "A feel-good choice",
+      "subtext": "Beautiful design with a lighter footprint"
+    },
+    {
+      "id": "wct-074",
+      "productType": "Home",
+      "productStyle": "EcoFriendly",
+      "category": "Stands Out",
+      "text": "Designed with purpose",
+      "subtext": "Feels considered from every angle"
+    },
+    {
+      "id": "wct-075",
+      "productType": "Home",
+      "productStyle": "EcoFriendly",
+      "category": "Trusted Pick",
+      "text": "A great option for conscious gifting",
+      "subtext": "Mindfully chosen"
+    },
+    {
+      "id": "wct-076",
+      "productType": "Home",
+      "productStyle": "EcoFriendly",
+      "category": "Worth Keeping",
+      "text": "Made to last",
+      "subtext": "Designed for using"
+    },
+    {
+      "id": "wct-077",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Classic",
+      "category": "Gift Impact",
+      "text": "Easy to wear",
+      "subtext": "Classic styling"
+    },
+    {
+      "id": "wct-078",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Classic",
+      "category": "Stands Out",
+      "text": "Understated detail",
+      "subtext": "Refined without trying too hard"
+    },
+    {
+      "id": "wct-079",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Classic",
+      "category": "Trusted Pick",
+      "text": "A safe gift that still feels personal",
+      "subtext": "Easy to buy for almost any style"
+    },
+    {
+      "id": "wct-080",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Classic",
+      "category": "Worth Keeping",
+      "text": "Designed for longevity",
+      "subtext": "Made to be worn with love"
+    },
+    {
+      "id": "wct-081",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Modern",
+      "category": "Gift Impact",
+      "text": "Clean contemporary style",
+      "subtext": "Adds a modern edge"
+    },
+    {
+      "id": "wct-082",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Modern",
+      "category": "Stands Out",
+      "text": "Sharp and streamlined",
+      "subtext": "Minimal design with strong detail"
+    },
+    {
+      "id": "wct-083",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Modern",
+      "category": "Trusted Pick",
+      "text": "Easy fit with daily life",
+      "subtext": "Fits effortlessly into everyday wear"
+    },
+    {
+      "id": "wct-084",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Modern",
+      "category": "Worth Keeping",
+      "text": "Designed to stay relevant",
+      "subtext": "Modern style that won't date"
+    },
+    {
+      "id": "wct-085",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Personalised",
+      "category": "Gift Impact",
+      "text": "Marks the occasion",
+      "subtext": "A gift that carries real meaning"
+    },
+    {
+      "id": "wct-086",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Personalised",
+      "category": "Stands Out",
+      "text": "Subtle personalisation",
+      "subtext": "Detailed for a unique touch"
+    },
+    {
+      "id": "wct-087",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Personalised",
+      "category": "Trusted Pick",
+      "text": "A thoughtful but easy choice",
+      "subtext": "Practical and meaningful"
+    },
+    {
+      "id": "wct-088",
+      "productType": "Men's Jewellery & Accessories",
+      "productStyle": "Personalised",
+      "category": "Worth Keeping",
+      "text": "Made to hold significance",
+      "subtext": "Designed to be cherished"
+    },
+    {
+      "id": "wct-089",
+      "productType": "Women's Jewellery",
+      "productStyle": "Dainty",
+      "category": "Gift Impact",
+      "text": "Easy to wear",
+      "subtext": "Finishing touch for every day life"
+    },
+    {
+      "id": "wct-090",
+      "productType": "Women's Jewellery",
+      "productStyle": "Dainty",
+      "category": "Stands Out",
+      "text": "Delicate without disappearing",
+      "subtext": "Simple but still special"
+    },
+    {
+      "id": "wct-091",
+      "productType": "Women's Jewellery",
+      "productStyle": "Dainty",
+      "category": "Trusted Pick",
+      "text": "An easy to give gift",
+      "subtext": "Ageless and versatile"
+    },
+    {
+      "id": "wct-092",
+      "productType": "Women's Jewellery",
+      "productStyle": "Dainty",
+      "category": "Worth Keeping",
+      "text": "A timeless staple",
+      "subtext": "Something they'll keep reaching for"
+    },
+    {
+      "id": "wct-093",
+      "productType": "Women's Jewellery",
+      "productStyle": "Minimal",
+      "category": "Gift Impact",
+      "text": "Effortless styling",
+      "subtext": "For understated daily wear"
+    },
+    {
+      "id": "wct-094",
+      "productType": "Women's Jewellery",
+      "productStyle": "Minimal",
+      "category": "Stands Out",
+      "text": "Clean, modern styling",
+      "subtext": "Quietly distinctive"
+    },
+    {
+      "id": "wct-095",
+      "productType": "Women's Jewellery",
+      "productStyle": "Minimal",
+      "category": "Trusted Pick",
+      "text": "Safe but thoughtful choice",
+      "subtext": "Difficult not to love"
+    },
+    {
+      "id": "wct-096",
+      "productType": "Women's Jewellery",
+      "productStyle": "Minimal",
+      "category": "Worth Keeping",
+      "text": "Designed to be cherished",
+      "subtext": "A piece she won't tire of"
+    },
+    {
+      "id": "wct-097",
+      "productType": "Women's Jewellery",
+      "productStyle": "Personalised",
+      "category": "Gift Impact",
+      "text": "Made uniquely theirs",
+      "subtext": "Adds real meaning"
+    },
+    {
+      "id": "wct-098",
+      "productType": "Women's Jewellery",
+      "productStyle": "Personalised",
+      "category": "Stands Out",
+      "text": "Bespoke detail",
+      "subtext": "Finished with care"
+    },
+    {
+      "id": "wct-099",
+      "productType": "Women's Jewellery",
+      "productStyle": "Personalised",
+      "category": "Trusted Pick",
+      "text": "A meaningful gift made easy",
+      "subtext": "Personal without the risk"
+    },
+    {
+      "id": "wct-100",
+      "productType": "Women's Jewellery",
+      "productStyle": "Personalised",
+      "category": "Worth Keeping",
+      "text": "Made to hold meaning",
+      "subtext": "For precious moments"
+    },
+    {
+      "id": "wct-101",
+      "productType": "Women's Jewellery",
+      "productStyle": "Statement",
+      "category": "Gift Impact",
+      "text": "Confident design",
+      "subtext": "Perfect to elevate her style"
+    },
+    {
+      "id": "wct-102",
+      "productType": "Women's Jewellery",
+      "productStyle": "Statement",
+      "category": "Stands Out",
+      "text": "A talking piece",
+      "subtext": "Bold styling with character"
+    },
+    {
+      "id": "wct-103",
+      "productType": "Women's Jewellery",
+      "productStyle": "Statement",
+      "category": "Trusted Pick",
+      "text": "A thoughtful choice",
+      "subtext": "A gift that feels exciting to receive"
+    },
+    {
+      "id": "wct-104",
+      "productType": "Women's Jewellery",
+      "productStyle": "Statement",
+      "category": "Worth Keeping",
+      "text": "Designed for standout",
+      "subtext": "A piece to build outfits around"
+    },
+    {
+      "id": "wct-105",
+      "productType": "Children's Jewellery",
+      "productStyle": "Dainty",
+      "category": "Gift Impact",
+      "text": "Sweet and delicate",
+      "subtext": "A lovely little keepsake"
+    },
+    {
+      "id": "wct-106",
+      "productType": "Children's Jewellery",
+      "productStyle": "Dainty",
+      "category": "Stands Out",
+      "text": "Beautifully detailed",
+      "subtext": "Made for precious moments"
+    },
+    {
+      "id": "wct-107",
+      "productType": "Children's Jewellery",
+      "productStyle": "Dainty",
+      "category": "Trusted Pick",
+      "text": "Easy gifting for milestone moments",
+      "subtext": "Perfect for all occasions"
+    },
+    {
+      "id": "wct-108",
+      "productType": "Children's Jewellery",
+      "productStyle": "Dainty",
+      "category": "Worth Keeping",
+      "text": "Made to be treasured as they grow",
+      "subtext": "For a heirloom gift"
+    },
+    {
+      "id": "wct-109",
+      "productType": "Children's Jewellery",
+      "productStyle": "Minimal",
+      "category": "Gift Impact",
+      "text": "Simple and stylish",
+      "subtext": "Perfect for everyday wear"
+    },
+    {
+      "id": "wct-110",
+      "productType": "Children's Jewellery",
+      "productStyle": "Minimal",
+      "category": "Stands Out",
+      "text": "Subtle and age appropriate",
+      "subtext": "Easy to style with anything"
+    },
+    {
+      "id": "wct-111",
+      "productType": "Children's Jewellery",
+      "productStyle": "Minimal",
+      "category": "Trusted Pick",
+      "text": "Safe and easy gift choice",
+      "subtext": "Works well across age groups"
+    },
+    {
+      "id": "wct-112",
+      "productType": "Children's Jewellery",
+      "productStyle": "Minimal",
+      "category": "Worth Keeping",
+      "text": "A classic favourite",
+      "subtext": "Style that lasts"
+    },
+    {
+      "id": "wct-113",
+      "productType": "Children's Jewellery",
+      "productStyle": "Personalised",
+      "category": "Gift Impact",
+      "text": "Made just for them",
+      "subtext": "Adds a personal touch"
+    },
+    {
+      "id": "wct-114",
+      "productType": "Children's Jewellery",
+      "productStyle": "Personalised",
+      "category": "Stands Out",
+      "text": "Adds meaning to the moment",
+      "subtext": "Finished with thoughtful detail"
+    },
+    {
+      "id": "wct-115",
+      "productType": "Children's Jewellery",
+      "productStyle": "Personalised",
+      "category": "Trusted Pick",
+      "text": "A heartfelt but easy gift",
+      "subtext": "Personal but not complicated"
+    },
+    {
+      "id": "wct-116",
+      "productType": "Children's Jewellery",
+      "productStyle": "Personalised",
+      "category": "Worth Keeping",
+      "text": "A treasured keepsake",
+      "subtext": "Designed to hold meaning"
+    },
+    {
+      "id": "wct-117",
+      "productType": "Books & Stationery",
+      "productStyle": "Illustrated",
+      "category": "Gift Impact",
+      "text": "A pleasure to pick up",
+      "subtext": "Beautiful detail for that special feel"
+    },
+    {
+      "id": "wct-118",
+      "productType": "Books & Stationery",
+      "productStyle": "Illustrated",
+      "category": "Stands Out",
+      "text": "Great coffee table book",
+      "subtext": "Designed to be admired"
+    },
+    {
+      "id": "wct-119",
+      "productType": "Books & Stationery",
+      "productStyle": "Illustrated",
+      "category": "Trusted Pick",
+      "text": "Easy gift for thoughtful people",
+      "subtext": "A safe choice that still feels personal"
+    },
+    {
+      "id": "wct-120",
+      "productType": "Books & Stationery",
+      "productStyle": "Illustrated",
+      "category": "Worth Keeping",
+      "text": "Made to revisit",
+      "subtext": "A joy to return to"
+    },
+    {
+      "id": "wct-121",
+      "productType": "Books & Stationery",
+      "productStyle": "Inspirational",
+      "category": "Gift Impact",
+      "text": "A thoughtful pause in a busy day",
+      "subtext": "Easy to dip into"
+    },
+    {
+      "id": "wct-122",
+      "productType": "Books & Stationery",
+      "productStyle": "Inspirational",
+      "category": "Stands Out",
+      "text": "Full of great ideas",
+      "subtext": "Feels uplifting"
+    },
+    {
+      "id": "wct-123",
+      "productType": "Books & Stationery",
+      "productStyle": "Inspirational",
+      "category": "Trusted Pick",
+      "text": "A mindful choice",
+      "subtext": "Inspires every day"
+    },
+    {
+      "id": "wct-124",
+      "productType": "Books & Stationery",
+      "productStyle": "Inspirational",
+      "category": "Worth Keeping",
+      "text": "Made to return to",
+      "subtext": "Lasting inspiration"
+    },
+    {
+      "id": "wct-125",
+      "productType": "Books & Stationery",
+      "productStyle": "Practical",
+      "category": "Gift Impact",
+      "text": "Useful but not boring",
+      "subtext": "For bedside reading"
+    },
+    {
+      "id": "wct-126",
+      "productType": "Books & Stationery",
+      "productStyle": "Practical",
+      "category": "Stands Out",
+      "text": "Practical with thoughtful detail",
+      "subtext": "For daily reference"
+    },
+    {
+      "id": "wct-127",
+      "productType": "Books & Stationery",
+      "productStyle": "Practical",
+      "category": "Trusted Pick",
+      "text": "A genuinely useful gift",
+      "subtext": "Easy to buy with confidence"
+    },
+    {
+      "id": "wct-128",
+      "productType": "Books & Stationery",
+      "productStyle": "Practical",
+      "category": "Worth Keeping",
+      "text": "Made for everyday use",
+      "subtext": "A regular reference staple"
+    },
+    {
+      "id": "wct-129",
+      "productType": "Personalised Accessories",
+      "productStyle": "Classic",
+      "category": "Gift Impact",
+      "text": "Adds a personal touch",
+      "subtext": "Classic styling"
+    },
+    {
+      "id": "wct-130",
+      "productType": "Personalised Accessories",
+      "productStyle": "Classic",
+      "category": "Stands Out",
+      "text": "Subtle yet thoughtful detailing",
+      "subtext": "Personalised yet not overdone"
+    },
+    {
+      "id": "wct-131",
+      "productType": "Personalised Accessories",
+      "productStyle": "Classic",
+      "category": "Trusted Pick",
+      "text": "Easy gifting",
+      "subtext": "A safe yet thoughtful choice"
+    },
+    {
+      "id": "wct-132",
+      "productType": "Personalised Accessories",
+      "productStyle": "Classic",
+      "category": "Worth Keeping",
+      "text": "Made to be used",
+      "subtext": "Something they'll keep close by"
+    },
+    {
+      "id": "wct-133",
+      "productType": "Personalised Accessories",
+      "productStyle": "Novelty",
+      "category": "Gift Impact",
+      "text": "Guaranteed to raise a smile",
+      "subtext": "Fun gifting that feels thoughtful"
+    },
+    {
+      "id": "wct-134",
+      "productType": "Personalised Accessories",
+      "productStyle": "Novelty",
+      "category": "Stands Out",
+      "text": "Full of personality",
+      "subtext": "Made to get noticed"
+    },
+    {
+      "id": "wct-135",
+      "productType": "Personalised Accessories",
+      "productStyle": "Novelty",
+      "category": "Trusted Pick",
+      "text": "An easy feel-good gift",
+      "subtext": "Great for little surprises"
+    },
+    {
+      "id": "wct-136",
+      "productType": "Personalised Accessories",
+      "productStyle": "Novelty",
+      "category": "Worth Keeping",
+      "text": "A gift they will remember receiving",
+      "subtext": "Hard not to like"
+    },
+    {
+      "id": "wct-137",
+      "productType": "Fairy Lights",
+      "productStyle": "Minimal",
+      "category": "Gift Impact",
+      "text": "Soft ambient glow",
+      "subtext": "Adds atmosphere instantly"
+    },
+    {
+      "id": "wct-138",
+      "productType": "Fairy Lights",
+      "productStyle": "Minimal",
+      "category": "Stands Out",
+      "text": "Simple lighting with impact",
+      "subtext": "Clean styling without feeling cold"
+    },
+    {
+      "id": "wct-139",
+      "productType": "Fairy Lights",
+      "productStyle": "Minimal",
+      "category": "Trusted Pick",
+      "text": "Easy to style in any room",
+      "subtext": "Works all year round"
+    },
+    {
+      "id": "wct-140",
+      "productType": "Fairy Lights",
+      "productStyle": "Minimal",
+      "category": "Worth Keeping",
+      "text": "For everyday ambience",
+      "subtext": "Style that lasts"
+    },
+    {
+      "id": "wct-141",
+      "productType": "Fairy Lights",
+      "productStyle": "Decorative",
+      "category": "Gift Impact",
+      "text": "Creates instant atmosphere",
+      "subtext": "Gives warmth to the room"
+    },
+    {
+      "id": "wct-142",
+      "productType": "Fairy Lights",
+      "productStyle": "Decorative",
+      "category": "Stands Out",
+      "text": "Adds personality after dark",
+      "subtext": "For stand out appeal"
+    },
+    {
+      "id": "wct-143",
+      "productType": "Fairy Lights",
+      "productStyle": "Decorative",
+      "category": "Trusted Pick",
+      "text": "An easy home gift to get right",
+      "subtext": "Easy to style"
+    },
+    {
+      "id": "wct-144",
+      "productType": "Fairy Lights",
+      "productStyle": "Decorative",
+      "category": "Worth Keeping",
+      "text": "For daily use",
+      "subtext": "Creates a welcoming feel"
+    },
+    {
+      "id": "wct-145",
+      "productType": "Fairy Lights",
+      "productStyle": "Colourful",
+      "category": "Gift Impact",
+      "text": "For instant joy",
+      "subtext": "Lifts the mood"
+    },
+    {
+      "id": "wct-146",
+      "productType": "Fairy Lights",
+      "productStyle": "Colourful",
+      "category": "Stands Out",
+      "text": "Full of personality",
+      "subtext": "Adds impact through colour"
+    },
+    {
+      "id": "wct-147",
+      "productType": "Fairy Lights",
+      "productStyle": "Colourful",
+      "category": "Trusted Pick",
+      "text": "A cheerful choice",
+      "subtext": "Easy to choose for colourful homes"
+    },
+    {
+      "id": "wct-148",
+      "productType": "Fairy Lights",
+      "productStyle": "Colourful",
+      "category": "Worth Keeping",
+      "text": "Made to brighten every day",
+      "subtext": "Bring constant joy"
+    },
+    {
+      "id": "wct-149",
+      "productType": "Candles / Diffusers",
+      "productStyle": "Novelty",
+      "category": "Gift Impact",
+      "text": "Sure to raise a smile",
+      "subtext": "Fun gifting"
+    },
+    {
+      "id": "wct-150",
+      "productType": "Candles / Diffusers",
+      "productStyle": "Novelty",
+      "category": "Stands Out",
+      "text": "Full of character",
+      "subtext": "Designed to amuse"
+    },
+    {
+      "id": "wct-151",
+      "productType": "Candles / Diffusers",
+      "productStyle": "Novelty",
+      "category": "Trusted Pick",
+      "text": "An easy little gift win",
+      "subtext": "Perfect pick-me-up"
+    },
+    {
+      "id": "wct-152",
+      "productType": "Candles / Diffusers",
+      "productStyle": "Novelty",
+      "category": "Worth Keeping",
+      "text": "Memorable and fun",
+      "subtext": "Always a talking point"
+    },
+    {
+      "id": "wct-153",
+      "productType": "Candles / Diffusers",
+      "productStyle": "Premium",
+      "category": "Gift Impact",
+      "text": "Luxurious gifting",
+      "subtext": "Elevates any space"
+    },
+    {
+      "id": "wct-154",
+      "productType": "Candles / Diffusers",
+      "productStyle": "Premium",
+      "category": "Stands Out",
+      "text": "For instant use",
+      "subtext": "Calming and thoughtful"
+    },
+    {
+      "id": "wct-155",
+      "productType": "Candles / Diffusers",
+      "productStyle": "Premium",
+      "category": "Trusted Pick",
+      "text": "A reliable gifting favourite",
+      "subtext": "Easy to give"
+    },
+    {
+      "id": "wct-156",
+      "productType": "Candles / Diffusers",
+      "productStyle": "Premium",
+      "category": "Worth Keeping",
+      "text": "A constant favourite",
+      "subtext": "Scent that stays with you"
+    }
+  ]
+}

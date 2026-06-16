@@ -4,12 +4,9 @@ import { getProductsBatchWithMetafields } from "@/lib/metafields";
 import { assignWhyChooseThis, assignPerfectFor } from "@/lib/assignment-engine";
 import { generateProductSummary } from "@/lib/generate-summary";
 import { getSettings } from "@/lib/settings-store";
-import { getLibraryEdits } from "@/lib/library-edits-store";
-import wctData from "@/data/why-choose-this.json";
+import { getWctLibrary } from "@/lib/wct-store";
 import { getPfLibrary } from "@/lib/pf-store";
 import type { WhyChooseThisEntry } from "@/lib/types";
-
-const wctBase = wctData as WhyChooseThisEntry[];
 
 export const maxDuration = 60;
 
@@ -26,14 +23,14 @@ export async function POST(req: NextRequest) {
   let pfLibrary: Awaited<ReturnType<typeof getPfLibrary>>;
   let products: Awaited<ReturnType<typeof getProductsBatchWithMetafields>>;
   let settings: Awaited<ReturnType<typeof getSettings>> | null;
-  let libraryEdits: Awaited<ReturnType<typeof getLibraryEdits>> | null;
+  let wctLibrary: WhyChooseThisEntry[];
 
   try {
-    [pfLibrary, products, settings, libraryEdits] = await Promise.all([
+    [pfLibrary, products, settings, wctLibrary] = await Promise.all([
       getPfLibrary(),
       getProductsBatchWithMetafields(productIds),
       readOnly ? Promise.resolve(null) : getSettings(),
-      readOnly ? Promise.resolve(null) : getLibraryEdits(),
+      readOnly ? Promise.resolve([]) : getWctLibrary(),
     ]);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
@@ -76,17 +73,6 @@ export async function POST(req: NextRequest) {
       regenerating: false,
     };
   }
-
-  const wctLibrary: WhyChooseThisEntry[] = readOnly ? [] : (() => {
-    const wctEditsMap = libraryEdits!.wct;
-    return [
-      ...wctBase.map((e) => wctEditsMap[e.id] ? { ...e, text: wctEditsMap[e.id].text, subtext: wctEditsMap[e.id].subtext } : e),
-      ...Object.values(wctEditsMap).filter((e) => e.isNew).map((e) => ({
-        id: e.id, productType: e.productType, productStyle: e.productStyle,
-        category: e.category as WhyChooseThisEntry["category"], text: e.text, subtext: e.subtext,
-      })),
-    ];
-  })();
 
   const today = new Date();
 

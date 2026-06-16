@@ -3,10 +3,6 @@ import { requireAuth } from "@/lib/auth";
 import { shopifyGraphQL } from "@/lib/shopify";
 import { getLibraryEdits } from "@/lib/library-edits-store";
 import { findPhraseForEntry } from "@/lib/pf-store";
-import wctData from "@/data/why-choose-this.json";
-import type { WhyChooseThisEntry } from "@/lib/types";
-
-const wctLibrary = wctData as WhyChooseThisEntry[];
 
 const SCAN_QUERY = `
   query ScanProducts($first: Int!, $after: String) {
@@ -67,15 +63,14 @@ export async function POST(req: NextRequest) {
 
   if (type === "wct") {
     const wctEntry = edits.wct[id];
-    const baseEntry = wctLibrary.find((e) => e.id === id);
 
-    if (!wctEntry && !baseEntry) return NextResponse.json({ error: "Entry not found" }, { status: 404 });
+    if (!wctEntry) return NextResponse.json({ error: "Entry not found" }, { status: 404 });
 
-    const entryProductType = wctEntry?.productType ?? baseEntry!.productType;
-    const entryProductStyle = wctEntry?.productStyle ?? baseEntry!.productStyle;
+    const entryProductType = wctEntry.productType;
+    const entryProductStyle = wctEntry.productStyle;
 
-    const newFormatted = formatWCT(wctEntry?.text ?? baseEntry!.text, wctEntry?.subtext ?? baseEntry!.subtext);
-    const oldFormatted = wctEntry?.searchFormatted || (baseEntry ? formatWCT(baseEntry.text, baseEntry.subtext) : newFormatted);
+    const newFormatted = formatWCT(wctEntry.text, wctEntry.subtext);
+    const oldFormatted = wctEntry.searchFormatted || newFormatted;
 
     // Only search for old text when it differs from new — products already on new text
     // are already up to date and would show as "0 updated" in the push step.

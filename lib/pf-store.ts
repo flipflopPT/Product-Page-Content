@@ -1,5 +1,3 @@
-import pfPhrasesBase from "@/data/pf-phrases.json";
-import pfApplicabilityBase from "@/data/pf-applicability.json";
 import {
   getLibraryEdits,
   upsertPFPhraseEdit,
@@ -12,76 +10,44 @@ import {
 import type { PFPhrase, PFApplicability, PerfectForEntry } from "./types";
 import { getSettings, saveSettings } from "./settings-store";
 
-const basePhrases = pfPhrasesBase as PFPhrase[];
-const baseApplicability = pfApplicabilityBase as PFApplicability[];
-
 // ── Read helpers ──────────────────────────────────────────────────────────────
 
-// Returns the merged phrase map: base phrases overridden by any phrase-level edits
+// Returns the phrase map, excluding any phrases marked deleted
 async function buildPhraseMap(): Promise<Map<string, PFPhrase>> {
   const edits = await getLibraryEdits();
   const map = new Map<string, PFPhrase>();
 
-  for (const p of basePhrases) {
-    const edit = edits.pfPhrases[p.id];
-    if (edit?.deleted) continue; // phrase has been deleted
-    map.set(p.id, {
-      ...p,
-      phrase: edit?.phrase ?? p.phrase,
-      icon: edit?.icon ?? p.icon,
-      ...(edit?.category !== undefined && { category: edit.category as PFPhrase["category"] }),
-      ...(edit?.timeSensitive !== undefined && { timeSensitive: edit.timeSensitive as PFPhrase["timeSensitive"] }),
-      ...(edit?.filterByInterest !== undefined && { filterByInterest: edit.filterByInterest }),
-      ...(edit?.minPrice !== undefined ? (edit.minPrice !== null ? { minPrice: edit.minPrice } : {}) : p.minPrice !== undefined ? { minPrice: p.minPrice } : {}),
-      ...(edit?.maxPrice !== undefined ? (edit.maxPrice !== null ? { maxPrice: edit.maxPrice } : {}) : p.maxPrice !== undefined ? { maxPrice: p.maxPrice } : {}),
-    });
-  }
-
-  // Add new custom phrases (skip deleted ones)
   for (const edit of Object.values(edits.pfPhrases)) {
-    if (edit.isNew && !edit.deleted) {
-      map.set(edit.id, {
-        id: edit.id,
-        phrase: edit.phrase,
-        icon: edit.icon,
-        category: (edit.category ?? "Occasion") as PFPhrase["category"],
-        timeSensitive: (edit.timeSensitive ?? null) as PFPhrase["timeSensitive"],
-        filterByInterest: edit.filterByInterest ?? false,
-        ...(edit.minPrice != null && { minPrice: edit.minPrice }),
-        ...(edit.maxPrice != null && { maxPrice: edit.maxPrice }),
-      });
-    }
+    if (edit.deleted) continue;
+    map.set(edit.id, {
+      id: edit.id,
+      phrase: edit.phrase,
+      icon: edit.icon,
+      category: (edit.category ?? "Occasion") as PFPhrase["category"],
+      timeSensitive: (edit.timeSensitive ?? null) as PFPhrase["timeSensitive"],
+      filterByInterest: edit.filterByInterest ?? false,
+      ...(edit.minPrice != null && { minPrice: edit.minPrice }),
+      ...(edit.maxPrice != null && { maxPrice: edit.maxPrice }),
+    });
   }
 
   return map;
 }
 
-// Returns all applicability rows: base rows (minus deleted) + new custom rows
+// Returns all applicability rows, excluding any marked deleted
 async function buildApplicabilityList(): Promise<PFApplicability[]> {
   const edits = await getLibraryEdits();
   const list: PFApplicability[] = [];
 
-  // Include base rows, skipping any marked deleted, applying type/style overrides
-  for (const app of baseApplicability) {
-    const edit = edits.pfApplicability[app.id];
-    if (edit?.deleted) continue;
-    if (edit && !edit.isNew) {
-      list.push({ ...app, productType: edit.productType, productStyle: edit.productStyle });
-    } else {
-      list.push(app);
-    }
-  }
-
   for (const edit of Object.values(edits.pfApplicability)) {
-    if (edit.isNew && !edit.deleted) {
-      list.push({
-        id: edit.id,
-        phraseId: edit.phraseId,
-        productType: edit.productType,
-        productStyle: edit.productStyle,
-        applicabilityCount: edit.applicabilityCount,
-      });
-    }
+    if (edit.deleted) continue;
+    list.push({
+      id: edit.id,
+      phraseId: edit.phraseId,
+      productType: edit.productType,
+      productStyle: edit.productStyle,
+      applicabilityCount: edit.applicabilityCount,
+    });
   }
   return list;
 }
@@ -275,23 +241,12 @@ export async function addApplicability(
 // Remove an applicability row — works for both custom and base-data rows
 export async function removeApplicability(appId: string): Promise<void> {
   const edits = await getLibraryEdits();
-  const isCustom = edits.pfApplicability[appId]?.isNew;
-  if (isCustom) {
-    // Custom row: just delete the edit entry
+  const entry = edits.pfApplicability[appId];
+  if (!entry) return;
+  if (entry.isNew) {
     await deletePFApplicabilityEdit(appId);
   } else {
-    // Base-data row: mark as deleted so it's excluded from the merged view
-    const base = baseApplicability.find((a) => a.id === appId);
-    if (!base) return;
-    await upsertPFApplicabilityEdit({
-      id: appId,
-      phraseId: base.phraseId,
-      productType: base.productType,
-      productStyle: base.productStyle,
-      applicabilityCount: base.applicabilityCount,
-      isNew: false,
-      deleted: true,
-    });
+    await upsertPFApplicabilityEdit({ ...entry, deleted: true });
   }
 }
 
@@ -299,15 +254,14 @@ export async function removeApplicability(appId: string): Promise<void> {
 export async function deletePhrase(phraseId: string): Promise<void> {
   const edits = await getLibraryEdits();
   const existingEdit = edits.pfPhrases[phraseId];
-  const base = basePhrases.find((p) => p.id === phraseId);
-  const phraseText = existingEdit?.phrase ?? base?.phrase ?? "";
+  const phraseText = existingEdit?.phrase ?? "";
 
   // Mark the phrase as deleted
   await upsertPFPhraseEdit({
     id: phraseId,
     phrase: phraseText,
-    icon: existingEdit?.icon ?? base?.icon ?? "",
-    searchPhrase: existingEdit?.searchPhrase ?? base?.phrase ?? "",
+    icon: existingEdit?.icon ?? "",
+    searchPhrase: existingEdit?.searchPhrase ?? phraseText,
     isNew: existingEdit?.isNew ?? false,
     deleted: true,
   });

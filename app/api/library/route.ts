@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { getLibraryEdits } from "@/lib/library-edits-store";
 import { getPfLibrary, getPfPhraseRows, savePhraseIcon, findPhraseIdByText } from "@/lib/pf-store";
-import wctData from "@/data/why-choose-this.json";
-import type { WhyChooseThisEntry } from "@/lib/types";
-
-const wctLibrary = wctData as WhyChooseThisEntry[];
+import { getWctLibrary } from "@/lib/wct-store";
 
 export async function GET(req: NextRequest) {
   const authError = await requireAuth(req);
@@ -23,14 +20,7 @@ export async function GET(req: NextRequest) {
 
   if (type === "why") {
     const editsMap = libraryEdits.wct;
-    const base: WhyChooseThisEntry[] = wctLibrary.map((e) =>
-      editsMap[e.id] ? { ...e, text: editsMap[e.id].text, subtext: editsMap[e.id].subtext } : e
-    );
-    const newEntries: WhyChooseThisEntry[] = Object.values(editsMap)
-      .filter((e) => e.isNew)
-      .map((e) => ({ id: e.id, productType: e.productType, productStyle: e.productStyle, category: e.category as WhyChooseThisEntry["category"], text: e.text, subtext: e.subtext }));
-
-    let results = [...base, ...newEntries];
+    let results = await getWctLibrary();
     if (productType) results = results.filter((e) => e.productType === productType);
     if (productStyle) results = results.filter((e) => e.productStyle === productStyle);
     if (category) results = results.filter((e) => e.category === category);

@@ -1,546 +1,549 @@
-[
-  {
-    "id": "phrase-001",
-    "phrase": "Birthdays",
-    "icon": "cake",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-002",
-    "phrase": "Graduations",
-    "icon": "graduate",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-003",
-    "phrase": "Mother's Day",
-    "icon": "flower",
-    "category": "Occasion",
-    "timeSensitive": "mothers-day",
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-004",
-    "phrase": "Thank you gifts",
-    "icon": "hand-heart",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-005",
-    "phrase": "Colleagues",
-    "icon": "briefcase",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-006",
-    "phrase": "Friends",
-    "icon": "gift",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-007",
-    "phrase": "The person who has everything",
-    "icon": "sparkle",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-008",
-    "phrase": "Summer gifting",
-    "icon": "sun",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-009",
-    "phrase": "Fashion lovers",
-    "icon": "heart",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-010",
-    "phrase": "Weddings",
-    "icon": "rings",
-    "category": "Context",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-011",
-    "phrase": "Bridesmaids",
-    "icon": "rings",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-012",
-    "phrase": "Travel lovers",
-    "icon": "heart",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": true
-  },
-  {
-    "id": "phrase-013",
-    "phrase": "Just because",
-    "icon": "gift",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-014",
-    "phrase": "Book Lovers",
-    "icon": "heart",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-015",
-    "phrase": "Teachers",
-    "icon": "pencil",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-016",
-    "phrase": "Showing appreciation",
-    "icon": "hand-heart",
-    "category": "Context",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-017",
-    "phrase": "Teens",
-    "icon": "star",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-018",
-    "phrase": "Baby showers",
-    "icon": "baby",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-019",
-    "phrase": "Christenings",
-    "icon": "baby",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-020",
-    "phrase": "New parents",
-    "icon": "baby",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-021",
-    "phrase": "Naming ceremonies",
-    "icon": "baby",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-022",
-    "phrase": "Grandchildren",
-    "icon": "star",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-023",
-    "phrase": "Craft Lovers",
-    "icon": "heart",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": true
-  },
-  {
-    "id": "phrase-024",
-    "phrase": "Creative children",
-    "icon": "brush",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-025",
-    "phrase": "School holiday fun",
-    "icon": "sparkle",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-026",
-    "phrase": "Communion gifts",
-    "icon": "gift",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-027",
-    "phrase": "Flower girls",
-    "icon": "flower",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-028",
-    "phrase": "Younger jewellery lovers",
-    "icon": "heart",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-029",
-    "phrase": "Milestone birthdays",
-    "icon": "cake",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-030",
-    "phrase": "Special achievements",
-    "icon": "sparkle",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-031",
-    "phrase": "Godchildren",
-    "icon": "star",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-032",
-    "phrase": "Nieces",
-    "icon": "gift",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-033",
-    "phrase": "New Baby",
-    "icon": "baby",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-034",
-    "phrase": "Home styling",
-    "icon": "house",
-    "category": "Context",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-035",
-    "phrase": "Renovation projects",
-    "icon": "house",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-036",
-    "phrase": "New homeowners",
-    "icon": "house",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-037",
-    "phrase": "Minimalists",
-    "icon": "sparkle",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-038",
-    "phrase": "Making a statement",
-    "icon": "sparkle",
-    "category": "Context",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-039",
-    "phrase": "Nature lovers",
-    "icon": "heart",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-040",
-    "phrase": "Making them smile",
-    "icon": "sun",
-    "category": "Context",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-041",
-    "phrase": "The funny one",
-    "icon": "star",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-042",
-    "phrase": "Outdoor entertaining",
-    "icon": "dining",
-    "category": "Context",
-    "timeSensitive": null,
-    "filterByInterest": true
-  },
-  {
-    "id": "phrase-043",
-    "phrase": "Thinking of You",
-    "icon": "gift",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-044",
-    "phrase": "Couples",
-    "icon": "gift",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-045",
-    "phrase": "Foodies",
-    "icon": "dining",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": true
-  },
-  {
-    "id": "phrase-046",
-    "phrase": "Outdoor Types",
-    "icon": "leaf",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": true
-  },
-  {
-    "id": "phrase-047",
-    "phrase": "Hosting celebrations",
-    "icon": "star",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-048",
-    "phrase": "Colour lovers",
-    "icon": "heart",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-049",
-    "phrase": "Engagement",
-    "icon": "rings",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-050",
-    "phrase": "Grandparents",
-    "icon": "gift",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-051",
-    "phrase": "Anniversaries",
-    "icon": "gift",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-052",
-    "phrase": "Wedding gifting",
-    "icon": "rings",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-053",
-    "phrase": "Traditional homemakers",
-    "icon": "house",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-054",
-    "phrase": "Sustainability lovers",
-    "icon": "heart",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-055",
-    "phrase": "Father's Day",
-    "icon": "wrench",
-    "category": "Occasion",
-    "timeSensitive": "fathers-day",
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-056",
-    "phrase": "Dads",
-    "icon": "wrench",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-057",
-    "phrase": "Groomsmen and Ushers",
-    "icon": "rings",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-058",
-    "phrase": "Husbands",
-    "icon": "gift",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-059",
-    "phrase": "Retirement gifts",
-    "icon": "watch",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-060",
-    "phrase": "Wedding party gifts",
-    "icon": "rings",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-061",
-    "phrase": "Music Lovers",
-    "icon": "heart",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": true
-  },
-  {
-    "id": "phrase-062",
-    "phrase": "Sports Fans",
-    "icon": "trophy",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": true
-  },
-  {
-    "id": "phrase-063",
-    "phrase": "Style-conscious men",
-    "icon": "sparkle",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-064",
-    "phrase": "Grooms",
-    "icon": "rings",
-    "category": "Person",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-065",
-    "phrase": "Valentines Day",
-    "icon": "heart",
-    "category": "Occasion",
-    "timeSensitive": "valentines-day",
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-066",
-    "phrase": "Corporate gifting",
-    "icon": "briefcase",
-    "category": "Context",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-067",
-    "phrase": "Good luck",
-    "icon": "clover",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  },
-  {
-    "id": "phrase-068",
-    "phrase": "Meaningful milestone gifts",
-    "icon": "gift",
-    "category": "Occasion",
-    "timeSensitive": null,
-    "filterByInterest": false
-  }
-]
+{
+  "_comment": "DEPRECATED: no longer read at runtime. Base library data was migrated into the pdp_library_edits Shopify metaobject (see plans/migrate-library-to-metaobject.md and scripts/migrate-library-to-metaobject.mjs). Kept here for historical reference only.",
+  "data": [
+    {
+      "id": "phrase-001",
+      "phrase": "Birthdays",
+      "icon": "cake",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-002",
+      "phrase": "Graduations",
+      "icon": "graduate",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-003",
+      "phrase": "Mother's Day",
+      "icon": "flower",
+      "category": "Occasion",
+      "timeSensitive": "mothers-day",
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-004",
+      "phrase": "Thank you gifts",
+      "icon": "hand-heart",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-005",
+      "phrase": "Colleagues",
+      "icon": "briefcase",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-006",
+      "phrase": "Friends",
+      "icon": "gift",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-007",
+      "phrase": "The person who has everything",
+      "icon": "sparkle",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-008",
+      "phrase": "Summer gifting",
+      "icon": "sun",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-009",
+      "phrase": "Fashion lovers",
+      "icon": "heart",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-010",
+      "phrase": "Weddings",
+      "icon": "rings",
+      "category": "Context",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-011",
+      "phrase": "Bridesmaids",
+      "icon": "rings",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-012",
+      "phrase": "Travel lovers",
+      "icon": "heart",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": true
+    },
+    {
+      "id": "phrase-013",
+      "phrase": "Just because",
+      "icon": "gift",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-014",
+      "phrase": "Book Lovers",
+      "icon": "heart",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-015",
+      "phrase": "Teachers",
+      "icon": "pencil",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-016",
+      "phrase": "Showing appreciation",
+      "icon": "hand-heart",
+      "category": "Context",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-017",
+      "phrase": "Teens",
+      "icon": "star",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-018",
+      "phrase": "Baby showers",
+      "icon": "baby",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-019",
+      "phrase": "Christenings",
+      "icon": "baby",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-020",
+      "phrase": "New parents",
+      "icon": "baby",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-021",
+      "phrase": "Naming ceremonies",
+      "icon": "baby",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-022",
+      "phrase": "Grandchildren",
+      "icon": "star",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-023",
+      "phrase": "Craft Lovers",
+      "icon": "heart",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": true
+    },
+    {
+      "id": "phrase-024",
+      "phrase": "Creative children",
+      "icon": "brush",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-025",
+      "phrase": "School holiday fun",
+      "icon": "sparkle",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-026",
+      "phrase": "Communion gifts",
+      "icon": "gift",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-027",
+      "phrase": "Flower girls",
+      "icon": "flower",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-028",
+      "phrase": "Younger jewellery lovers",
+      "icon": "heart",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-029",
+      "phrase": "Milestone birthdays",
+      "icon": "cake",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-030",
+      "phrase": "Special achievements",
+      "icon": "sparkle",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-031",
+      "phrase": "Godchildren",
+      "icon": "star",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-032",
+      "phrase": "Nieces",
+      "icon": "gift",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-033",
+      "phrase": "New Baby",
+      "icon": "baby",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-034",
+      "phrase": "Home styling",
+      "icon": "house",
+      "category": "Context",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-035",
+      "phrase": "Renovation projects",
+      "icon": "house",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-036",
+      "phrase": "New homeowners",
+      "icon": "house",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-037",
+      "phrase": "Minimalists",
+      "icon": "sparkle",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-038",
+      "phrase": "Making a statement",
+      "icon": "sparkle",
+      "category": "Context",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-039",
+      "phrase": "Nature lovers",
+      "icon": "heart",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-040",
+      "phrase": "Making them smile",
+      "icon": "sun",
+      "category": "Context",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-041",
+      "phrase": "The funny one",
+      "icon": "star",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-042",
+      "phrase": "Outdoor entertaining",
+      "icon": "dining",
+      "category": "Context",
+      "timeSensitive": null,
+      "filterByInterest": true
+    },
+    {
+      "id": "phrase-043",
+      "phrase": "Thinking of You",
+      "icon": "gift",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-044",
+      "phrase": "Couples",
+      "icon": "gift",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-045",
+      "phrase": "Foodies",
+      "icon": "dining",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": true
+    },
+    {
+      "id": "phrase-046",
+      "phrase": "Outdoor Types",
+      "icon": "leaf",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": true
+    },
+    {
+      "id": "phrase-047",
+      "phrase": "Hosting celebrations",
+      "icon": "star",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-048",
+      "phrase": "Colour lovers",
+      "icon": "heart",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-049",
+      "phrase": "Engagement",
+      "icon": "rings",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-050",
+      "phrase": "Grandparents",
+      "icon": "gift",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-051",
+      "phrase": "Anniversaries",
+      "icon": "gift",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-052",
+      "phrase": "Wedding gifting",
+      "icon": "rings",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-053",
+      "phrase": "Traditional homemakers",
+      "icon": "house",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-054",
+      "phrase": "Sustainability lovers",
+      "icon": "heart",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-055",
+      "phrase": "Father's Day",
+      "icon": "wrench",
+      "category": "Occasion",
+      "timeSensitive": "fathers-day",
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-056",
+      "phrase": "Dads",
+      "icon": "wrench",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-057",
+      "phrase": "Groomsmen and Ushers",
+      "icon": "rings",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-058",
+      "phrase": "Husbands",
+      "icon": "gift",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-059",
+      "phrase": "Retirement gifts",
+      "icon": "watch",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-060",
+      "phrase": "Wedding party gifts",
+      "icon": "rings",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-061",
+      "phrase": "Music Lovers",
+      "icon": "heart",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": true
+    },
+    {
+      "id": "phrase-062",
+      "phrase": "Sports Fans",
+      "icon": "trophy",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": true
+    },
+    {
+      "id": "phrase-063",
+      "phrase": "Style-conscious men",
+      "icon": "sparkle",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-064",
+      "phrase": "Grooms",
+      "icon": "rings",
+      "category": "Person",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-065",
+      "phrase": "Valentines Day",
+      "icon": "heart",
+      "category": "Occasion",
+      "timeSensitive": "valentines-day",
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-066",
+      "phrase": "Corporate gifting",
+      "icon": "briefcase",
+      "category": "Context",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-067",
+      "phrase": "Good luck",
+      "icon": "clover",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    },
+    {
+      "id": "phrase-068",
+      "phrase": "Meaningful milestone gifts",
+      "icon": "gift",
+      "category": "Occasion",
+      "timeSensitive": null,
+      "filterByInterest": false
+    }
+  ]
+}
