@@ -64,7 +64,7 @@ const TAXONOMY: Record<string, string[]> = {
   "Children's Jewellery":          ["Dainty", "Minimal", "Personalised"],
   "Men's Jewellery & Accessories": ["Classic", "Modern", "Personalised"],
   "Children":                      ["Classic/Timeless", "Playful", "Creative"],
-  "Books & Stationery":            ["Illustrated", "Inspirational", "Practical"],
+  "Books & Stationery":            ["Illustrated Books", "Inspirational", "Practical"],
   "Personalised Accessories":      ["Classic", "Novelty"],
   "Candles / Diffusers":           ["Novelty", "Premium"],
   "Greetings Cards":               ["Nature", "Novelty/Humorous"],

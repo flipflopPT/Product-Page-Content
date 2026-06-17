@@ -145,8 +145,8 @@ export default function ProductTypesPage() {
         if (titles.length === 0) {
           // No products affected — still need to update the library entries
           runCascadeStream("/api/taxonomy/rename-type", { oldType, newType: name, onlyLibrary: true }, () => {})
-            .then(({ libraryFailed }) => {
-              if (libraryFailed) {
+            .then(({ libraryFailed, receivedDone }) => {
+              if (libraryFailed || !receivedDone) {
                 setSaveError(`Renamed "${oldType}" → "${name}", but updating the matching library entries failed. Edit the type name again to retry.`);
                 setTypeRenameTarget(null);
                 return;
@@ -215,8 +215,8 @@ export default function ProductTypesPage() {
         if (titles.length === 0) {
           // No products affected — still need to update the library entries
           runCascadeStream("/api/taxonomy/rename-style", { type, oldStyle: style, newStyle: name, onlyLibrary: true }, () => {})
-            .then(({ libraryFailed }) => {
-              if (libraryFailed) {
+            .then(({ libraryFailed, receivedDone }) => {
+              if (libraryFailed || !receivedDone) {
                 setSaveError(`Renamed "${style}" → "${name}", but updating the matching library entries failed. Edit the style name again to retry.`);
                 setRenameTarget(null);
                 return;
