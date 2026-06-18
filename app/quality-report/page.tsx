@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Nav from "@/components/Nav";
+import ProductEditor from "@/components/ProductEditor";
 import { PRODUCT_TAXONOMY } from "@/data/taxonomy";
 import type { ProductSummary } from "@/lib/types";
 import { runNonAiChecks, type QualityIssue, type CheckId } from "@/lib/content-quality-checks";
@@ -11,6 +12,7 @@ import { IconImg } from "@/components/IconsProvider";
 interface ContentRow {
   productId: string;
   title: string;
+  vendor?: string;
   imageUrl: string | null;
   productTypePt: string;
   summary: string;
@@ -37,6 +39,8 @@ const CHECK_META: Record<string, { label: string; color: string }> = {
   "duplicate-icons":    { label: "Duplicate icons",    color: "bg-amber-100 text-amber-800" },
   "boring-summary":     { label: "AI summary",         color: "bg-amber-100 text-amber-800" },
   "context-mismatch":   { label: "Context mismatch",   color: "bg-amber-100 text-amber-800" },
+  "summary-rules":      { label: "Summary rule",       color: "bg-orange-100 text-orange-800" },
+  "durability-claim":   { label: "Durability claim",   color: "bg-orange-100 text-orange-800" },
 };
 
 const ALL_CHECK_IDS: CheckId[] = [
@@ -46,6 +50,8 @@ const ALL_CHECK_IDS: CheckId[] = [
   "duplicate-icons",
   "boring-summary",
   "context-mismatch",
+  "summary-rules",
+  "durability-claim",
 ];
 
 function numericId(gid: string): string {
@@ -85,6 +91,7 @@ export default function QualityReportPage() {
   const [taxonomy, setTaxonomy] = useState<Record<string, string[]>>(PRODUCT_TAXONOMY);
   const [productCount, setProductCount] = useState<number | null>(null);
   const [countLoading, setCountLoading] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<{ id: string; title: string } | null>(null);
 
   useEffect(() => {
     fetch("/api/taxonomy")
@@ -248,6 +255,7 @@ export default function QualityReportPage() {
           productId: row.productId,
           title: row.title,
           productTypePt: row.productTypePt,
+          vendor: row.vendor,
           summary: row.summary,
           wctBullets: row.wctBullets,
           pfBullets: row.pfBullets,
@@ -686,12 +694,12 @@ export default function QualityReportPage() {
                               </div>
                             </td>
                             <td className="px-4 py-3 text-right">
-                              <a
-                                href={`/products?id=${numericId(product.productId)}`}
+                              <button
+                                onClick={() => setEditingProduct({ id: numericId(product.productId), title: product.title })}
                                 className="text-xs text-gray-500 hover:text-gray-900 border border-gray-200 px-2 py-1 rounded hover:bg-gray-50"
                               >
                                 Edit
-                              </a>
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -717,6 +725,20 @@ export default function QualityReportPage() {
           )}
         </div>
       </div>
+
+      {editingProduct && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <ProductEditor
+              productId={editingProduct.id}
+              productTitle={editingProduct.title}
+              onSaved={() => setEditingProduct(null)}
+              onClose={() => setEditingProduct(null)}
+              isChristmas={christmas}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

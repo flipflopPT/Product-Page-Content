@@ -36,8 +36,14 @@ Perfect For phrases: ${pfList || "(none)"}`;
 
 For each product check TWO things:
 
-1. BORING_SUMMARY: Is the summary generic, AI-sounding, or template-like?
-   Flag if the summary sounds vague and could apply to any product rather than this specific one, or if it reads like marketing filler rather than a genuine product description.
+1. BORING_SUMMARY: Is the summary generic, AI-sounding, unnatural, or awkwardly phrased?
+   Flag if ANY of the following apply:
+   - Vague and could apply to any product rather than this specific one
+   - Reads like marketing filler rather than a genuine product description
+   - Contains an odd turn of phrase, clunky construction, or forced word order that no human copywriter would naturally write
+   - Uses stilted or unnatural-sounding language — phrasing that feels assembled rather than written
+   - Combines words or ideas in a way that sounds slightly off even if technically correct
+   Be specific in boringDetail: name the exact phrase or construction that sounds wrong (e.g. "odd phrasing: 'renders it uniquely personal'").
 
 2. CONTEXT_MISMATCH: Does any content field (summary, Why Choose This bullets, or Perfect For phrases) use language or assign phrases that would only make sense for a different product type, target audience, or use context?
    Flag if content feels like it belongs to a different product.
@@ -53,7 +59,7 @@ Respond ONLY with a JSON array with exactly ${rows.length} entries in the same o
   }
 ]
 
-boringDetail: a very short phrase identifying the specific problem (e.g. "contains 'perfect gift'"), or null if no issue.
+boringDetail: a very short phrase identifying the specific problem (e.g. "odd phrasing: 'renders it uniquely personal'"), or null if no issue.
 contextIssues: array of short descriptions of specific mismatches found, or empty array if none.
 
 Products:
@@ -62,7 +68,7 @@ ${productsList}`;
 
   const response = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
-    max_tokens: 1200,
+    max_tokens: 1600,
     system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
     messages: [{ role: "user", content: userMessage }],
   });

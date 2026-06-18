@@ -23,6 +23,7 @@ const GET_PRODUCT_METAFIELDS = `
       id
       title
       handle
+      vendor
       descriptionHtml
       featuredImage { url altText }
       priceRangeV2 { minVariantPrice { amount } }
@@ -64,6 +65,7 @@ interface GetProductResponse {
     id: string;
     title: string;
     handle: string;
+    vendor: string;
     descriptionHtml: string;
     featuredImage: { url: string; altText: string } | null;
     priceRangeV2?: { minVariantPrice: { amount: string } } | null;
@@ -113,6 +115,7 @@ export async function getProductWithMetafields(productGid: string) {
       id: p.id,
       title: p.title,
       handle: p.handle,
+      vendor: p.vendor ?? "",
       descriptionHtml: p.descriptionHtml,
       featuredImage: p.featuredImage,
       price: parseFloat(p.priceRangeV2?.minVariantPrice?.amount ?? "0") || 0,
@@ -199,7 +202,7 @@ export async function setProductMetafields(
 
 // The product fields fragment reused in each alias inside the batch query
 const PRODUCT_FIELDS = `
-  id title handle descriptionHtml
+  id title handle vendor descriptionHtml
   featuredImage { url altText }
   productSummary:  metafield(namespace: "product",          key: "product_summary")   { value }
   productTypePt:   metafield(namespace: "product",          key: "product_type")      { value }
@@ -257,7 +260,7 @@ function parseProductNode(p: GetProductResponse["product"]): ReturnType<typeof g
     },
   };
   return {
-    product: { id: p.id, title: p.title, handle: p.handle, descriptionHtml: p.descriptionHtml, featuredImage: p.featuredImage, price: parseFloat(p.priceRangeV2?.minVariantPrice?.amount ?? "0") || 0 },
+    product: { id: p.id, title: p.title, handle: p.handle, vendor: p.vendor ?? "", descriptionHtml: p.descriptionHtml, featuredImage: p.featuredImage, price: parseFloat(p.priceRangeV2?.minVariantPrice?.amount ?? "0") || 0 },
     metafields,
   };
 }

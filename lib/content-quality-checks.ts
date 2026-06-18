@@ -4,7 +4,9 @@ export type CheckId =
   | "missing-bullets"
   | "duplicate-icons"
   | "boring-summary"
-  | "context-mismatch";
+  | "context-mismatch"
+  | "summary-rules"
+  | "durability-claim";
 
 export interface QualityIssue {
   checkId: CheckId;
@@ -18,6 +20,7 @@ export interface QualityRow {
   productId: string;
   title: string;
   productTypePt: string;
+  vendor?: string;
   summary: string;
   wctBullets: [string, string, string, string];
   pfBullets: [string, string, string, string];
@@ -119,6 +122,57 @@ function checkMissingBullets(row: QualityRow): QualityIssue | null {
   return null;
 }
 
+const BANNED_SUMMARY_PHRASES: Array<{ pattern: RegExp; label: string }> = [
+  { pattern: /perfect gift/i,           label: `contains banned phrase "perfect gift"` },
+  { pattern: /thoughtful gift/i,        label: `contains banned phrase "thoughtful gift"` },
+  { pattern: /loved by all/i,           label: `contains banned phrase "loved by all"` },
+  { pattern: /deeply personal/i,        label: `contains banned phrase "deeply personal"` },
+  { pattern: /deeply meaningful/i,      label: `contains banned phrase "deeply meaningful"` },
+  { pattern: /tells a story/i,          label: `contains banned phrase "tells a story"` },
+  { pattern: /comes gift.?wrapped/i,    label: `contains banned phrase "comes gift wrapped"` },
+  { pattern: /arrives ready to give/i,  label: `contains banned phrase "arrives ready to give"` },
+  { pattern: /without trying too hard/i,label: `contains banned phrase "without trying too hard"` },
+  { pattern: /from every angle/i,       label: `contains banned phrase "from every angle"` },
+  { pattern: /at first glance/i,        label: `contains banned phrase "at first glance"` },
+];
+
+const MUTED_WORDS: RegExp[] = [
+  /\bquietly\b/i, /\bunderstated\b/i, /\bgently\b/i, /\bsoftly\b/i,
+];
+
+function checkSummaryRules(row: QualityRow): QualityIssue[] {
+  const s = row.summary.trim();
+  if (!s) return [];
+
+  const violations: string[] = [];
+
+  if (/[—–]/.test(s))                         violations.push("contains a dash (— or –)");
+  if (/!/.test(s))                             violations.push("contains an exclamation mark");
+  if (/\byou\b|\byour\b/i.test(s))            violations.push(`addresses the reader directly ("you"/"your")`);
+  if (/\bshe\b|\bher\b|\bhe\b|\bhim\b/i.test(s)) violations.push("uses gendered pronoun (she/he/her/him) — use they/them");
+  if (/\bsomeone\b/i.test(s))                 violations.push(`refers to the recipient as "someone"`);
+  if (/\bwhoever\b/i.test(s))                 violations.push(`refers to the recipient as "whoever"`);
+  if (/without being\b/i.test(s))             violations.push(`hedges with "without being"`);
+  if (/without demanding/i.test(s))           violations.push(`hedges with "without demanding"`);
+  if (/without overwhelming/i.test(s))        violations.push(`hedges with "without overwhelming"`);
+
+  for (const { pattern, label } of BANNED_SUMMARY_PHRASES) {
+    if (pattern.test(s)) violations.push(label);
+  }
+
+  for (const re of MUTED_WORDS) {
+    const m = re.exec(s);
+    if (m) violations.push(`uses muted word "${m[0].toLowerCase()}"`);
+  }
+
+  return violations.map((detail) => ({
+    checkId: "summary-rules" as const,
+    label: "Summary rule",
+    detail,
+    severity: "warning" as const,
+  }));
+}
+
 const SUMMARY_MAX_CHARS = 220;
 
 function checkBoringSummary(row: QualityRow): QualityIssue | null {
@@ -163,6 +217,36 @@ function checkDuplicatePFIcons(row: QualityRow): QualityIssue | null {
   };
 }
 
+const JEWELLERY_TYPES = new Set([
+  "Women's Jewellery",
+  "Children's Jewellery",
+  "Men's Jewellery & Accessories",
+]);
+
+const DURABILITY_REGEX = /\blast(s|ed|ing)?\s+for\s+years?\b|\bfor\s+years?\s+to\s+come\b|\bstand\s+the\s+test\s+of\s+time\b|\bbuilt?\s+to\s+last\b|\bmade\s+to\s+last\b|\blong[- ]lasting\b|\bdurabl(e|ility)\b/i;
+
+function checkDurabilityLanguage(row: QualityRow): QualityIssue | null {
+  if (!JEWELLERY_TYPES.has(row.productTypePt)) return null;
+  if (row.vendor === "Reeves & Reeves") return null;
+
+  const fields: Array<{ value: string; name: string }> = [
+    { value: row.summary, name: "Summary" },
+    ...row.wctBullets.map((b, i) => ({ value: stripHtml(b), name: `WCT bullet ${i + 1}` })),
+  ];
+
+  for (const { value, name } of fields) {
+    if (value && DURABILITY_REGEX.test(value)) {
+      return {
+        checkId: "durability-claim",
+        label: "Durability claim",
+        detail: `${name} makes a durability or longevity claim — verify this is accurate for this product`,
+        severity: "warning",
+      };
+    }
+  }
+  return null;
+}
+
 export function runNonAiChecks(row: QualityRow): QualityIssue[] {
   return [
     checkWearLanguage(row),
@@ -170,5 +254,7 @@ export function runNonAiChecks(row: QualityRow): QualityIssue[] {
     checkMissingBullets(row),
     checkDuplicatePFIcons(row),
     checkBoringSummary(row),
+    checkDurabilityLanguage(row),
+    ...checkSummaryRules(row),
   ].filter((issue): issue is QualityIssue => issue !== null);
 }
