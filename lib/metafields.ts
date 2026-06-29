@@ -56,7 +56,7 @@ const GET_PRODUCT_METAFIELDS = `
 function normalizeIconValue(v: string): string {
   if (!v.startsWith("<svg")) return v;
   const match = v.match(/\bid="([^"]+)"/);
-  return match?.[1] ?? v;
+  return match?.[1] ?? "";
 }
 
 type MF = { value: string } | null;
@@ -204,6 +204,7 @@ export async function setProductMetafields(
 const PRODUCT_FIELDS = `
   id title handle vendor descriptionHtml
   featuredImage { url altText }
+  priceRangeV2 { minVariantPrice { amount } }
   productSummary:  metafield(namespace: "product",          key: "product_summary")   { value }
   productTypePt:   metafield(namespace: "product",          key: "product_type")      { value }
   productStylePt:  metafield(namespace: "product",          key: "product_style")     { value }

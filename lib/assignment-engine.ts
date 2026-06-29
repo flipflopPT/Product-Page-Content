@@ -47,7 +47,7 @@ function seededRandom(seed: number) {
   let s = seed;
   return () => {
     s = (s * 1664525 + 1013904223) & 0xffffffff;
-    return (s >>> 0) / 0xffffffff;
+    return (s >>> 0) / 0x100000000;
   };
 }
 
@@ -175,7 +175,7 @@ export function assignPerfectFor(
 ): AssignedPerfectFor {
   const rand = seed !== undefined ? seededRandom(seed) : Math.random.bind(Math);
 
-  // Step 1: filter — seasonal entries always excluded (handled by theme at display time)
+  // Step 1: filter — seasonal entries always excluded (stored separately; theme decides whether to display)
   const filtered = library.filter((entry) => {
     if (entry.timeSensitive) return false;
     const price = product.price ?? 0;

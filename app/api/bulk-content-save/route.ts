@@ -25,10 +25,13 @@ export async function POST(req: NextRequest) {
   const pfLibrary = await getPfLibrary();
 
   const batchRows = rows.map((row) => {
+    const assignedBullets = row.pfBullets.filter(Boolean);
     const seasonal = !row.isChristmas && row.productTypePt !== undefined
       ? assignSeasonalPhrases(
           { title: "", descriptionText: "", productType: row.productTypePt, productStyles: row.productStylePt ? row.productStylePt.split(",").map((s) => s.trim()).filter(Boolean) : [] },
-          pfLibrary
+          pfLibrary,
+          undefined,
+          assignedBullets
         )
       : null;
 
@@ -44,7 +47,7 @@ export async function POST(req: NextRequest) {
             valentinesDay: seasonal.valentinesDay ?? { phrase: "", icon: "" },
           },
         }),
-        humanReviewed: row.humanReviewed === true ? "true" : "false",
+        ...(row.humanReviewed !== undefined && { humanReviewed: row.humanReviewed === true ? "true" : "false" }),
         productSummary: row.summary,
         ...(!row.isChristmas && {
           whyChooseThis: {
@@ -71,7 +74,8 @@ export async function POST(req: NextRequest) {
   try {
     await setProductsMetafieldsBatch(batchRows);
     return NextResponse.json({ saved: rows.length, failed: 0 });
-  } catch {
-    return NextResponse.json({ saved: 0, failed: rows.length });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ saved: 0, failed: rows.length, error: message }, { status: 500 });
   }
 }

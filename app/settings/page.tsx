@@ -22,7 +22,8 @@ export default function SettingsPage() {
   useEffect(() => {
     fetch("/api/settings")
       .then((r) => r.json())
-      .then((s: AppSettings) => { setSettings(s); setLoadingSettings(false); });
+      .then((s: AppSettings) => { setSettings(s); setLoadingSettings(false); })
+      .catch(() => setLoadingSettings(false));
   }, []);
 
   function setDate(key: SeasonKey, field: "start" | "end", value: string) {
@@ -30,7 +31,8 @@ export default function SettingsPage() {
       if (!prev) return prev;
       const current = prev.dateRanges[key] ?? { start: "", end: "" };
       const updated = { ...current, [field]: value };
-      const stored = updated.start === "" && updated.end === "" ? null : updated;
+      // Only store a range when both fields are non-empty — a partial range is treated as cleared
+      const stored = updated.start && updated.end ? updated : null;
       return { ...prev, dateRanges: { ...prev.dateRanges, [key]: stored } };
     });
   }
@@ -39,17 +41,22 @@ export default function SettingsPage() {
     if (!settings) return;
     setSaving(true);
     setSaveError("");
-    const res = await fetch("/api/settings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(settings),
-    });
-    setSaving(false);
-    if (!res.ok) {
+    try {
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      });
+      setSaving(false);
+      if (!res.ok) {
+        setSaveError("Save failed — please try again");
+      } else {
+        setSavedMsg("Saved");
+        setTimeout(() => setSavedMsg(""), 3000);
+      }
+    } catch {
+      setSaving(false);
       setSaveError("Save failed — please try again");
-    } else {
-      setSavedMsg("Saved");
-      setTimeout(() => setSavedMsg(""), 3000);
     }
   }
 

@@ -61,7 +61,7 @@ export async function POST(
       productSummary: body.productSummary,
       productTypePt: body.productTypePt,
       productStylePt: styles.join(","),
-      humanReviewed: body.humanReviewed === true ? "true" : "false",
+      ...(body.humanReviewed !== undefined && { humanReviewed: body.humanReviewed === true ? "true" : "false" }),
       seasonalOverrides: {
         mothersDay:    seasonal.mothersDay    ?? { phrase: "", icon: "" },
         fathersDay:    seasonal.fathersDay    ?? { phrase: "", icon: "" },

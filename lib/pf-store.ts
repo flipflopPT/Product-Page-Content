@@ -192,6 +192,7 @@ export async function savePhraseEdit(phraseId: string, fields: Partial<PFPhraseE
     icon: fields.icon ?? existing?.icon ?? base?.icon ?? "",
     searchPhrase: fields.searchPhrase ?? existing?.searchPhrase ?? base?.phrase ?? "",
     isNew: fields.isNew ?? existing?.isNew ?? false,
+    ...(existing?.deleted && { deleted: true }),
     ...(fields.category !== undefined && { category: fields.category }),
     ...(fields.timeSensitive !== undefined && { timeSensitive: fields.timeSensitive }),
     ...(fields.filterByInterest !== undefined && { filterByInterest: fields.filterByInterest }),

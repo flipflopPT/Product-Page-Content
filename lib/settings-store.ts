@@ -50,8 +50,13 @@ const CREATE_DEF = `
       type: "${METAOBJECT_TYPE}",
       name: "PDP App Settings",
       fieldDefinitions: [
-        { name: "Date Ranges", key: "date_ranges", type: "multi_line_text_field" },
-        { name: "Interest Keywords", key: "interest_keywords", type: "multi_line_text_field" }
+        { name: "Interest Keywords", key: "interest_keywords", type: "multi_line_text_field" },
+        { name: "Mother's Day Start", key: "mothers_day_start", type: "single_line_text_field" },
+        { name: "Mother's Day End", key: "mothers_day_end", type: "single_line_text_field" },
+        { name: "Father's Day Start", key: "fathers_day_start", type: "single_line_text_field" },
+        { name: "Father's Day End", key: "fathers_day_end", type: "single_line_text_field" },
+        { name: "Valentine's Day Start", key: "valentines_day_start", type: "single_line_text_field" },
+        { name: "Valentine's Day End", key: "valentines_day_end", type: "single_line_text_field" }
       ]
     }) {
       metaobjectDefinition { id }
@@ -60,7 +65,6 @@ const CREATE_DEF = `
   }
 `;
 
-// Used to add interest_keywords to an existing definition that was created without it
 const GET_DEF_QUERY = `
   query GetSettingsDef {
     metaobjectDefinitionByType(type: "${METAOBJECT_TYPE}") {
@@ -83,58 +87,120 @@ const ADD_IK_FIELD_MUTATION = `
   }
 `;
 
+const DATE_FIELD_META: Record<string, string> = {
+  mothers_day_start:    "Mother's Day Start",
+  mothers_day_end:      "Mother's Day End",
+  fathers_day_start:    "Father's Day Start",
+  fathers_day_end:      "Father's Day End",
+  valentines_day_start: "Valentine's Day Start",
+  valentines_day_end:   "Valentine's Day End",
+};
+
 type ShopifyNode = { id: string; fields: { key: string; value: string }[] };
 
 let _nodeId: string | null = null;
+let _defMigrated = false;
 
-// Adds interest_keywords to the definition if it's missing.
-// Safe to call when the field already exists — it just returns early.
-async function ensureInterestKeywordsField(): Promise<void> {
+// Adds any missing fields to the definition. Safe to call repeatedly — only adds what is absent.
+async function ensureDefinitionFields(): Promise<void> {
   const data = await shopifyGraphQL<{
     metaobjectDefinitionByType: { id: string; fieldDefinitions: { key: string }[] } | null;
   }>(GET_DEF_QUERY);
   const def = data.metaobjectDefinitionByType;
-  if (!def || def.fieldDefinitions.some((f) => f.key === "interest_keywords")) return;
-  await shopifyGraphQL(ADD_IK_FIELD_MUTATION, { defId: def.id });
+  if (!def) return;
+  const existing = new Set(def.fieldDefinitions.map((f) => f.key));
+
+  if (!existing.has("interest_keywords")) {
+    await shopifyGraphQL(ADD_IK_FIELD_MUTATION, { defId: def.id }).catch(() => {});
+  }
+
+  // Build a mutation with only the fields that are actually missing (avoids all-or-nothing failure)
+  const DATE_KEYS = Object.keys(DATE_FIELD_META);
+  const missingKeys = DATE_KEYS.filter((k) => !existing.has(k));
+  if (missingKeys.length > 0) {
+    const createList = missingKeys
+      .map((k) => `{ name: "${DATE_FIELD_META[k]}", key: "${k}", type: "single_line_text_field" }`)
+      .join(", ");
+    const mutation = `
+      mutation AddMissingDateFields($defId: ID!) {
+        metaobjectDefinitionUpdate(id: $defId, definition: {
+          fieldDefinitions: { create: [${createList}] }
+        }) {
+          metaobjectDefinition { id }
+          userErrors { field message }
+        }
+      }
+    `;
+    await shopifyGraphQL(mutation, { defId: def.id }).catch(() => {});
+  }
+}
+
+async function ensureDefinitionOnce(): Promise<void> {
+  if (_defMigrated) return;
+  _defMigrated = true;
+  await ensureDefinitionFields().catch(() => {});
 }
 
 function settingsToFields(s: AppSettings) {
+  const { mothersDay, fathersDay, valentinesDay } = s.dateRanges;
   return [
-    { key: "date_ranges", value: JSON.stringify(s.dateRanges) },
-    { key: "interest_keywords", value: JSON.stringify(s.interestKeywords) },
+    { key: "interest_keywords",   value: JSON.stringify(s.interestKeywords) },
+    { key: "mothers_day_start",   value: mothersDay?.start   ?? "" },
+    { key: "mothers_day_end",     value: mothersDay?.end     ?? "" },
+    { key: "fathers_day_start",   value: fathersDay?.start   ?? "" },
+    { key: "fathers_day_end",     value: fathersDay?.end     ?? "" },
+    { key: "valentines_day_start", value: valentinesDay?.start ?? "" },
+    { key: "valentines_day_end",   value: valentinesDay?.end   ?? "" },
   ];
 }
 
 function fieldsToSettings(fields: { key: string; value: string }[]): AppSettings {
-  const drField = fields.find((f) => f.key === "date_ranges");
-  const ikField = fields.find((f) => f.key === "interest_keywords");
+  const get = (key: string) => fields.find((f) => f.key === key)?.value ?? "";
 
-  let dateRanges = DEFAULT_SETTINGS.dateRanges;
-  if (drField) {
-    try { dateRanges = JSON.parse(drField.value); } catch { /* use default */ }
-  }
+  const mdStart = get("mothers_day_start");
+  const mdEnd   = get("mothers_day_end");
+  const fdStart = get("fathers_day_start");
+  const fdEnd   = get("fathers_day_end");
+  const vdStart = get("valentines_day_start");
+  const vdEnd   = get("valentines_day_end");
 
+  const ikField = get("interest_keywords");
   let interestKeywords = DEFAULT_INTEREST_KEYWORDS;
   if (ikField) {
-    try { interestKeywords = JSON.parse(ikField.value); } catch { /* use default */ }
+    try { interestKeywords = JSON.parse(ikField); } catch { /* use default */ }
   }
 
-  return { dateRanges, interestKeywords };
+  // If all individual date fields are empty, fall back to the legacy date_ranges JSON blob
+  // so stores that haven't re-saved since the migration don't silently lose their dates.
+  if (!mdStart && !mdEnd && !fdStart && !fdEnd && !vdStart && !vdEnd) {
+    const blob = get("date_ranges");
+    if (blob) {
+      try {
+        const parsed = JSON.parse(blob);
+        return { dateRanges: parsed, interestKeywords };
+      } catch { /* use default */ }
+    }
+  }
+
+  return {
+    dateRanges: {
+      mothersDay:    mdStart && mdEnd ? { start: mdStart, end: mdEnd } : null,
+      fathersDay:    fdStart && fdEnd ? { start: fdStart, end: fdEnd } : null,
+      valentinesDay: vdStart && vdEnd ? { start: vdStart, end: vdEnd } : null,
+    },
+    interestKeywords,
+  };
 }
 
 export async function getSettings(): Promise<AppSettings> {
   try {
+    await ensureDefinitionOnce();
     const data = await shopifyGraphQL<{
       metaobjects: { nodes: ShopifyNode[] };
     }>(LIST_QUERY);
     const node = data.metaobjects.nodes[0];
     if (!node) return DEFAULT_SETTINGS;
     _nodeId = node.id;
-    // If interest_keywords is absent the definition predates this field — migrate silently
-    // so the very next save will actually persist it.
-    if (!node.fields.some((f) => f.key === "interest_keywords")) {
-      await ensureInterestKeywordsField().catch(() => {});
-    }
     return fieldsToSettings(node.fields);
   } catch {
     return DEFAULT_SETTINGS;
@@ -149,6 +215,7 @@ async function persist(settings: AppSettings): Promise<void> {
       metaobjectUpdate: { metaobject: { id: string } | null; userErrors: { message: string }[] };
     }>(UPDATE_MUTATION, { id: _nodeId, fields });
     if (res.metaobjectUpdate.userErrors.length > 0) {
+      _nodeId = null; // clear stale ID so next call re-queries
       throw new Error(`Shopify save failed: ${res.metaobjectUpdate.userErrors.map((e) => e.message).join(", ")}`);
     }
     return;
@@ -159,14 +226,11 @@ async function persist(settings: AppSettings): Promise<void> {
   const existing = check.metaobjects.nodes[0] ?? null;
   if (existing) {
     _nodeId = existing.id;
-    // Migrate the definition if interest_keywords field is missing (silently, best-effort)
-    if (!existing.fields.some((f) => f.key === "interest_keywords")) {
-      await ensureInterestKeywordsField().catch(() => {});
-    }
     const res = await shopifyGraphQL<{
       metaobjectUpdate: { metaobject: { id: string } | null; userErrors: { message: string }[] };
     }>(UPDATE_MUTATION, { id: _nodeId, fields });
     if (res.metaobjectUpdate.userErrors.length > 0) {
+      _nodeId = null;
       throw new Error(`Shopify save failed: ${res.metaobjectUpdate.userErrors.map((e) => e.message).join(", ")}`);
     }
     return;
@@ -183,8 +247,6 @@ async function persist(settings: AppSettings): Promise<void> {
   }
 
   // Metaobject type doesn't exist yet — auto-create the definition then retry.
-  // Only attempt this for type-missing errors; other errors (permissions, field
-  // validation, duplicate handle) should surface immediately.
   if (res.metaobjectCreate.userErrors.length > 0) {
     const isTypeMissing = res.metaobjectCreate.userErrors.some(
       (e) => /type|definition/i.test(e.message)
