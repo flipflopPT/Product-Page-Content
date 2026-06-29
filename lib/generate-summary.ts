@@ -126,7 +126,7 @@ Write exactly ${numOptions} distinct product summary option${numOptions === 1 ? 
     }
     if (isModelDeprecatedError(err)) {
       return {
-        error: { type: "unknown", message: `The AI model "${MODEL}" is no longer available. Update the ANTHROPIC_MODEL environment variable in Vercel to a current model ID.` },
+        error: { type: "unknown", message: `The AI model this app uses has been retired. To fix this, update the ANTHROPIC_MODEL setting in your Vercel environment variables.` },
       };
     }
     if (status === 401) {
