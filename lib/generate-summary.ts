@@ -97,6 +97,7 @@ Write exactly ${numOptions} distinct product summary option${numOptions === 1 ? 
 
     return { options: options.slice(0, numOptions) };
   } catch (err: unknown) {
+    console.error("[generate-summary] Anthropic error:", JSON.stringify(err, null, 2));
     const e = err as { status?: number; error?: { type?: string }; code?: string; message?: string };
     const status = e?.status;
     const isNetworkError = e?.code === "ECONNREFUSED" || e?.code === "ENOTFOUND" || e?.code === "ETIMEDOUT" || e?.message?.includes("fetch");
